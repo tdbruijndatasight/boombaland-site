@@ -288,6 +288,38 @@ If either does not redirect, fall back to option A.
    November" date plank in `tools/build.py`. Run `python3 -I tools/build.py` (set `LEGAL_SRC` only to re-port the legal
    pages), then `python3 -I tools/check_links.py`, then commit and push.
 
+## 7. The "Help develop Boombaland" idea form
+
+A static site cannot receive a form post, so `/development/` sends the form to **one configured endpoint**. The
+setting is the `IDEA_FORM` object at the top of `assets/ideas.js`. On localhost the form always goes to the local
+receiver instead (`python3 -I tools/idea_receiver.py`, port 8767). That receiver stores each idea as JSON in `local/ideas/`,
+which is git-ignored.
+
+Researched 31 Oct 2026. ⚠ marks a point that could not be read on the official page.
+
+| | **Web3Forms (default in `ideas.js`)** | **Formspree** |
+|---|---|---|
+| Sign-up | Enter `support@boombaland.com` on web3forms.com. The access key arrives by mail, with no account or password ([docs](https://docs.web3forms.com/llms-full.txt)). | An account at formspree.io. Create a form and get its endpoint `https://formspree.io/f/<id>`. |
+| What goes in the page | `accessKey` in `ideas.js`. This key is public by design: it only sends mail to the address it was made for. | `provider: "formspree"`, `endpoint: "https://formspree.io/f/<id>"` |
+| Request | `POST https://api.web3forms.com/submit`, JSON. CORS is open, and JSON avoids the redirect that breaks a form-encoded fetch. | `POST` with `Accept: application/json` (AJAX) ([help](https://help.formspree.io/hc/en-us/articles/360013470814)). |
+| Honeypot | `botcheck` (the docs call it deprecated in favour of server checks, but still read it). hCaptcha is free. | `_gotcha` ([help](https://help.formspree.io/hc/en-us/articles/360013580813-Spam-protection)); reCAPTCHA is on by default. |
+| Free limit | 250 submissions a month ⚠ (pricing page known only from a search snippet) | 50 submissions a month, 30-day archive, domain restriction included ([plans](https://formspree.io/plans)) |
+| Stored by them? | The docs FAQ says "We do not store any form submissions", and server logs are deleted every 2 months. Other snippets say 30 days ⚠. | Kept in their archive for 30 days on the free plan. |
+| Where processed | AWS US-East, and the company is not in the EU. A DPA is mentioned but was not readable ⚠. | "the United States and any other country where Formspree operates" ([privacy policy](https://formspree.io/legal/privacy-policy)). No DPA page was found ⚠. |
+| Reply-to | `replyto` defaults to the `email` field, which the form sends only if the 16+ box is ticked | `_replyto` (sent by `ideas.js`) ⚠ (not confirmed for the free plan) |
+
+**Advice:** Web3Forms. It needs the least setup, has the higher free limit, and says it does not store the
+submissions. Neither service processes in the EU, so the privacy text (`PRIVACY_ADDENDUM_PROPOSAL.md`) must name the
+service and its transfer safeguard. If the PO wants EU-only processing, read Formspark's GDPR and DPA pages
+(https://formspark.io/) before choosing; they were not verified.
+
+**Go-live steps (PO):**
+1. Request the Web3Forms key with `support@boombaland.com`. The mailbox from step 3 must already receive mail.
+2. Put the key in `assets/ideas.js` (`accessKey`).
+3. Submit one test idea from the live site and check that it arrives.
+4. Approve and publish the privacy subsection, with the service filled in.
+5. Until steps 2–4 are done, the live form shows "not switched on yet, mail us instead", and nothing is sent.
+
 ## How this folder is built
 
 - These are plain static files with no build step at serve time. `tools/build.py` writes the HTML so that the header,

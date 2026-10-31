@@ -305,6 +305,86 @@ def press():
          current="/press/")
 
 
+def development():
+    body = f"""<main id="main" class="page">
+<div class="wrap prose">
+<h1>How Boombaland is made</h1>
+<p>Boombaland is made by one person, Tom de Bruijn (DataSight), in the Netherlands, with a team of AI tools. Tom designs
+and directs the game, plays every build and decides what goes in. The AI tools do much of the making, and every piece
+of their work is reviewed and approved before it reaches the game.</p>
+<!-- TODO-PO: confirm the wording "made by one person" (the repo says Tom is the designer, director and Product Owner; it
+     never says "solo developer" in those words). -->
+
+<h2 id="pipeline">The pipeline</h2>
+<ul>
+<li><strong>Concept art and 2D art.</strong> Heroes, worlds, items and screens start as concepts made with OpenAI's
+ChatGPT image generation and Codex. Tom picks and approves them, often after several rounds.</li>
+<li><strong>3D models and animation</strong> are built in Blender, by script, from the approved concepts.</li>
+<li><strong>Code, tools and documentation</strong> are written with AI coding assistants (Anthropic's Claude, via
+Claude Code, and OpenAI Codex), working as a crew of specialist agents and reviewed and directed by Tom.</li>
+<li><strong>Sound effects</strong> are synthesised by the project's own script from noise and tones.</li>
+<li><strong>Music:</strong> the round, boss, win, lose and finale tracks were generated for Boombaland with
+ACE-Step 1.5. The main menu plays "Retro Game" by The_Mountain (Pixabay).</li>
+</ul>
+<p>The game runs on Unity. The first line of code went in on 30 July 2026; by the end of October the project had passed
+13,000 commits.</p>
+
+<h2 id="journey">From one bomb to 25 levels</h2>
+<p>Boombaland was built in steps, and every step had to be <em>fun</em> before the next one started. First came the bare
+loop: one bomb, one opponent, one small arena. Then power-ups, score and menus. Then the full game: a living board with
+bridges, belts and gates, bosses, six heroes, gear and chests.</p>
+<p>Version 1.0 has 25 levels in two parts of the same world: <strong>Green Lands</strong>, a floating forest of
+bridges, belts and towers, and <strong>Castle Road</strong>, where push-block puzzles lead to Thorn Guard's castle. A
+nine-chapter comic tells the story between the levels.</p>
+
+<h2 id="next">What's next</h2>
+<p>Launch is on 19 November 2026. After that, Boombaland keeps growing: more to discover, and your ideas can shape what
+comes next.</p>
+<!-- TODO-PO: name the post-launch plans you want to share (new worlds? new heroes? online play, which the design
+     document lists as a later step?), and a rough timing, or keep this paragraph general. Nothing about the epilogue. -->
+
+<section class="panel" id="ideas" aria-labelledby="ideas-title">
+<h2 class="panel-header" id="ideas-title">Help develop Boombaland</h2>
+<p>Got an idea for a hero, a level, a boss or a power-up? Tell us! If we like the idea, we'll get in touch to talk about
+the details.</p>
+{idea_form()}
+</section>
+</div>
+</main>
+"""
+    page("/development/", body, "How Boombaland is made",
+         "How Boombaland is made by one developer with AI tools, what comes next, and how to send us your idea for the game.",
+         current="/development/", script=True, extra_script="/assets/ideas.js")
+
+
+def idea_form():
+    return """<form id="idea-form" class="idea-form" novalidate>
+<p class="form-note">Fields marked * are needed. Only add your name and email if you'd like a reply.</p>
+<label for="idea-title">Title of your idea *</label>
+<input id="idea-title" name="title" type="text" maxlength="120" required autocomplete="off">
+<label for="idea-text">Your idea *</label>
+<textarea id="idea-text" name="idea" rows="8" maxlength="5000" required></textarea>
+<fieldset>
+<legend>Want a reply? (optional)</legend>
+<label for="idea-name">Your name</label>
+<input id="idea-name" name="name" type="text" maxlength="80" autocomplete="name">
+<label for="idea-email">Your email</label>
+<input id="idea-email" name="email" type="email" maxlength="200" autocomplete="email">
+<label class="check"><input id="idea-age" name="age16" type="checkbox" value="yes"> I am 16 or older</label>
+<p class="form-note">We can only keep a name or email from players aged 16 or older. Younger? Send your idea without
+them, or ask a parent to send it for you.</p>
+</fieldset>
+<label class="check"><input id="idea-consent" name="consent" type="checkbox" value="yes" required> I agree that Boombaland
+uses what I send to look at my idea and, if I gave my email, to reply. See the <a href="/privacy/">Privacy Policy</a>. *</label>
+<div class="hp" aria-hidden="true"><label for="idea-hp">Leave this empty</label><input id="idea-hp" name="botcheck" type="text" tabindex="-1" autocomplete="off"></div>
+<p id="idea-error" class="form-error" role="alert" hidden></p>
+<button type="submit" class="btn">Send my idea</button>
+<p id="idea-done" class="form-done" role="status" hidden>Thank you! Your idea is on its way. If you left your email and we
+like the idea, we'll get in touch.</p>
+<noscript><p class="form-error">This form needs JavaScript. You can also mail your idea to support@boombaland.com.</p></noscript>
+</form>"""
+
+
 def not_found():
     body = """<main id="main" class="page">
 <div class="wrap prose center">
@@ -346,5 +426,6 @@ def port_legal():
 if __name__ == "__main__":
     home()
     press()
+    development()
     not_found()
     port_legal()

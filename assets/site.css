@@ -231,3 +231,19 @@ dialog.lightbox button { position: absolute; top: 8px; right: 8px; width: 44px; 
 .section--wood .clip figcaption { color: var(--cream); }
 .clips { display: grid; gap: 1rem; grid-template-columns: 1fr; }
 @media (min-width: 760px) { .clips { grid-template-columns: 1fr 1fr; } }
+
+/* ---- Idea form ----------------------------------------------------------------------------------------------- */
+.idea-form { display: grid; gap: .35rem; font-family: var(--ui); }
+.idea-form label { font-weight: 700; margin-top: .5rem; }
+.idea-form input[type=text], .idea-form input[type=email], .idea-form textarea { width: 100%; font: 600 1rem var(--ui); color: var(--ink);
+  background: #fff; border: 3px solid var(--wood); border-radius: 10px; padding: .55rem .7rem; }
+.idea-form textarea { resize: vertical; min-height: 9rem; }
+.idea-form fieldset { border: 2px dashed var(--parchment-pressed); border-radius: 10px; padding: .4rem .8rem .7rem; margin: .8rem 0 .2rem; display: grid; gap: .3rem; }
+.idea-form legend { font-weight: 700; padding: 0 .3rem; }
+.idea-form .check { display: flex; gap: .55rem; align-items: flex-start; font-weight: 600; }
+.idea-form .check input { width: 1.3rem; height: 1.3rem; margin-top: .15rem; flex: none; accent-color: var(--leaf); }
+.idea-form .btn { justify-self: start; margin-top: .8rem; border-left-width: 22px; }
+.form-note { font-size: .9rem; color: var(--ink-muted); margin: .2rem 0; }
+.form-error { color: rgb(160, 24, 24); font-weight: 700; margin: .4rem 0 0; }
+.form-done { color: var(--leaf-edge); font-weight: 700; background: var(--cream); border-left: 5px solid var(--leaf); padding: .6rem .8rem; border-radius: 6px; }
+.hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
