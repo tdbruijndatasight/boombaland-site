@@ -13,7 +13,9 @@ tr(){ sips --resampleWidth "$3" -s format avif -s formatOptions 60 "$1" --out "$
       # PNG fallback (browsers without AVIF) only at the smallest width, to keep the repo and page weight small
       if [ "$3" -le 480 ]; then sips --resampleWidth "$3" -s format png "$1" --out "$I/$2-$3.png" >/dev/null; fi; }
 for x in 800 1280 1920; do op $RA/endcard_redo_2026-10-29/C7_R8_background_1920x1080.png hero-castle $x; done
-for x in 480 960; do tr $RA/store_production_2026-10-29/boombaland_wordmark_R1.png logo $x; done
+# The wordmark's master lives IN this repo, so a redrawn wordmark drops in by replacing this one file (IMAGE_NEEDS.md #7b).
+WORDMARK="$S/assets/src/boombaland_wordmark.png"   # from review_assets/store_production_2026-10-29/boombaland_wordmark_R1.png
+for x in 480 960; do tr "$WORDMARK" logo $x; done
 for x in 360 720; do tr $B/store_kit/masters/blom_standing_2048x3072_C2_R3.png blom $x; done
 for x in 360 720; do tr $B/store_kit/shared/thorn_guard_fullbody_1200x1600_C4_R3.png thorn-guard $x; done
 for x in 480 800 1600; do tr $B/store_kit/shared/six_hero_lineup_2400x1100_C3_R3.png heroes $x; done
@@ -38,4 +40,4 @@ ffmpeg -loglevel error -y -i $RA/endcard_redo_2026-10-29/C7_R8.png -vf "scale=12
 sips -s format jpeg -s formatOptions 88 $B/store_kit/masters/feature_graphic_2048x1000_C1_R2.png --out "$P/boombaland-key-art-2048x1000.jpg" >/dev/null
 sips -s format jpeg -s formatOptions 88 $RA/endcard_redo_2026-10-29/C7_R8.png --out "$P/boombaland-castle-logo-1920x1080.jpg" >/dev/null
 sips --resampleWidth 1024 -s format png $B/store_kit/masters/blom_standing_2048x3072_C2_R3.png --out "$P/boombaland-blom-1024x1536.png" >/dev/null
-cp $RA/store_production_2026-10-29/boombaland_wordmark_R1.png "$P/boombaland-logo-1371x391.png"
+cp "$WORDMARK" "$P/boombaland-logo.png"

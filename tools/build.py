@@ -74,7 +74,7 @@ def topbar(current):
 <a class="skip" href="#main">Skip to content</a>
 <header class="topbar">
 <div class="wrap">
-<a class="brand" href="/"><picture><source type="image/avif" srcset="/assets/img/logo-480.avif"><img src="/assets/img/logo-480.png" width="480" height="137" alt="Boombaland home"></picture></a>
+<a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-192.png 4x" width="40" height="40" alt=""><span>Boombaland</span></a>
 <nav aria-label="Main">{nav(current)}</nav>
 </div>
 </header>
@@ -145,6 +145,7 @@ def home():
 <h1 id="hero-title" class="hero-h1">{pic("logo", [480, 960], "(min-width: 600px) 520px, 90vw", "Boombaland", 480, 480, 137, ext="png", cls="hero-logo", lazy=False)}</h1>
 <p class="hero-tag">Ready, Set, BOOM!</p>
 <p class="hero-pitch">Drop a bomb, run, and watch the board explode. Battle brutal bosses and unlock epic heroes in bright 3D adventures.</p>
+<p class="hero-classic">Classic bomb battles with a fresh new twist.</p>
 <p class="date-plank">Coming 19 November</p>
 {store_buttons()}
 <p class="hero-note">For iPhone, iPad and Android. Free to play.</p>
@@ -232,7 +233,7 @@ def home():
 
 PRESS_FILES = [
     ("boombaland-app-icon-1024.png", "App icon", "1024 × 1024 PNG", "/assets/img/icon-192.png"),
-    ("boombaland-logo-1371x391.png", "Logo", "1371 × 391 PNG, transparent", "/assets/img/logo-480.png"),
+    ("boombaland-logo.png", "Logo", "PNG, transparent", "/assets/img/logo-480.png"),
     ("boombaland-key-art-2048x1000.jpg", "Key art", "2048 × 1000 JPEG", "/assets/img/key-art-1024.jpg"),
     ("boombaland-castle-logo-1920x1080.jpg", "Castle island with logo", "1920 × 1080 JPEG", "/assets/img/og-image-1200x630.jpg"),
     ("boombaland-blom-1024x1536.png", "Blom, the first hero", "1024 × 1536 PNG, transparent", "/assets/img/blom-360.png"),
