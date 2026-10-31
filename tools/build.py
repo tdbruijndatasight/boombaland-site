@@ -128,6 +128,10 @@ CLIP_CAPTIONS = {
 }
 
 
+# The home page's clips, in order (FOOTAGE_NEEDS.md shots 1-4). Missing ones are skipped.
+HOME_CLIPS = ["basics", "heroes", "castle", "bosses"]
+
+
 def clip_html(name, caption=None):
     base = os.path.join(ROOT, "assets", "clips", name)
     if not all(os.path.exists(base + ext) for ext in (".mp4", ".webm", "-poster.jpg")):
@@ -165,6 +169,16 @@ def home():
         + pic(n, [640, 1280], "(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw", alt, 640, 640, 360)
         + f"</a><figcaption>{html.escape(c)}</figcaption></figure></li>"
         for n, c, alt in SHOTS)
+    clips = "\n".join(c for c in (clip_html(n) for n in HOME_CLIPS) if c)
+    clips_section = (f"""<section class="section" aria-labelledby="clips-title">
+<div class="wrap">
+<h2 class="section-title" id="clips-title">See it in action</h2>
+<div class="clips">
+{clips}
+</div>
+</div>
+</section>
+""" if clips else "")
     body = f"""<main id="main">
 <section class="hero" aria-labelledby="hero-title">
 {pic("hero-castle", [800, 1280, 1920], "100vw", "", 1280, 1280, 720, cls="", lazy=False).replace('<picture>', '<picture class="bg">')}
@@ -230,7 +244,7 @@ def home():
 </div>
 </section>
 
-<section class="section section--wood" aria-labelledby="gallery-title">
+{clips_section}<section class="section section--wood" aria-labelledby="gallery-title">
 <div class="wrap">
 <h2 class="section-title" id="gallery-title">Screenshots</h2>
 <ul class="gallery">
