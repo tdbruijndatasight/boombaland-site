@@ -44,3 +44,22 @@
   dialog.addEventListener("click", function (e) { if (e.target === dialog) dialog.close(); });
   dialog.addEventListener("close", function () { img.removeAttribute("src"); if (lastFocus) lastFocus.focus(); });
 })();
+
+/* Gameplay clips: muted, looping, played only while on screen; under prefers-reduced-motion the poster stays. */
+(function () {
+  "use strict";
+  var vids = document.querySelectorAll("video[data-clip]");
+  if (!vids.length) return;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      var v = e.target;
+      if (e.isIntersecting) {
+        if (v.preload !== "auto") { v.preload = "auto"; v.autoplay = true; }
+        var p = v.play(); if (p && p.catch) p.catch(function () {});
+      } else { v.pause(); }
+    });
+  }, { rootMargin: "200px 0px" });
+  vids.forEach(function (v) { v.muted = true; io.observe(v); });
+})();

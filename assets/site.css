@@ -191,3 +191,43 @@ dialog.lightbox button { position: absolute; top: 8px; right: 8px; width: 44px; 
 }
 .hero-classic { margin: 0 auto .6rem; font: 400 clamp(1.05rem, 4vw, 1.3rem)/1.2 var(--display); color: var(--gold);
   text-shadow: -1px -1px 0 var(--outline), 1px -1px 0 var(--outline), -1px 1px 0 var(--outline), 1px 2px 0 var(--outline); }
+
+/* ---- Wiki ---------------------------------------------------------------------------------------------------- */
+.wiki-wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .wiki-wrap { grid-template-columns: 15rem minmax(0, 1fr); gap: 2rem; } .wiki-side { position: sticky; top: 1rem; align-self: start; } }
+.wiki-body { min-width: 0; }
+.wiki-search input { width: 100%; font: 600 1rem var(--ui); padding: .6rem .8rem; border: 3px solid var(--wood); border-radius: 10px; background: var(--cream); color: var(--ink); }
+.wiki-results { list-style: none; margin: .3rem 0 0; padding: 0; }
+.wiki-results li { background: var(--cream); border: 2px solid var(--parchment-pressed); border-radius: 8px; padding: .4rem .6rem; margin-bottom: .3rem; }
+.wiki-results small { display: block; color: var(--ink-muted); font-weight: 600; font-size: .8rem; }
+.wiki-nav { margin-top: .8rem; background: var(--wood-dark); border-radius: 12px; border: 3px solid var(--wood); }
+.wiki-nav summary { cursor: pointer; padding: .6rem .9rem; color: var(--cream); font: 400 1.1rem var(--display); }
+.wiki-nav ul { list-style: none; margin: 0; padding: 0 .5rem .6rem; }
+.wiki-nav a { display: block; padding: .4rem .5rem; color: var(--cream); text-decoration: none; border-radius: 6px; font-weight: 700; }
+.wiki-nav a:hover, .wiki-nav a[aria-current="page"] { background: var(--wood); color: var(--gold); }
+.crumbs { font: 600 .9rem var(--ui); margin: 0 0 .3rem; }
+.lede-left { font-size: 1.1rem; }
+.wiki-card, .wiki-level { background: var(--cream); border: 3px solid var(--wood); border-radius: 12px; padding: .8rem 1rem; margin: 1rem 0; box-shadow: 0 3px 0 var(--wood-dark); }
+.wiki-card h2, .wiki-card h3, .wiki-level h3 { margin-top: .2rem; }
+.wiki-card-head { display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; }
+.wiki-card-head > div { flex: 1 1 14rem; min-width: 0; }
+.wiki-icon { width: 96px; height: auto; flex: none; }
+.wiki-card-head .wiki-icon { width: 112px; border-radius: 10px; background: var(--parchment); }
+.wiki-icon--sm { width: 32px !important; display: inline-block; vertical-align: middle; background: none !important; }
+.prose table.icons td:first-child { width: 48px; }
+.prose table.icons img { width: 40px; height: auto; display: block; }
+.prose table.kv th { width: 40%; text-align: left; }
+.skills { list-style: none; padding: 0; display: flex; gap: 1rem; flex-wrap: wrap; }
+.muted { color: var(--ink-muted); }
+.wiki-index { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: .8rem; list-style: none; padding: 0; }
+.wiki-index a { display: block; background: var(--cream); border: 3px solid var(--wood); border-radius: 12px; padding: .9rem 1rem; font: 400 1.2rem var(--display); color: var(--ink); text-decoration: none; box-shadow: 0 3px 0 var(--wood-dark); }
+.wiki-index a:hover { border-color: var(--leaf); }
+.wiki-source { margin-top: 2rem; font-size: .9rem; color: var(--ink-muted); }
+
+/* ---- Clips --------------------------------------------------------------------------------------------------- */
+.clip { margin: 1rem 0; }
+.clip video { width: 100%; height: auto; display: block; border-radius: 12px; border: 4px solid var(--wood-dark); background: var(--wood-dark); aspect-ratio: 16 / 9; }
+.clip figcaption { font: 600 .9rem var(--ui); text-align: center; margin-top: .3rem; }
+.section--wood .clip figcaption { color: var(--cream); }
+.clips { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .clips { grid-template-columns: 1fr 1fr; } }

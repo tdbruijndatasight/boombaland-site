@@ -20,7 +20,8 @@ MAIL = "support@boombaland.com"
 OLD_BASE = "https://tdbruijndatasight.github.io/boomworld-legal/"
 LEGAL_SRC = os.environ.get("LEGAL_SRC", "")
 
-NAV = [("/", "Home"), ("/press/", "Press"), ("/support/", "Support"), ("/privacy/", "Privacy"), ("/terms/", "Terms")]
+NAV = [("/", "Home"), ("/wiki/", "Wiki"), ("/development/", "Development"), ("/press/", "Press"), ("/support/", "Support"),
+       ("/privacy/", "Privacy"), ("/terms/", "Terms")]
 
 
 def nav(current, cls="nav"):
@@ -92,8 +93,10 @@ KvK 93353413. Contact: <a href="mailto:{MAIL}">{MAIL}</a></p>
 """
 
 
-def page(path, body, title, description, current=None, script=False, noindex=False):
+def page(path, body, title, description, current=None, script=False, noindex=False, extra_script=None):
     s = '<script src="/assets/site.js" defer></script>\n' if script else ""
+    if extra_script:
+        s += f'<script src="{extra_script}" defer></script>\n'
     out = head(title, description, path, noindex=noindex) + topbar(current) + body + FOOTER + s + "</body>\n</html>\n"
     dest = os.path.join(ROOT, path.strip("/"), "index.html") if path.endswith("/") else os.path.join(ROOT, path.strip("/"))
     os.makedirs(os.path.dirname(dest), exist_ok=True)
@@ -110,6 +113,31 @@ def pic(name, widths, sizes, alt, fallback_w, w, h, ext="jpg", cls="", lazy=True
     c = f' class="{cls}"' if cls else ""
     return (f'<picture><source type="image/avif" srcset="{av}" sizes="{sizes}">'
             f'<img{c} src="/assets/img/{name}-{fallback_w}.{ext}" srcset="{fb}" sizes="{sizes}" width="{w}" height="{h}" alt="{html.escape(alt)}"{loading}></picture>')
+
+
+# Gameplay clips (tools/make_clips.sh writes assets/clips/<name>.mp4/.webm/-poster.jpg). A clip whose files are missing is
+# simply left out. They play muted and looped, only while on screen, and never under prefers-reduced-motion (site.js).
+CLIP_CAPTIONS = {
+    "boss": "Thorn Guard arrives",
+    "bosses": "A boss fight",
+    "heroes": "A hero's skill in action",
+    "powerups": "Blasts, chains and power-ups",
+    "levels": "A level in play",
+    "castle": "A castle push-block puzzle",
+    "basics": "Drop a bomb, run, BOOM",
+}
+
+
+def clip_html(name, caption=None):
+    base = os.path.join(ROOT, "assets", "clips", name)
+    if not all(os.path.exists(base + ext) for ext in (".mp4", ".webm", "-poster.jpg")):
+        return ""
+    cap = html.escape(caption or CLIP_CAPTIONS.get(name, ""))
+    u = f"/assets/clips/{name}"
+    return (f'<figure class="clip"><video class="clip-video" muted loop playsinline preload="none" width="1280" height="720" '
+            f'poster="{u}-poster.jpg" aria-label="Gameplay clip: {cap}" data-clip>'
+            f'<source src="{u}.webm" type="video/webm"><source src="{u}.mp4" type="video/mp4"></video>'
+            f'<figcaption>{cap}</figcaption></figure>')
 
 
 def store_buttons():
