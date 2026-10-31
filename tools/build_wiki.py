@@ -600,7 +600,7 @@ def levels_section():
 <h2 id="every-level">Level by level</h2>
 <p>"New here" lists what a level shows you for the first time: board tiles, power-ups and enemies.</p>
 {''.join(cards)}"""
-    return wiki_page("levels", "Worlds and levels", f"{len(LEVELS)} levels: {T('menu.worlds.green_lands')} and Castle Road.",
+    return wiki_page("levels", "Worlds and levels", f"{len(LEVELS)} levels: {T('menu.worlds.green_lands')} and Castle Road. {GOAL}",
                      body, "All 25 Boombaland levels with their star goals, enemies, bosses and what is new on each.", clip="levels")
 
 
@@ -738,7 +738,9 @@ def start_section():
     training = [k for k in S if k.startswith("menu.codex.training_")]
     tour = ["menu.main.tour_levels", "menu.main.tour_stars", "menu.main.tour_tier", "menu.main.tour_energy", "menu.main.tour_shop_back"]
     e = lambda n: field(ECO, n)  # noqa: E731
-    body = f"""<h2 id="controls">Controls</h2>
+    body = f"""<h2 id="goal">The story</h2>
+<p>{esc(S['menu.settings.mail_welcome_body'].split(chr(10))[0])} {esc(GOAL)}</p>
+<h2 id="controls">Controls</h2>
 <ul>
 <li><strong>Touch:</strong> move with the joystick, tap the bomb button to drop a bomb, tap the skill button to use your hero's skill.
 Joystick and button settings are under Settings › Controls.</li>
@@ -794,9 +796,13 @@ def whatsnew_section():
     return wiki_page("whats-new", "What's new", "Patch notes, newest first.", body, "Boombaland patch notes and version history.")
 
 
+GOAL = build.GOAL
+
+
 def index_section(pages):
     cards = "".join(f'<li><a href="/wiki/{s}/">{esc(t)}</a></li>' for s, t, *_ in pages)
-    body = f"""<ul class="wiki-index">{cards}</ul>"""
+    body = f"""<p>{esc(GOAL)}</p>
+<ul class="wiki-index">{cards}</ul>"""
     return wiki_page("", "Boombaland Wiki", "Everything about Boombaland, straight from the game's own data.", body,
                      "The Boombaland wiki: heroes, enemies, bosses, power-ups, gear, levels, chests, achievements and tips.")
 

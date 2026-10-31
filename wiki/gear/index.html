@@ -14,6 +14,7 @@
 <link rel="preload" href="/assets/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="/assets/fonts/Fredoka-SemiBold.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Boombaland">
 <meta property="og:title" content="Gear · Boombaland Wiki">
@@ -33,7 +34,8 @@
 <header class="topbar">
 <div class="wrap">
 <a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-192.png 4x" width="40" height="40" alt=""><span>Boombaland</span></a>
-<nav aria-label="Main"><ul class="nav"><li><a href="/">Home</a></li><li><a href="/wiki/" aria-current="page">Wiki</a></li><li><a href="/development/">Development</a></li><li><a href="/press/">Press</a></li><li><a href="/support/">Support</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></nav>
+<button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><img src="/assets/img/menu-96.png" width="48" height="48" alt=""><span class="sr-only">Menu</span></button>
+<nav class="site-nav" id="site-nav" aria-label="Main"><ul class="nav"><li><a href="/">Home</a></li><li><a href="/wiki/" aria-current="page">Wiki</a></li><li><a href="/development/">Development</a></li><li><a href="/press/">Press</a></li><li><a href="/support/">Support</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></nav>
 </div>
 </header>
 <main id="main" class="page wiki">
@@ -80,6 +82,7 @@ is the top rarity and does not merge.</p>
 KvK 93353413. Contact: <a href="mailto:support@boombaland.com">support@boombaland.com</a></p>
 </div>
 </footer>
+<script src="/assets/nav.js" defer></script>
 <script src="/assets/site.js" defer></script>
 <script src="/assets/wiki.js" defer></script>
 </body>

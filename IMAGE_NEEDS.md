@@ -34,4 +34,5 @@ When an image is delivered and picked, drop it into `assets/` and re-run `tools/
 - **Open Graph stand-in**: C7 R8 (`endcard_redo_2026-10-29/C7_R8.png`), cropped.
 - **Screenshots**: `store_listing/play/shots_1026/` shot1, shot2 (Rage Towers), shot3 (enraged banner), shot5 (Frosta skill chain) and shot6 (intro card); `store_listing/play/phone_2.jpg`, `phone_5.jpg` and `phone_7.jpg`.
 - **UI frames**: the game's leafless R3 kit (panel, header, card) and the soft-gloss green button, from `Assets/_Project/Art/UI/Menu/` on the game's integration branch. They were downscaled by 50% and are used as CSS 9-slices.
+- **Phone menu button**: the game's own home-screen menu icon, `ui_home_icon_menu_normal.png` and `_pressed.png` (`Assets/_Project/Art/UI/Menu/`, PO-picked home art, D-33.50), scaled to 96 px (`assets/img/menu-96.png`, `menu-pressed-96.png`).
 - **Fonts**: Lilita One, and Fredoka SemiBold and Bold, copied unmodified from `Assets/_Project/Art/Fonts/` (SIL OFL 1.1, as listed in `legal/CREDITS.md`). Their OFL texts are in `assets/fonts/`.

@@ -53,6 +53,7 @@ def head(title, description, path, og_image="/assets/img/og-image-1200x630.jpg",
 <link rel="preload" href="/assets/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="/assets/fonts/Fredoka-SemiBold.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Boombaland">
 <meta property="og:title" content="{t}">
@@ -76,7 +77,8 @@ def topbar(current):
 <header class="topbar">
 <div class="wrap">
 <a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-192.png 4x" width="40" height="40" alt=""><span>Boombaland</span></a>
-<nav aria-label="Main">{nav(current)}</nav>
+<button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><img src="/assets/img/menu-96.png" width="48" height="48" alt=""><span class="sr-only">Menu</span></button>
+<nav class="site-nav" id="site-nav" aria-label="Main">{nav(current)}</nav>
 </div>
 </header>
 """
@@ -94,7 +96,8 @@ KvK 93353413. Contact: <a href="mailto:{MAIL}">{MAIL}</a></p>
 
 
 def page(path, body, title, description, current=None, script=False, noindex=False, extra_script=None):
-    s = '<script src="/assets/site.js" defer></script>\n' if script else ""
+    s = '<script src="/assets/nav.js" defer></script>\n'
+    s += '<script src="/assets/site.js" defer></script>\n' if script else ""
     if extra_script:
         s += f'<script src="{extra_script}" defer></script>\n'
     out = head(title, description, path, noindex=noindex) + topbar(current) + body + FOOTER + s + "</body>\n</html>\n"
@@ -127,6 +130,9 @@ CLIP_CAPTIONS = {
     "basics": "Drop a bomb, run, BOOM",
 }
 
+
+# The story goal, in the PO's words (round 3). Spoiler-free: no throne hall, no epilogue. Used on home, development, wiki.
+GOAL = "Your goal: defeat Thorn Guard and free Boombaland from his thorns."
 
 # The home page's clips, in order (FOOTAGE_NEEDS.md shots 1-4). Missing ones are skipped.
 HOME_CLIPS = ["basics", "heroes", "castle", "bosses"]
@@ -223,7 +229,7 @@ def home():
 <li>The Thorn Guard hides behind a thorn shield, rains bomb barrages and gets faster when he is enraged</li>
 <li>The Rage Tower wakes up and fires arrow-bombs across the board</li>
 <li>An enemy airship drops in with its crew and cannons</li>
-<li>The final battle in the castle throne hall puts it all together</li>
+<li>{GOAL[:-1]}</li>
 </ul>
 </article>
 
@@ -349,7 +355,7 @@ loop: one bomb, one opponent, one small arena. Then power-ups, score and menus. 
 bridges, belts and gates, bosses, six heroes, gear and chests.</p>
 <p>Version 1.0 has 25 levels in two parts of the same world: <strong>Green Lands</strong>, a floating forest of
 bridges, belts and towers, and <strong>Castle Road</strong>, where push-block puzzles lead to Thorn Guard's castle. A
-nine-chapter comic tells the story between the levels.</p>
+nine-chapter comic tells the story between the levels. {GOAL}</p>
 
 <h2 id="next">What's next</h2>
 <p>Launch is on 19 November 2026. After that, Boombaland keeps growing: more to discover, and your ideas can shape what

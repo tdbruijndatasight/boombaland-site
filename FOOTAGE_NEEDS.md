@@ -15,7 +15,7 @@ No clip was recorded from Unity. The brief forbids it.
 
 ## Shots needed
 
-Record them on a phone, in **landscape**, with the **final TestFlight build** and a **store-ready profile** (no player
+Record them on the iPhone (screen recording), in **landscape**, with the **final TestFlight build** and a **store-ready profile** (no player
 name "Tom", no "Unlimited" energy badge, Do Not Disturb on). The full-screen original is fine; the site drops the
 audio. These follow `store_production_2026-10-29/RECORDING_SHOTLIST.csv` and `CAPTURE_CHECKLIST.md`, so **one recording
 session serves both the store preview and the website**.
@@ -38,8 +38,13 @@ keeps those out on purpose.
 
 ## How a clip goes on the site
 
+**Drop location:** put the iPhone screen recordings in `footage/` in this repo (gitignored, so the originals never
+enter git; only the cut clips in `assets/clips/` are committed). The iPhone's `RPReplay_*.MOV` files (HEVC, variable
+frame rate, about 2556 × 1179) work as they are. The script centre-crops them to 16:9, which takes about 9% off each side.
+If that cuts a HUD button, run it with `FIT=pad` (letterbox) or `CROP_X=0.3` (slide the crop left).
+
 ```
-tools/make_clips.sh ~/path/to/recording.mov 00:00:12.5 6 basics
+tools/make_clips.sh footage/RPReplay_Final1234.MOV 00:00:12.5 6 basics
 LEGAL_SRC=... python3 tools/build.py        # home page
 python3 -I tools/build_wiki.py               # wiki pages
 ```

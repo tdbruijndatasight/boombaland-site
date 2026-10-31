@@ -2,3 +2,4 @@ local/
 .DS_Store
 *.src.png
 __pycache__/
+footage/
