@@ -134,7 +134,7 @@ SHOTS = [
 def home():
     gallery = "\n".join(
         f'<li><figure><a href="/assets/img/{n}-1280.jpg" data-lightbox data-caption="{html.escape(c)}">'
-        + pic(n, [640, 1280], "(min-width: 1000px) 33vw, (min-width: 600px) 50vw, 100vw", alt, 640, 640, 360)
+        + pic(n, [640, 1280], "(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw", alt, 640, 640, 360)
         + f"</a><figcaption>{html.escape(c)}</figcaption></figure></li>"
         for n, c, alt in SHOTS)
     body = f"""<main id="main">
@@ -234,7 +234,7 @@ PRESS_FILES = [
     ("boombaland-app-icon-1024.png", "App icon", "1024 × 1024 PNG", "/assets/img/icon-192.png"),
     ("boombaland-logo-1371x391.png", "Logo", "1371 × 391 PNG, transparent", "/assets/img/logo-480.png"),
     ("boombaland-key-art-2048x1000.jpg", "Key art", "2048 × 1000 JPEG", "/assets/img/key-art-1024.jpg"),
-    ("boombaland-castle-logo-1920x1080.jpg", "Castle island with logo", "1920 × 1080 JPEG", "/assets/img/hero-castle-800.jpg"),
+    ("boombaland-castle-logo-1920x1080.jpg", "Castle island with logo", "1920 × 1080 JPEG", "/assets/img/og-image-1200x630.jpg"),
     ("boombaland-blom-1024x1536.png", "Blom, the first hero", "1024 × 1536 PNG, transparent", "/assets/img/blom-360.png"),
 ] + [(f"boombaland-screenshot-{i}.jpg", c, "full-size JPEG", f"/assets/img/{n}-640.jpg") for i, (n, c, _a) in enumerate(SHOTS, 1)]
 
