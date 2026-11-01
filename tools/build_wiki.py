@@ -157,7 +157,10 @@ def an(word):
 
 def table(head, rows, cls=""):
     th = "".join(f"<th scope=\"col\">{h}</th>" for h in head)
-    trs = "".join("<tr>" + "".join(f"<td>{c}</td>" for c in r) + "</tr>" for r in rows)
+    # A "stack" table is too wide for a phone: each cell carries its column name, and site.css lays every row out as a
+    # card below 700px (instead of squeezing eight columns into 358px or hiding them behind a sideways scroll).
+    lab = (lambda i: f' data-label="{head[i]}"' if head[i] else "") if "stack" in cls.split() else (lambda i: "")
+    trs = "".join("<tr>" + "".join(f"<td{lab(i)}>{c}</td>" for i, c in enumerate(r)) + "</tr>" for r in rows)
     return f'<div class="t"><table class="{cls}"><thead><tr>{th}</tr></thead><tbody>{trs}</tbody></table></div>'
 
 
@@ -504,7 +507,7 @@ level, up to the cap of the piece's rarity.</p>
 {table(rar, [caps])}
 <h2 id="specials">Specials</h2>
 <p>Every look has one special. A rarer piece has a stronger special.</p>
-{table(['', 'Piece', 'Special'] + rar, rows, 'icons')}
+{table(['', 'Piece', 'Special'] + rar, rows, 'icons stack')}
 <h2 id="blacksmith">The Blacksmith: merging</h2>
 <p>Merge {field(PROG, '_mergeInputs')} pieces into one piece of the next rarity. {', '.join(T('menu.gear.rarity_' + r) for r in RARITIES[:field(PROG, '_anyLookMergeMaxRarity')])}
 pieces: any {field(PROG, '_mergeInputs')} pieces of the same slot and rarity will do (the first one you pick sets the look). From
@@ -655,7 +658,9 @@ def chests_section():
         if c["_gems"]:
             lines.append(f"<li>{esc(T('menu.shop.chest_odds_gems', c['_gems']))}</li>")
         price = f"or {c['_gemPrice']} gems in the Shop" if c["_gemPrice"] else "keys only"
-        img = icon(f"Assets/_Project/Art/UI/Chests/chest_0{c['_kind']}_{r}_open_01.png", f"chest-{r}", 128, "")
+        # The Shop's whole closed-chest icon (the game's Shop shows these). Not Chests/chest_0N_*_open_01.png: those are
+        # frames of the opening animation, drawn as a narrow front slice, so on a page they read as half a chest.
+        img = icon(f"Assets/_Project/Art/UI/Shop/shop_{c['_kind'] + 9}_chest_{r}_icon_01.png", f"chest-{r}", 128, "")
         cards.append(f"""<section class="wiki-card" id="{r}-chest"><div class="wiki-card-head">{img}<div>
 <h3>{esc(T('menu.shop.chest_name', rname) if 'menu.shop.chest_name' in S else rname + ' Chest')}</h3>
 <p>Opens with {an(rname)} key ({price}). {esc(T('menu.shop.key_info_' + r))}</p></div></div>
