@@ -4,7 +4,7 @@
 set -euo pipefail
 S="$(cd "$(dirname "$0")/.." && pwd)"; I="$S/assets/img"; P="$S/assets/press"; mkdir -p "$I" "$P"
 B=/Users/tomdebruijn/Dev/bombworld-status; RA=$B/review_assets; SH=$B/store_listing/play/shots_1026; PH=$B/store_listing/play
-ICON=$RA/store_completion_2026-10-29/C6_R1.png   # = Assets/_Project/Art/AppIcon/T_AppIcon_C6R1_iOS_1024.png (same LFS oid)
+ICON=$RA/app_icon_2026-11-01/BlomBomb_1024.png   # = Assets/_Project/Art/AppIcon/T_AppIcon_BlomBomb_1024.png (PO 1 Nov: previous icon back)
 # opaque: AVIF + JPEG fallback
 op(){ sips --resampleWidth "$3" -s format avif -s formatOptions 55 "$1" --out "$I/$2-$3.avif" >/dev/null
       sips --resampleWidth "$3" -s format jpeg -s formatOptions 62 "$1" --out "$I/$2-$3.jpg" >/dev/null; }
