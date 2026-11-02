@@ -14,6 +14,28 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def skill_bullets():
+    """The home page's six skill bullets, in the game's own words: each skill's name (menu.heroes.skill_<hero>) and the
+    Heroes screen's description (menu.heroes.skill_<hero>_text), read from MenuStringsEn.cs on the game's branch."""
+    import subprocess
+    bw = os.environ.get("BOMBWORLD", "/Users/tomdebruijn/Dev/BombWorld")
+    ref = os.environ.get("REF", "origin/coordinator/integrate-1028")
+    src = subprocess.run(["git", "-C", bw, "show", f"{ref}:Assets/_Project/Code/Menu/Services/MenuStringsEn.cs"],
+                         capture_output=True, check=True).stdout.decode("utf-8")
+
+    def text(key):
+        m = re.search(r'\["' + re.escape(key) + r'"\]\s*=\s*"((?:[^"\\]|\\.)*)"', src)
+        if not m:
+            raise SystemExit(f"build.py: string {key} not found in MenuStringsEn.cs")
+        return m.group(1).replace('\\"', '"')
+
+    out = []
+    for h in ["blom", "gusto", "frosta", "zappy", "ember", "banshee"]:
+        out.append(f"<li><strong>{html.escape(text('menu.heroes.skill_' + h))}</strong>: "
+                   f"{html.escape(text('menu.heroes.skill_' + h + '_text'))}</li>")
+    return "\n".join(out)
 SITE = "https://www.boombaland.com"
 OLD_MAIL = "info.tomdebruijn@gmail.com"
 MAIL = "support@boombaland.com"
@@ -212,12 +234,7 @@ def home():
 <h3 class="panel-header" id="f-heroes">Unlock epic heroes</h3>
 {pic("heroes", [480, 800, 1440], "(min-width: 720px) 36rem, 92vw", "The six heroes side by side: Blom, Gusto, Frosta, Zappy, Ember and Banshee", 480, 800, 367, ext="png", cls="art")}
 <ul>
-<li>Blom dashes through danger with Bomb Dash</li>
-<li>Gusto blows enemies and their bombs away with Gust</li>
-<li>Frosta freezes everyone nearby with Frost Ring</li>
-<li>Zappy calls lightning down with Storm Call</li>
-<li>Ember sets the ground on fire with Ember Trail</li>
-<li>Banshee floats over the map with Phantom Form</li>
+{skill_bullets()}
 </ul>
 <p>Star up every hero and make each skill stronger.</p>
 </article>

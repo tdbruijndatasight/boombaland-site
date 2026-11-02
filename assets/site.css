@@ -255,6 +255,15 @@ dialog.lightbox button { position: absolute; top: 8px; right: 8px; width: 44px; 
 .prose table.icons td:first-child { width: 48px; }
 .prose table.icons img { width: 40px; height: auto; display: block; }
 .prose table.kv th { width: 40%; text-align: left; }
+.level-maps { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); margin-top: .6rem; }
+.level-map { margin: 0; min-width: 0; }
+.level-map figcaption { font: 600 1rem var(--ui); margin-bottom: .3rem; }
+.level-map img { display: block; width: 100%; max-width: 30rem; height: auto; border-radius: 6px; border: 2px solid var(--wood-dark); background: #bfe3f7; }
+.level-map-key { list-style: none; padding: 0; margin: .5rem 0 0; display: flex; flex-wrap: wrap; gap: .3rem .9rem; font-size: .85rem; }
+.level-map-key li { display: flex; align-items: center; gap: .35rem; margin: 0; }
+.level-map-key svg { width: 20px; height: 20px; flex: none; border-radius: 3px; }
+.level-map-note { font-size: .85rem; color: var(--ink-muted); margin: .4rem 0 0; }
+.from-game { font: 600 .75rem var(--ui); text-transform: uppercase; letter-spacing: .04em; color: var(--leaf-pressed); margin: .6rem 0 .1rem; }
 .skills { list-style: none; padding: 0; display: flex; gap: 1rem; flex-wrap: wrap; }
 .muted { color: var(--ink-muted); }
 .wiki-index { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: .8rem; list-style: none; padding: 0; }

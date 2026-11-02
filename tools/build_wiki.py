@@ -27,6 +27,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build  # noqa: E402  (the site's shared head / top bar / footer)
+import level_maps  # noqa: E402  (the level grids, drawn from the level assets)
 
 ROOT = build.ROOT
 BW = os.environ.get("BOMBWORLD", "/Users/tomdebruijn/Dev/BombWorld")
@@ -296,6 +297,97 @@ def render_all(pages):
                    current="/wiki/", script=True, extra_script="/assets/wiki.js")
 
 
+# ---------------------------------------------------------------- the Heroes screen's skill lines, as the game words them
+# Ported from Data/HeroSkills.cs (HeroSkillResolver.Resolve, .Cooldown), Menu/Screens/HeroSkillLevelText.cs (Parts, Line,
+# SecondsOf) and Menu/Screens/HeroesStarRules.cs (NowLine, NextLine); the words are MenuStringsEn's menu.heroes.stat_* keys.
+def skill_row(hero, level):
+    b = lambda n: field(BAL, n)  # noqa: E731
+    top = b("skillTopLevel")
+    lv = max(1, min(level, top))
+
+    def lerp(one, last):  # HeroSkillResolver.Cooldown (Math.Round, MidpointRounding.AwayFromZero)
+        v = (b(last) - b(one)) * (lv - 1) / (top - 1)
+        r = int(abs(v) + 0.5) * (1 if v >= 0 else -1)
+        return b(one) + r
+
+    if hero == "blom":
+        return {"cooldown": lerp("dashCooldownTicksAtLevelOne", "dashCooldownTicksAtTopLevel"),
+                "dash": b("dashTilesAtLevelOne") + (1 if lv >= b("dashPlusOneFromLevel") else 0)}
+    if hero == "gusto":
+        return {"cooldown": lerp("gustCooldownTicksAtLevelOne", "gustCooldownTicksAtTopLevel"),
+                "push": b("gustPushTilesAtLevelOne") + (lv >= b("gustPushPlusOneFromLevel")) + (lv >= b("gustPushPlusTwoFromLevel")),
+                "width": b("gustConeWidthTiles") if lv >= b("gustConeFromLevel") else 1}
+    if hero == "frosta":
+        return {"cooldown": lerp("frostCooldownTicksAtLevelOne", "frostCooldownTicksAtTopLevel"),
+                "radius": b("frostRadiusTilesAtLevelOne") + (1 if lv >= b("frostRadiusPlusOneFromLevel") else 0),
+                "freeze": lerp("frostFreezeTicksAtLevelOne", "frostFreezeTicksAtTopLevel")}
+    if hero == "zappy":
+        return {"cooldown": lerp("stormCooldownTicksAtLevelOne", "stormCooldownTicksAtTopLevel"),
+                "strikes": b("stormStrikesAtLevelOne") + (lv >= b("stormStrikesPlusOneFromLevel")) + (lv >= b("stormStrikesPlusTwoFromLevel")),
+                "stun": lerp("stormStunTicksAtLevelOne", "stormStunTicksAtTopLevel")}
+    if hero == "ember":
+        return {"cooldown": lerp("emberCooldownTicksAtLevelOne", "emberCooldownTicksAtTopLevel"),
+                "trail": lerp("emberTrailTicksAtLevelOne", "emberTrailTicksAtTopLevel"),
+                "burn": lerp("emberBurnTicksAtLevelOne", "emberBurnTicksAtTopLevel")}
+    return {"cooldown": lerp("phantomCooldownTicksAtLevelOne", "phantomCooldownTicksAtTopLevel"),
+            "form": lerp("phantomFormTicksAtLevelOne", "phantomFormTicksAtTopLevel")}
+
+
+def _sec(ticks):  # HeroSkillLevelText.SecondsOf: one decimal, "0.0"
+    return f"{ticks / TPS:.1f}"
+
+
+def skill_parts(hero, now, before, first):
+    """HeroSkillLevelText.Parts: what this row names (all of it on a first row, else only what changed)."""
+    parts = []
+
+    def count(key, k):
+        if first or now[k] != before[k]:
+            parts.append(T(key, now[k]))
+
+    def seconds(key, k):
+        if first or now[k] != before[k]:
+            parts.append(T(key, _sec(now[k])))
+
+    if hero == "blom":
+        count("menu.heroes.stat_dash", "dash")
+    elif hero == "gusto":
+        count("menu.heroes.stat_push", "push")
+        if first or now["width"] != before["width"]:
+            parts.append(T("menu.heroes.stat_cone" if now["width"] > 1 else "menu.heroes.stat_line"))
+    elif hero == "frosta":
+        count("menu.heroes.stat_radius", "radius")
+        seconds("menu.heroes.stat_freeze", "freeze")
+    elif hero == "zappy":
+        count("menu.heroes.stat_strikes", "strikes")
+        seconds("menu.heroes.stat_stun", "stun")
+    elif hero == "ember":
+        seconds("menu.heroes.stat_trail", "trail")
+        seconds("menu.heroes.stat_burn", "burn")
+    else:
+        seconds("menu.heroes.stat_form", "form")
+    seconds("menu.heroes.stat_cooldown", "cooldown")
+    line = ""
+    for i, w in enumerate(parts):
+        line = w if i == 0 else T("menu.heroes.stat_join", line, w)
+    return line
+
+
+def star_lines(hero):
+    """[(star, "Now: ...", "Next star: ...")] for every star, as the Heroes screen shows them."""
+    top = field(BAL, "skillTopLevel")
+    maxlvl = field(PROG, "_maxHeroLevel")
+    out = []
+    for star in range(1, top + 1):
+        now = T("menu.heroes.skill_now", skill_parts(hero, skill_row(hero, star), None, True))
+        if star + 1 <= top:
+            nxt = T("menu.heroes.skill_next", skill_parts(hero, skill_row(hero, star + 1), skill_row(hero, star), False))
+        else:
+            nxt = T("menu.heroes.skill_next_top") if star >= maxlvl else ""
+        out.append((star, now, nxt))
+    return out
+
+
 def hero_section():
     star_shards = packed(raw(PROG, "_heroLevelShards"))
     bosses = blocks(PROG, "_bosses", "_hero")
@@ -345,14 +437,20 @@ def hero_section():
         out.append(f"""<section class="wiki-card" id="{h}">
 <div class="wiki-card-head">{icon(f'Assets/_Project/Art/UI/Portraits/ui_icon_portrait_{h}.png', f'portrait-{h}', 160, name)}
 <div><h2>{esc(name)}</h2>
+<p class="from-game">In the game</p>
 <p class="skill">{icon(f'Assets/_Project/Art/UI/Hud/Skills/skill_{skill_icon[h]}_ready.png', f'skill-{h}', 64, '', 'wiki-icon wiki-icon--sm')}
 <strong>{esc(T(f'menu.heroes.skill_{h}'))}</strong>: {esc(T(f'menu.heroes.skill_{h}_text'))}</p></div></div>
+<p class="from-game">In the game: the Heroes screen at each star</p>
+{table(["Star", "Skill now", "What the next star adds"], [[f"★{st}", esc(nw), esc(nx)] for st, nw, nx in star_lines(h)], "stack")}
 <p><strong>How to get {esc(name)}:</strong> {esc(how)}</p>
+<p class="from-game">More detail (from the game's balance data)</p>
 <div class="t"><table class="kv"><tbody>{rows}</tbody></table></div>
 </section>""")
     stars = table(["Star", "Portraits needed"], [[f"★{i + 2}", n] for i, n in enumerate(star_shards)])
     body = "\n".join(out) + f"""
 <h2 id="stars">Stars: making a hero stronger</h2>
+<p>Text marked "In the game" is the game's own wording, word for word: the skill's description from the Heroes screen's (i)
+and the "Now" and "Next star" lines under the skill. The numbers are worked out the way the game works them out.</p>
 <p>Every hero goes from ★1 to ★{maxlvl}. A star costs portraits of that hero plus coins. Universal portraits stand in for
 any hero's portraits. Each new star makes the skill stronger (the numbers above show ★1 and ★{maxlvl}).</p>
 {stars}
@@ -540,6 +638,30 @@ def level_facts(n, a):
     return facts
 
 
+LEVEL_MAP_DIR = os.path.join(ROOT, "assets", "wiki", "levels")
+
+
+def level_map_html(n, name, asset_text):
+    """Level n's map(s) as SVG files in assets/wiki/levels/, with a legend of the keys each one uses."""
+    os.makedirs(LEVEL_MAP_DIR, exist_ok=True)
+    figs = []
+    for caption, board, notes in level_maps.maps_for(asset_text):
+        slug = f"level-{n}" + (f"-{caption.lower().replace(' ', '-')}" if caption else "")
+        title = f"Level {n}: {name}" + (f", {caption.lower()}" if caption else "") + ", map"
+        doc, used = level_maps.svg(board, title)
+        with open(os.path.join(LEVEL_MAP_DIR, slug + ".svg"), "w", encoding="utf-8") as f:
+            f.write(doc)
+        w, h = re.search(r'width="([\d.]+)" height="([\d.]+)"', doc).groups()
+        keys = "".join(f"<li>{level_maps.legend_swatch(k)}<span>{esc(label)}</span></li>"
+                       for k, label in level_maps.legend_items(used, board["density"]))
+        note = (f'<p class="level-map-note">Not on the map: {esc("; ".join(dict.fromkeys(notes)))}.</p>' if notes else "")
+        alt = f"Map of level {n}" + (f", {caption.lower()}" if caption else "") + f": {board['W']} by {board['H']} tiles"
+        figs.append(f"""<figure class="level-map">
+{f'<figcaption>{esc(caption)}</figcaption>' if caption else ''}<img src="/assets/wiki/levels/{slug}.svg" width="{w}" height="{h}" alt="{esc(alt)}" loading="lazy" decoding="async">
+<ul class="level-map-key">{keys}</ul>{note}</figure>""")
+    return f'<div class="level-maps">{"".join(figs)}</div>'
+
+
 def levels_section():
     inv = {v: k for k, v in POWER.items()}
     seen_tiles, seen_pu, seen_tier = set(), set(), set()
@@ -586,6 +708,7 @@ def levels_section():
             key = f"menu.common.castle_l{n}_s{k}_goal"
             if key in S:
                 goals.append(f"Stage {k}: {esc(S[key])}")
+        maps_html = level_map_html(n, name, a)
         rows.append([str(n), f"<a href=\"#level-{n}\">{esc(name)}</a>", esc(world), esc(star3),
                      ", ".join(esc(s) for s in special) or "–"])
         cards.append(f"""<section class="wiki-level" id="level-{n}"><h3>Level {n}: {esc(name)}</h3>
@@ -595,13 +718,18 @@ def levels_section():
 {f'<li><strong>Also here:</strong> {esc(", ".join(special))}</li>' if special else ''}
 {f'<li><strong>New here:</strong> {", ".join(new)}</li>' if new else ''}
 {f'<li><strong>Castle puzzle:</strong> {stages} stages. ' + ' · '.join(goals) + '</li>' if castle else ''}
-</ul></section>""")
+</ul>
+{maps_html}</section>""")
     tiers = f"""<p>Every level has four difficulties: Easy, Normal, Hard and Impossible. {esc(T('menu.main.tour_tier'))}
 {esc(T('menu.main.tour_stars'))}</p>"""
     body = f"""{tiers}
 {table(['#', 'Level', 'Where', 'Third star', 'Boss and specials'], rows)}
 <h2 id="every-level">Level by level</h2>
 <p>"New here" lists what a level shows you for the first time: board tiles, power-ups and enemies.</p>
+<p>Each level has its map, seen from above with north at the top, drawn straight from the game's level data. Walls, gaps,
+start points, switches and other special tiles are where the game puts them. On levels 1 to 20 the crates are different
+every round: the game scatters them at random, so the map shows the spots where a crate can appear. Castle Road levels
+(21 to 25) are built by hand, crates included, so their maps show every stage exactly.</p>
 {''.join(cards)}"""
     return wiki_page("levels", "Worlds and levels", f"{len(LEVELS)} levels: {T('menu.worlds.green_lands')} and Castle Road. {GOAL}",
                      body, "All 25 Boombaland levels with their star goals, enemies, bosses and what is new on each.", clip="levels")
