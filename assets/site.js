@@ -3,7 +3,7 @@
   "use strict";
 
   // ---- CONFIG: fill these in once the store pages are live (see GO_LIVE.md, step 4). ----------------------------------
-  // While a URL is empty, its button stays a "Coming 19 November" label that links to nothing.
+  // While a URL is empty, its button stays a "Coming end of November" label that links to nothing.
   var STORE_LINKS = {
     ios: "",      // TODO: https://apps.apple.com/app/id<APPLE_ID> (the numeric Apple ID from App Store Connect, App Information)
     android: ""   // TODO: https://play.google.com/store/apps/details?id=com.datasight.boomworld (fill in on launch day)

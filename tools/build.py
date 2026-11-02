@@ -152,8 +152,8 @@ def clip_html(name, caption=None):
 
 def store_buttons():
     return """<div class="stores">
-<a class="btn" data-store="ios" href="#" aria-disabled="true"><span class="stack"><span>App Store</span><small data-store-note>Coming 19 November</small></span></a>
-<a class="btn" data-store="android" href="#" aria-disabled="true"><span class="stack"><span>Google Play</span><small data-store-note>Coming 19 November</small></span></a>
+<a class="btn" data-store="ios" href="#" aria-disabled="true"><span class="stack"><span>App Store</span><small data-store-note>Coming end of November</small></span></a>
+<a class="btn" data-store="android" href="#" aria-disabled="true"><span class="stack"><span>Google Play</span><small data-store-note>Coming end of November</small></span></a>
 </div>"""
 
 
@@ -194,7 +194,7 @@ def home():
 <p class="hero-tag">Ready, Set, BOOM!</p>
 <p class="hero-pitch">Drop a bomb, run, and watch the board explode. Battle brutal bosses and unlock epic heroes in bright 3D adventures.</p>
 <p class="hero-classic">Classic bomb battles with a fresh new twist.</p>
-<p class="date-plank">Coming 19 November</p>
+<p class="date-plank">Coming end of November</p>
 {store_buttons()}
 <p class="hero-note">For iPhone, iPad and Android. Free to play.</p>
 </div>
@@ -261,7 +261,7 @@ def home():
 
 <section class="section cta" aria-labelledby="cta-title">
 <div class="wrap">
-<h2 class="section-title" id="cta-title">Coming 19 November</h2>
+<h2 class="section-title" id="cta-title">Coming end of November</h2>
 {pic("key-art", [1024, 2048], "(min-width: 700px) 640px, 92vw", "Blom and the Thorn Guard face off over a burning board, with the Boombaland logo between them", 1024, 1024, 500, cls="art")}
 {store_buttons()}
 </div>
@@ -275,7 +275,7 @@ def home():
 </dialog>
 """
     page("/", body, "Boombaland: drop a bomb, run, BOOM!",
-         "Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android. Battle brutal bosses, unlock six heroes and solve castle puzzles. Coming 19 November.",
+         "Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android. Battle brutal bosses, unlock six heroes and solve castle puzzles. Coming end of November.",
          current="/", script=True)
 
 
@@ -302,7 +302,7 @@ def press():
 <dl class="facts">
 <dt>Game</dt><dd>Boombaland</dd>
 <dt>Developer</dt><dd>DataSight (Tom de Bruijn), the Netherlands</dd>
-<dt>Release date</dt><dd>19 November 2026</dd>
+<dt>Release date</dt><dd>End of November 2026</dd>
 <dt>Platforms</dt><dd>iPhone, iPad and Android</dd>
 <dt>Price</dt><dd>Free to play, with optional in-app purchases and optional rewarded video ads</dd>
 <dt>Genre</dt><dd>Bomb-blasting arcade game with bosses and puzzles</dd>
@@ -395,7 +395,7 @@ bridges, belts and towers, and <strong>Castle Road</strong>, where push-block pu
 nine-chapter comic tells the story between the levels. {GOAL}</p>
 
 <h2 id="next">What's next</h2>
-<p>Launch is on 19 November 2026. After that, Boombaland keeps growing: more to discover, and your ideas can shape what
+<p>Launch is planned for the end of November 2026. After that, Boombaland keeps growing: more to discover, and your ideas can shape what
 comes next.</p>
 
 <section class="panel" id="ideas" aria-labelledby="ideas-title">

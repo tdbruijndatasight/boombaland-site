@@ -789,7 +789,7 @@ as No Ads come back. See <a href="/support/#how-do-i-get-my-no-ads-or-unlimited-
 
 
 def whatsnew_section():
-    body = """<h2 id="v1-0">Version 1.0: 19 November 2026</h2>
+    body = """<h2 id="v1-0">Version 1.0: end of November 2026</h2>
 <p>Boombaland launches on the App Store and Google Play.</p>
 <ul>
 <li>25 levels across Green Lands and Castle Road, each in Easy, Normal, Hard and Impossible.</li>
