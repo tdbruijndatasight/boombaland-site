@@ -14,7 +14,7 @@ tr(){ sips --resampleWidth "$3" -s format avif -s formatOptions 60 "$1" --out "$
       if [ "$3" -le 480 ]; then sips --resampleWidth "$3" -s format png "$1" --out "$I/$2-$3.png" >/dev/null; fi; }
 for x in 800 1280 1920; do op $RA/endcard_redo_2026-10-29/C7_R8_background_1920x1080.png hero-castle $x; done
 # The wordmark's master lives IN this repo, so a redrawn wordmark drops in by replacing this one file (IMAGE_NEEDS.md #7b).
-WORDMARK="$S/assets/src/boombaland_wordmark.png"   # v3 (PO OK 2 Nov): review_assets/logo_fix_2026-11-01/boombaland_wordmark_v3.png
+WORDMARK="$S/assets/src/boombaland_wordmark.png"   # g164 boombaland_bomb_inside_o_v2.png (PO approved 2 Nov, "this is perfect"), review_assets/logo_fix_2026-11-02/
 for x in 480 960; do tr "$WORDMARK" logo $x; done
 for x in 360 720; do tr $B/store_kit/masters/blom_standing_2048x3072_C2_R3.png blom $x; done
 for x in 360 720; do tr $B/store_kit/shared/thorn_guard_fullbody_1200x1600_C4_R3.png thorn-guard $x; done
