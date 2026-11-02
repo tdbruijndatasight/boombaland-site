@@ -218,7 +218,7 @@ def home():
 <p class="hero-classic">Classic bomb battles with a fresh new twist.</p>
 <p class="date-plank">Coming end of November</p>
 {store_buttons()}
-<p class="hero-note">For iPhone, iPad and Android. Free to play.</p>
+<p class="hero-note">For iPhone, iPad and Android phones and tablets. Free to play.</p>
 </div>
 {pic("blom", [360, 720], "360px", "Blom, a cheerful sprout hero, holds up a lit bomb", 360, 360, 540, ext="png", cls="hero-blom", lazy=False)}
 </div>
@@ -292,7 +292,7 @@ def home():
 </dialog>
 """
     page("/", body, "Boombaland: drop a bomb, run, BOOM!",
-         "Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android. Battle brutal bosses, unlock six heroes and solve castle puzzles. Coming end of November.",
+         "Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets. Battle brutal bosses, unlock six heroes and solve castle puzzles. Coming end of November.",
          current="/", script=True)
 
 
@@ -313,14 +313,14 @@ def press():
     body = f"""<main id="main" class="page">
 <div class="wrap prose">
 <h1>Press kit</h1>
-<p>Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android. Drop a bomb, run, and watch the board explode: battle brutal bosses, unlock six heroes with their own superpowers, and solve castle puzzles across 25 levels.</p>
+<p>Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets. Drop a bomb, run, and watch the board explode: battle brutal bosses, unlock six heroes with their own superpowers, and solve castle puzzles across 25 levels.</p>
 <section class="panel" aria-labelledby="facts-title">
 <h2 class="panel-header" id="facts-title">Fact sheet</h2>
 <dl class="facts">
 <dt>Game</dt><dd>Boombaland</dd>
 <dt>Developer</dt><dd>DataSight (Tom de Bruijn), the Netherlands</dd>
 <dt>Release date</dt><dd>End of November 2026</dd>
-<dt>Platforms</dt><dd>iPhone, iPad and Android</dd>
+<dt>Platforms</dt><dd>iPhone, iPad and Android phones and tablets</dd>
 <dt>Price</dt><dd>Free to play, with optional in-app purchases and optional rewarded video ads</dd>
 <dt>Genre</dt><dd>Bomb-blasting arcade game with bosses and puzzles</dd>
 <dt>Content</dt><dd>25 levels across the floating forest and Castle Road, 6 heroes, bosses including the Thorn Guard, the Rage Tower and an enemy airship, story comics between chapters, 4 difficulties</dd>
@@ -338,7 +338,7 @@ def press():
 </main>
 """
     page("/press/", body, "Boombaland press kit",
-         "Fact sheet, app icon, logo, key art and screenshots of Boombaland, a bomb-blasting arcade game for iPhone, iPad and Android.",
+         "Fact sheet, app icon, logo, key art and screenshots of Boombaland, a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets.",
          current="/press/")
 
 
