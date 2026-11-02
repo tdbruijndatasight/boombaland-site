@@ -18,7 +18,7 @@ WORDMARK="$S/assets/src/boombaland_wordmark.png"   # g164 boombaland_bomb_inside
 for x in 480 960; do tr "$WORDMARK" logo $x; done
 for x in 360 720; do tr $B/store_kit/masters/blom_standing_2048x3072_C2_R3.png blom $x; done
 for x in 360 720; do tr $B/store_kit/shared/thorn_guard_fullbody_1200x1600_C4_R3.png thorn-guard $x; done
-for x in 480 800 1600; do tr $B/store_kit/shared/six_hero_lineup_2400x1100_C3_R3.png heroes $x; done
+for x in 480 800 1440; do tr $B/store_kit/shared/six_hero_lineup_2400x1100_C3_R3.png heroes $x; done  # 1600 with alpha decodes blank in Chrome (sips AVIF)
 tr $RA/approved_2026-10-30/C8_R1_green.png chest-badge 256
 for x in 1024 2048; do op $B/store_kit/masters/feature_graphic_2048x1000_C1_R2.png key-art $x; done
 i=0

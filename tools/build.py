@@ -210,7 +210,7 @@ def home():
 
 <article class="panel feature" aria-labelledby="f-heroes">
 <h3 class="panel-header" id="f-heroes">Unlock epic heroes</h3>
-{pic("heroes", [480, 800, 1600], "(min-width: 720px) 36rem, 92vw", "The six heroes side by side: Blom, Gusto, Frosta, Zappy, Ember and Banshee", 480, 800, 367, ext="png", cls="art")}
+{pic("heroes", [480, 800, 1440], "(min-width: 720px) 36rem, 92vw", "The six heroes side by side: Blom, Gusto, Frosta, Zappy, Ember and Banshee", 480, 800, 367, ext="png", cls="art")}
 <ul>
 <li>Blom dashes through danger with Bomb Dash</li>
 <li>Gusto blows enemies and their bombs away with Gust</li>
