@@ -190,7 +190,7 @@ def home():
 {pic("hero-castle", [800, 1280, 1920], "100vw", "", 1280, 1280, 720, cls="", lazy=False).replace('<picture>', '<picture class="bg">')}
 <div class="wrap">
 <div class="hero-copy">
-<h1 id="hero-title" class="hero-h1">{pic("logo", [480, 960], "(min-width: 600px) 520px, 90vw", "Boombaland", 480, 480, 160, ext="png", cls="hero-logo", lazy=False)}</h1>
+<h1 id="hero-title" class="hero-h1">{pic("logo", [480, 960], "(min-width: 600px) 520px, 90vw", "Boombaland", 480, 480, 110, ext="png", cls="hero-logo", lazy=False)}</h1>
 <p class="hero-tag">Ready, Set, BOOM!</p>
 <p class="hero-pitch">Drop a bomb, run, and watch the board explode. Battle brutal bosses and unlock epic heroes in bright 3D adventures.</p>
 <p class="hero-classic">Classic bomb battles with a fresh new twist.</p>
