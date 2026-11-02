@@ -374,35 +374,19 @@ the details.</p>
 """
     page("/development/", body, "How Boombaland is made",
          "How Boombaland is made by one developer with AI tools, what comes next, and how to send us your idea for the game.",
-         current="/development/", script=True, extra_script="/assets/ideas.js")
+         current="/development/", script=True)
 
 
 def idea_form():
-    return """<form id="idea-form" class="idea-form" novalidate>
-<p class="form-note">Fields marked * are needed. Only add your name and email if you'd like a reply.</p>
-<label for="idea-title">Title of your idea *</label>
-<input id="idea-title" name="title" type="text" maxlength="120" required autocomplete="off">
-<label for="idea-text">Your idea *</label>
-<textarea id="idea-text" name="idea" rows="8" maxlength="5000" required></textarea>
-<fieldset>
-<legend>Want a reply? (optional)</legend>
-<label for="idea-name">Your name</label>
-<input id="idea-name" name="name" type="text" maxlength="80" autocomplete="name">
-<label for="idea-email">Your email</label>
-<input id="idea-email" name="email" type="email" maxlength="200" autocomplete="email">
-<label class="check"><input id="idea-age" name="age16" type="checkbox" value="yes"> I am 16 or older</label>
-<p class="form-note">We can only keep a name or email from players aged 16 or older. Younger? Send your idea without
-them, or ask a parent to send it for you.</p>
-</fieldset>
-<label class="check"><input id="idea-consent" name="consent" type="checkbox" value="yes" required> I agree that Boombaland
-uses what I send to look at my idea and, if I gave my email, to reply. See the <a href="/privacy/">Privacy Policy</a>. *</label>
-<div class="hp" aria-hidden="true"><label for="idea-hp">Leave this empty</label><input id="idea-hp" name="botcheck" type="text" tabindex="-1" autocomplete="off"></div>
-<p id="idea-error" class="form-error" role="alert" hidden></p>
-<button type="submit" class="btn">Send my idea</button>
-<p id="idea-done" class="form-done" role="status" hidden>Thank you! Your idea is on its way. If you left your email and we
-like the idea, we'll get in touch.</p>
-<noscript><p class="form-error">This form needs JavaScript. You can also mail your idea to support@boombaland.com.</p></noscript>
-</form>"""
+    # Ideas arrive by email (PO, 2 Nov): no form service, so nothing passes through a third party.
+    subject = "Idea%20for%20Boombaland"
+    body = ("Title%20of%20my%20idea%3A%20%0A%0AMy%20idea%3A%20%0A%0A"
+            "(Optional)%20My%20name%2C%20if%20I%20am%2016%20or%20older%3A%20%0A")
+    return f"""<p><a class="btn" href="mailto:{MAIL}?subject={subject}&amp;body={body}">Email us your idea</a></p>
+<p>This opens your mail app with a message to <strong>{MAIL}</strong>. No mail app? Copy the address
+and send your idea from any email. Tell us the title of your idea and what it does.</p>
+<p>Under 16? Ask a parent to send it for you. We use what you send only to look at your idea and to
+reply. See the <a href="/privacy/">Privacy Policy</a>.</p>"""
 
 
 def not_found():
