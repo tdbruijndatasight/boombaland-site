@@ -325,29 +325,66 @@ def press():
          current="/press/")
 
 
+# How a change reaches players (PO, 2 Nov: "add a flow chart"). Real text in every box; site.css lays it out as a vertical
+# stack on phones and as a two-row loop on wide screens.
+FLOW = [
+    ("An idea", "A player's idea, or feedback from a test build."),
+    ("Design", "The idea is designed and written up as a task card."),
+    ("Build", "AI agents build it, together with automated tests."),
+    ("Review", "The work is reviewed, then merged into the game."),
+    ("Test run", "A full automated run checks thousands of tests."),
+    ("Test build", "A test build goes out on TestFlight and internal testing."),
+    ("Play-test", "Testers play it and send their feedback."),
+]
+
+
+def flow_chart():
+    steps = "\n".join(
+        f'<li class="flow-step"><span class="flow-n" aria-hidden="true">{i}</span><strong class="flow-t">{html.escape(t)}</strong>'
+        f'<span class="flow-d">{html.escape(d)}</span></li>'
+        for i, (t, d) in enumerate(FLOW, 1))
+    loop = ('<li class="flow-step flow-loop"><svg class="flow-icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" '
+            'focusable="false"><path d="M19 12a7 7 0 1 1-2.05-4.95" fill="none" stroke="currentColor" stroke-width="3" '
+            'stroke-linecap="round"/><path d="M20 3v5h-5" fill="none" stroke="currentColor" stroke-width="3" '
+            'stroke-linecap="round" stroke-linejoin="round"/></svg><strong class="flow-t">Back to the start</strong>'
+            '<span class="flow-d">The feedback brings new ideas, and the loop goes round again.</span></li>')
+    return f"""<figure class="flow-fig">
+<ol class="flow" role="list">
+{steps}
+{loop}
+</ol>
+<figcaption>How a change reaches players: an idea, design, build, review, a full test run, a test build and
+play-testing. Then the loop starts again.</figcaption>
+</figure>"""
+
+
 def development():
     body = f"""<main id="main" class="page">
 <div class="wrap prose">
 <h1>How Boombaland is made</h1>
-<p>Boombaland is made by one person, Tom de Bruijn (DataSight), in the Netherlands, with a team of AI tools. Tom designs
-and directs the game, plays every build and decides what goes in. The AI tools do much of the making, and every piece
-of their work is reviewed and approved before it reaches the game.</p>
-<!-- TODO-PO: confirm the wording "made by one person" (the repo says Tom is the designer, director and Product Owner; it
-     never says "solo developer" in those words). -->
+<p>Boombaland is made in the Netherlands by DataSight, the one-person studio of Tom de Bruijn, working with a team of AI
+tools. The studio designs and directs the game, plays every build and decides what goes in. The AI tools do much of the
+making. Every piece of their work is reviewed and approved before it reaches the game.</p>
 
 <h2 id="pipeline">The pipeline</h2>
 <ul>
 <li><strong>Concept art and 2D art.</strong> Heroes, worlds, items and screens start as concepts made with OpenAI's
-ChatGPT image generation and Codex. Tom picks and approves them, often after several rounds.</li>
+ChatGPT image generation and Codex. The best ones are picked and approved, often after several rounds.</li>
 <li><strong>3D models and animation</strong> are built in Blender, by script, from the approved concepts.</li>
-<li><strong>Code, tools and documentation</strong> are written with AI coding assistants (Anthropic's Claude, via
-Claude Code, and OpenAI Codex), working as a crew of specialist agents and reviewed and directed by Tom.</li>
+<li><strong>Code, tools and documentation</strong> are written with AI coding assistants: Anthropic's Claude, via
+Claude Code, and OpenAI Codex. They work as a crew of specialist agents. Their work is directed and reviewed by the
+studio.</li>
 <li><strong>Sound effects</strong> are synthesised by the project's own script from noise and tones.</li>
 <li><strong>Music:</strong> the round, boss, win, lose and finale tracks were generated for Boombaland with
 ACE-Step 1.5. The main menu plays "Retro Game" by The_Mountain (Pixabay).</li>
 </ul>
-<p>The game runs on Unity. The first line of code went in on 30 July 2026; by the end of October the project had passed
+<p>The game runs on Unity. The first line of code went in on 30 July 2026. By the end of October, the project had passed
 13,000 commits.</p>
+
+<h2 id="flow">How a change reaches players</h2>
+<p>Every change, big or small, goes round the same loop. It starts with an idea and ends with feedback, and that feedback
+starts the next round.</p>
+{flow_chart()}
 
 <h2 id="journey">From one bomb to 25 levels</h2>
 <p>Boombaland was built in steps, and every step had to be <em>fun</em> before the next one started. First came the bare
@@ -360,8 +397,6 @@ nine-chapter comic tells the story between the levels. {GOAL}</p>
 <h2 id="next">What's next</h2>
 <p>Launch is on 19 November 2026. After that, Boombaland keeps growing: more to discover, and your ideas can shape what
 comes next.</p>
-<!-- TODO-PO: name the post-launch plans you want to share (new worlds? new heroes? online play, which the design
-     document lists as a later step?), and a rough timing, or keep this paragraph general. Nothing about the epilogue. -->
 
 <section class="panel" id="ideas" aria-labelledby="ideas-title">
 <h2 class="panel-header" id="ideas-title">Help develop Boombaland</h2>
@@ -373,7 +408,7 @@ the details.</p>
 </main>
 """
     page("/development/", body, "How Boombaland is made",
-         "How Boombaland is made by one developer with AI tools, what comes next, and how to send us your idea for the game.",
+         "How Boombaland is made by a one-person studio with AI tools, how a change reaches players, what comes next, and how to send us your idea for the game.",
          current="/development/", script=True)
 
 
