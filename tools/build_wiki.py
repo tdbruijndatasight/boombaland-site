@@ -874,11 +874,8 @@ def start_section():
     body = f"""<h2 id="goal">The story</h2>
 <p>{esc(S['menu.settings.mail_welcome_body'].split(chr(10))[0])} {esc(GOAL)}</p>
 <h2 id="controls">Controls</h2>
-<ul>
-<li><strong>Touch:</strong> move with the joystick, tap the bomb button to drop a bomb, tap the skill button to use your hero's skill.
-Joystick and button settings are under Settings › Controls.</li>
-<li><strong>Keyboard:</strong> arrow keys or WASD to move, Space to drop a bomb, X for the skill, E to turn the camera.</li>
-</ul>
+<p>Move with the joystick, tap the bomb button to drop a bomb, and tap the skill button to use your hero's skill.
+Joystick and button settings are under Settings › Controls.</p>
 <h2 id="first-steps">Your first steps</h2>
 <ul>{''.join(f'<li>{esc(T(k, e("_energyPerGame"), "minute", e("_energyCap")))}</li>' for k in tour)}</ul>
 <h2 id="tips">Tips from the game</h2>
@@ -891,7 +888,7 @@ Joystick and button settings are under Settings › Controls.</li>
 <li>{esc(T('menu.main.hint_tasks'))}</li>
 </ul>"""
     return wiki_page("getting-started", "Getting started", "Controls, your first levels, and tips straight from the game.", body,
-                     "How to play Boombaland: touch and keyboard controls, first steps and beginner tips.", clip="basics")
+                     "How to play Boombaland: touch controls, first steps and beginner tips.", clip="basics")
 
 
 def faq_section():
@@ -917,7 +914,7 @@ as No Ads come back. See <a href="/support/#how-do-i-get-my-no-ads-or-unlimited-
 
 
 def whatsnew_section():
-    body = """<h2 id="v1-0">Version 1.0: end of November 2026</h2>
+    body = """<h2 id="v1-0">Version 1.0: November 2026</h2>
 <p>Boombaland launches on the App Store and Google Play.</p>
 <ul>
 <li>25 levels across Green Lands and Castle Road, each in Easy, Normal, Hard and Impossible.</li>

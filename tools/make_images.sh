@@ -22,12 +22,14 @@ for x in 480 800 1440; do tr $B/store_kit/shared/six_hero_lineup_2400x1100_C3_R3
 tr $RA/approved_2026-10-30/C8_R1_green.png chest-badge 256
 for x in 1024 2048; do op $B/store_kit/masters/feature_graphic_2048x1000_C1_R2.png key-art $x; done
 i=0
-for f in $SH/shot1_l10-thornguard-chain_t02855.png $SH/shot3_l25-thornguard-enraged-banner_t00046.png \
-         $SH/shot5_l19-frosta-skill-chain_t01825.png $SH/shot6_l10-thornguard-intro-card_t01321.png \
-         $SH/shot2_l20-ragetowers-blast_t02378.png $PH/phone_2.jpg $PH/phone_5.jpg $PH/phone_7.jpg; do
+V7=$RA/store_screens_play_v7   # the store images v7 (PO 4 Nov: "update the images used on the website as well")
+for f in $V7/play_en_01.png $V7/play_en_02.png $V7/play_en_03.png $V7/play_en_04.png \
+         $V7/play_en_05.png $V7/play_en_06.png $V7/play_en_07.png $V7/play_en_08.png; do
   i=$((i+1)); for x in 640 1280; do op "$f" shot$i $x; done
   sips -s format jpeg -s formatOptions 85 "$f" --out "$P/boombaland-screenshot-$i.jpg" >/dev/null
 done
+# the trailer's click-to-play poster: the YouTube thumbnail (Blom VS Thorn Guard end card)
+for x in 640 1280; do op $RA/youtube_2026-11-04/youtube_thumbnail_1280x720.jpg trailer $x; done
 # icons and favicons (opaque square icon)
 sips -s format png "$ICON" --out "$P/boombaland-app-icon-1024.png" >/dev/null
 for x in 192 180 48 32 16; do sips -z $x $x -s format png "$ICON" --out "$I/icon-$x.png" >/dev/null; done

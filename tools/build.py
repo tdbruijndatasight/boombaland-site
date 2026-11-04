@@ -110,6 +110,7 @@ FOOTER = f"""<footer class="footer">
 <div class="wrap">
 <nav aria-label="Footer">{nav(None)}</nav>
 <p>Boombaland is free to play. It offers optional in-app purchases and may show ads.</p>
+<p>Watch Boombaland on <a href="https://www.youtube.com/@BoombalandGame" rel="noopener">YouTube</a>.</p>
 <p class="legal-id">Boombaland is made by DataSight (Tom de Bruijn), Tulameenpad 10, 1461 HN Zuidoostbeemster, the Netherlands.
 KvK 93353413. Contact: <a href="mailto:{MAIL}">{MAIL}</a></p>
 </div>
@@ -174,21 +175,39 @@ def clip_html(name, caption=None):
 
 def store_buttons():
     return """<div class="stores">
-<a class="btn" data-store="ios" href="#" aria-disabled="true"><span class="stack"><span>App Store</span><small data-store-note>Coming end of November</small></span></a>
-<a class="btn" data-store="android" href="#" aria-disabled="true"><span class="stack"><span>Google Play</span><small data-store-note>Coming end of November</small></span></a>
+<a class="btn" data-store="ios" href="#" aria-disabled="true"><span class="stack"><span>App Store</span><small data-store-note>Coming soon</small></span></a>
+<a class="btn" data-store="android" href="#" aria-disabled="true"><span class="stack"><span>Google Play</span><small data-store-note>Coming soon</small></span></a>
 </div>"""
 
 
-SHOTS = [
-    ("shot1", "Level 10: a chain of blasts races towards the Thorn Guard", "A bomb chain lights up the board in the Thorn Guard's forest arena"),
-    ("shot2", "Level 25: the Thorn Guard is enraged", "The Thorn Guard stands enraged in a castle courtyard while the floor cracks"),
-    ("shot3", "Frosta's Frost Ring sets off a chain", "Frosta's skill sets off a chain of blasts across a crate-filled board"),
-    ("shot4", "Every boss tells you how to beat it", "The Thorn Guard's intro card: walk over the 3 switch tiles to break its shield"),
-    ("shot5", "Level 20: blast past the Rage Towers", "A blast runs between rows of crates next to the Rage Towers"),
-    ("shot6", "Castle push-block puzzles", "A walled castle puzzle board with locks, guards and push blocks"),
-    ("shot7", "Six heroes, six superpowers", "The heroes screen with Ember, Blom, Gusto, Frosta, Zappy and Banshee"),
-    ("shot8", "Every chest shows what it guarantees", "The shop's chests, each showing its guaranteed item and its odds"),
+SHOTS = [  # the store images v7 (PO 4 Nov 2026)
+    ("shot1", "Six heroes against the Thorn Guard and his airship crew", "Fan art: the six heroes, the Thorn Guard and his airship crew, with the Boombaland logo"),
+    ("shot2", "Drop. Run. BOOM! Outsmart every enemy", "Blom drops a bomb on a crate-filled board as the blasts go off"),
+    ("shot3", "Fight epic bosses: beat the Thorn Guard and his tricks", "The Thorn Guard on his forest arena"),
+    ("shot4", "Unlock unique heroes, each with their own power", "Zappy's storm lightning hits an enemy on a conveyor board"),
+    ("shot5", "Use powerful skills: Frosta's Frost Ring freezes the enemies around her", "Frosta's Frost Ring freezes the enemy beside her in an ice casing"),
+    ("shot6", "Explore evolving levels: conveyor belts carry you, your bombs and crates", "Gusto on a level full of conveyor belts"),
+    ("shot7", "Solve complex puzzles: push the block into the gap to cross", "Banshee pushes a block into the gap in a castle puzzle"),
+    ("shot8", "Claim the throne: fight your way to the Thorn Guard's throne", "Ember fights the castle guards on the way to the throne"),
 ]
+
+TRAILER_ID = "ctIskTtDOoI"
+CHANNEL = "https://www.youtube.com/@BoombalandGame"
+
+
+def trailer():
+    """The trailer, click-to-play: only the poster loads with the page; YouTube (privacy-enhanced mode) loads on the click."""
+    return f"""<section class="section" aria-labelledby="trailer-title">
+<div class="wrap">
+<h2 class="section-title" id="trailer-title">Watch the trailer</h2>
+<div class="trailer" data-trailer="{TRAILER_ID}">
+<a class="trailer-play" href="https://youtu.be/{TRAILER_ID}" aria-label="Play the Boombaland trailer">{pic("trailer", [640, 1280], "(min-width: 900px) 860px, 92vw", "Blom versus the Thorn Guard: the Boombaland trailer", 1280, 1280, 720)}<span class="trailer-btn" aria-hidden="true"></span></a>
+</div>
+<p class="trailer-note">The trailer plays from YouTube, which loads only when you press play.</p>
+<div class="stores"><a class="btn" href="{CHANNEL}" rel="noopener"><span class="stack"><span>YouTube channel</span><small>@BoombalandGame</small></span></a></div>
+</div>
+</section>
+"""
 
 
 def home():
@@ -216,7 +235,7 @@ def home():
 <p class="hero-tag">Ready, Set, BOOM!</p>
 <p class="hero-pitch">Drop a bomb, run, and watch the board explode. Battle brutal bosses and unlock epic heroes in bright 3D adventures.</p>
 <p class="hero-classic">Classic bomb battles with a fresh new twist.</p>
-<p class="date-plank">Coming end of November</p>
+<p class="date-plank">Coming soon</p>
 {store_buttons()}
 <p class="hero-note">For iPhone, iPad and Android phones and tablets. Free to play.</p>
 </div>
@@ -224,6 +243,7 @@ def home():
 </div>
 </section>
 
+{trailer()}
 <section class="section" aria-labelledby="features-title">
 <div class="wrap">
 <h2 class="section-title" id="features-title">Drop. Run. Boom!</h2>
@@ -252,7 +272,7 @@ def home():
 
 <article class="panel feature" aria-labelledby="f-castle">
 <h3 class="panel-header" id="f-castle">Castle puzzles</h3>
-{pic("shot6", [640, 1280], "(min-width: 720px) 34rem, 90vw", "A walled castle puzzle board with locks, guards and push blocks", 640, 640, 360, cls="art art--shot")}
+{pic("shot7", [640, 1280], "(min-width: 720px) 34rem, 90vw", "Banshee pushes a block into the gap in a castle puzzle", 640, 640, 360, cls="art art--shot")}
 <p>25 levels across the floating forest and Castle Road, each with its own twist: bridges, switches, towers, timed gates and push-block puzzles. Story comics between chapters, and 4 difficulties, from Easy to Impossible, each with its own three stars on every level.</p>
 </article>
 
@@ -278,7 +298,7 @@ def home():
 
 <section class="section cta" aria-labelledby="cta-title">
 <div class="wrap">
-<h2 class="section-title" id="cta-title">Coming end of November</h2>
+<h2 class="section-title" id="cta-title">Coming soon</h2>
 {pic("key-art", [1024, 2048], "(min-width: 700px) 640px, 92vw", "Blom and the Thorn Guard face off over a burning board, with the Boombaland logo between them", 1024, 1024, 500, cls="art")}
 {store_buttons()}
 </div>
@@ -292,7 +312,7 @@ def home():
 </dialog>
 """
     page("/", body, "Boombaland: drop a bomb, run, BOOM!",
-         "Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets. Battle brutal bosses, unlock six heroes and solve castle puzzles. Coming end of November.",
+         "Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets. Battle brutal bosses, unlock six heroes and solve castle puzzles. Coming soon.",
          current="/", script=True)
 
 
@@ -412,7 +432,7 @@ bridges, belts and towers, and <strong>Castle Road</strong>, where push-block pu
 nine-chapter comic tells the story between the levels. {GOAL}</p>
 
 <h2 id="next">What's next</h2>
-<p>Launch is planned for the end of November 2026. After that, Boombaland keeps growing: more to discover, and your ideas can shape what
+<p>Boombaland launches in November 2026. After that, Boombaland keeps growing: more to discover, and your ideas can shape what
 comes next.</p>
 
 <section class="panel" id="ideas" aria-labelledby="ideas-title">

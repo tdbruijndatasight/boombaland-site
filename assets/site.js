@@ -3,7 +3,7 @@
   "use strict";
 
   // ---- CONFIG: fill these in once the store pages are live (see GO_LIVE.md, step 4). ----------------------------------
-  // While a URL is empty, its button stays a "Coming end of November" label that links to nothing.
+  // While a URL is empty, its button stays a "Coming soon" label that links to nothing.
   var STORE_LINKS = {
     ios: "",      // TODO: https://apps.apple.com/app/id<APPLE_ID> (the numeric Apple ID from App Store Connect, App Information)
     android: ""   // TODO: https://play.google.com/store/apps/details?id=com.datasight.boomworld (fill in on launch day)
@@ -62,4 +62,21 @@
     });
   }, { rootMargin: "200px 0px" });
   vids.forEach(function (v) { v.muted = true; io.observe(v); });
+})();
+
+/* The trailer: a poster link until pressed, then YouTube's privacy-enhanced player (no YouTube request before the click). */
+(function () {
+  "use strict";
+  document.querySelectorAll("[data-trailer]").forEach(function (box) {
+    var a = box.querySelector("a");
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var f = document.createElement("iframe");
+      f.src = "https://www.youtube-nocookie.com/embed/" + box.getAttribute("data-trailer") + "?autoplay=1&rel=0&playsinline=1";
+      f.title = "Boombaland trailer";
+      f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      f.allowFullscreen = true;
+      box.replaceChildren(f);
+    });
+  });
 })();
