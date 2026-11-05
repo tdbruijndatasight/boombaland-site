@@ -42,7 +42,7 @@ MAIL = "support@boombaland.com"
 OLD_BASE = "https://tdbruijndatasight.github.io/boomworld-legal/"
 LEGAL_SRC = os.environ.get("LEGAL_SRC", "")
 
-NAV = [("/", "Home"), ("/wiki/", "Wiki"), ("/development/", "Development"), ("/press/", "Press"), ("/support/", "Support"),
+NAV = [("/", "Home"), ("/wiki/", "Wiki"), ("/development/", "Development"), ("/press/", "Press"), ("/redeem/", "Redeem"), ("/support/", "Support"),
        ("/privacy/", "Privacy"), ("/terms/", "Terms")]
 
 
