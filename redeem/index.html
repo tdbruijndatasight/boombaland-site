@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redeem a code · Boombaland</title>
+<meta name="description" content="Redeem a Boombaland promo code for your save.">
+<link rel="canonical" href="https://www.boombaland.com/redeem/">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#4a2c16">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/img/icon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/assets/img/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="/assets/fonts/Fredoka-SemiBold.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Boombaland">
+<meta property="og:title" content="Redeem a code · Boombaland">
+<meta property="og:description" content="Redeem a Boombaland promo code for your save.">
+<meta property="og:url" content="https://www.boombaland.com/redeem/">
+<meta property="og:image" content="https://www.boombaland.com/assets/img/og-image-1200x630.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Boombaland logo over a castle on a floating island">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Redeem a code · Boombaland">
+<meta name="twitter:description" content="Redeem a Boombaland promo code for your save.">
+<meta name="twitter:image" content="https://www.boombaland.com/assets/img/og-image-1200x630.jpg">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+<div class="wrap">
+<a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-192.png 4x" width="40" height="40" alt=""><span>Boombaland</span></a>
+<button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><img src="/assets/img/menu-96.png" width="48" height="48" alt=""><span class="sr-only">Menu</span></button>
+<nav class="site-nav" id="site-nav" aria-label="Main"><ul class="nav"><li><a href="/">Home</a></li><li><a href="/wiki/">Wiki</a></li><li><a href="/development/">Development</a></li><li><a href="/press/">Press</a></li><li><a href="/support/">Support</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></nav>
+</div>
+</header>
+<main id="main" class="page">
+<article class="wrap prose">
+<h1>Redeem a code</h1>
+<p>Got a Boombaland code from our socials? Enter it here, then open the game and tap <strong>Collect</strong>.</p>
+<p>You need to be signed in in the game (<strong>Settings › Account › Cloud save across devices</strong>). Your player ID is under <strong>Settings › Account › Player ID</strong>; tap <strong>Copy</strong> and paste it below. Each code works once per save.</p>
+<form id="redeem" class="redeem" novalidate>
+<label for="pid">Player ID</label>
+<input id="pid" name="playerId" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+<label for="slot">Save</label>
+<select id="slot" name="slot"><option value="1">Save 1</option><option value="2">Save 2</option><option value="3">Save 3</option></select>
+<label for="code">Code</label>
+<input id="code" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+<button class="btn" type="submit">Redeem</button>
+<p id="result" role="status" aria-live="polite"></p>
+</form>
+<p>Codes are free and are never sold. A reward arrives in the save you choose, the next time you open that save while signed in.</p>
+</article>
+</main>
+<style>
+.redeem { display: grid; gap: .4rem; max-width: 28rem; margin: 1.2rem 0; }
+.redeem label { font: 700 1rem var(--ui); margin-top: .5rem; }
+.redeem input, .redeem select { width: 100%; font: 600 1rem var(--ui); padding: .6rem .8rem; border: 3px solid var(--wood); border-radius: 10px; background: var(--cream); color: var(--ink); box-sizing: border-box; }
+.redeem .btn { margin-top: 1rem; justify-self: start; cursor: pointer; background: none; }
+#result { min-height: 1.5em; font-weight: 700; }
+#result.ok { color: var(--leaf-pressed); } #result.bad { color: #b3261e; }
+</style>
+<script>
+(() => {
+  const f = document.getElementById("redeem"), out = document.getElementById("result");
+  const q = new URLSearchParams(location.search);
+  if (q.get("code")) f.code.value = q.get("code");
+  if (q.get("player")) f.playerId.value = q.get("player");
+  if (q.get("slot")) f.slot.value = q.get("slot");
+  f.addEventListener("submit", async e => {
+    e.preventDefault();
+    out.className = ""; out.textContent = "Checking…";
+    try {
+      const r = await fetch("https://boombaland-redeem.boombaland.workers.dev/redeem", { method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerId: f.playerId.value, slot: Number(f.slot.value), code: f.code.value }) });
+      const d = await r.json();
+      out.className = r.ok ? "ok" : "bad"; out.textContent = r.ok ? d.message : d.error;
+    } catch { out.className = "bad"; out.textContent = "Couldn't reach the server. Try again in a moment."; }
+  });
+})();
+</script>
+<footer class="footer">
+<div class="wrap">
+<nav aria-label="Footer"><ul class="nav"><li><a href="/">Home</a></li><li><a href="/wiki/">Wiki</a></li><li><a href="/development/">Development</a></li><li><a href="/press/">Press</a></li><li><a href="/support/">Support</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></nav>
+<p>Boombaland is free to play. It offers optional in-app purchases and may show ads.</p>
+<p class="legal-id">Boombaland is made by DataSight (Tom de Bruijn), Tulameenpad 10, 1461 HN Zuidoostbeemster, the Netherlands.
+KvK 93353413. Contact: <a href="mailto:support@boombaland.com">support@boombaland.com</a></p>
+</div>
+</footer>
+<script src="/assets/nav.js" defer></script>
+</body>
+</html>
