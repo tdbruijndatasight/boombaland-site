@@ -110,7 +110,7 @@ FOOTER = f"""<footer class="footer">
 <div class="wrap">
 <nav aria-label="Footer">{nav(None)}</nav>
 <p>Boombaland is free to play. It offers optional in-app purchases and may show ads.</p>
-<p>Watch Boombaland on <a href="https://www.youtube.com/@BoombalandGame" rel="noopener">YouTube</a>.</p>
+<p>Follow Boombaland on <a href="https://www.youtube.com/@BoombalandGame" rel="noopener">YouTube</a>, <a href="https://www.instagram.com/boombaland.game/" rel="noopener">Instagram</a> and <a href="https://www.tiktok.com/@boombaland" rel="noopener">TikTok</a>.</p>
 <p class="legal-id">Boombaland is made by DataSight (Tom de Bruijn), Tulameenpad 10, 1461 HN Zuidoostbeemster, the Netherlands.
 KvK 93353413. Contact: <a href="mailto:{MAIL}">{MAIL}</a></p>
 </div>
@@ -193,6 +193,8 @@ SHOTS = [  # the store images v7 (PO 4 Nov 2026)
 
 TRAILER_ID = "ctIskTtDOoI"
 CHANNEL = "https://www.youtube.com/@BoombalandGame"
+INSTAGRAM = "https://www.instagram.com/boombaland.game/"
+TIKTOK = "https://www.tiktok.com/@boombaland"
 
 
 def trailer():
@@ -204,7 +206,11 @@ def trailer():
 <a class="trailer-play" href="https://youtu.be/{TRAILER_ID}" aria-label="Play the Boombaland trailer">{pic("trailer", [640, 1280], "(min-width: 900px) 860px, 92vw", "Blom versus the Thorn Guard: the Boombaland trailer", 1280, 1280, 720)}<span class="trailer-btn" aria-hidden="true"></span></a>
 </div>
 <p class="trailer-note">The trailer plays from YouTube, which loads only when you press play.</p>
-<div class="stores"><a class="btn" href="{CHANNEL}" rel="noopener"><span class="stack"><span>YouTube channel</span><small>@BoombalandGame</small></span></a></div>
+<div class="stores">
+<a class="btn" href="{CHANNEL}" rel="noopener"><span class="stack"><span>YouTube</span><small>@BoombalandGame</small></span></a>
+<a class="btn" href="{INSTAGRAM}" rel="noopener"><span class="stack"><span>Instagram</span><small>@boombaland.game</small></span></a>
+<a class="btn" href="{TIKTOK}" rel="noopener"><span class="stack"><span>TikTok</span><small>@boombaland</small></span></a>
+</div>
 </div>
 </section>
 """
