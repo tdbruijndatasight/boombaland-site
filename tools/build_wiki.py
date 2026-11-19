@@ -870,7 +870,7 @@ def achievements_section():
                          f"{en.get('gems', 0)} gem{'s' if en.get('gems', 0) != 1 else ''}"])
         out.append(f"<h2 id=\"{esc(cat)}\">{esc(cat.capitalize())}</h2>" + table(["", "Achievement", "How", "Reward"], rows, "icons"))
     return wiki_page("achievements", "Achievements", f"All {len(entries)} achievements, also in Game Center and Google Play Games.",
-                     "".join(out), "Every Boombaland achievement and how to earn it.")
+                     "".join(out), "Every Boombaland achievement, how to earn it, and where it shows up: Game Center and Google Play Games.")
 
 
 def start_section():
@@ -916,7 +916,7 @@ as No Ads come back. See <a href="/support/#how-do-i-get-my-no-ads-or-unlimited-
 <p>{esc(T('menu.main.tour_energy', field(ECO, '_energyPerGame'), 'minute', field(ECO, '_energyCap')))}</p>
 <h2 id="contact">Something else?</h2>
 <p>Mail <a href="mailto:{build.MAIL}">{build.MAIL}</a>.</p>"""
-    return wiki_page("faq", "FAQ", "Saves, purchases, refunds and your data.", body, "Boombaland frequently asked questions.")
+    return wiki_page("faq", "FAQ", "Saves, purchases, refunds and your data.", body, "Boombaland FAQ: saving your progress, restoring purchases, refunds, deleting your data, chests and energy.")
 
 
 def whatsnew_section():
@@ -932,7 +932,7 @@ def whatsnew_section():
 <li>Gear, the Blacksmith, chests that show what they guarantee, and the Lucky Chest.</li>
 <li>Daily login, daily and weekly tasks, and achievements in Game Center and Google Play Games.</li>
 </ul>"""
-    return wiki_page("whats-new", "What's new", "Patch notes, newest first.", body, "Boombaland patch notes and version history.")
+    return wiki_page("whats-new", "What's new", "Patch notes, newest first.", body, "Boombaland patch notes and version history: what is in each release of the game, newest first.")
 
 
 GOAL = build.GOAL

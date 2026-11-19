@@ -1,0 +1,47 @@
+{
+  "_doc": [
+    "Name-drift guard (tools/qa.py names). The game is the source of truth for every player-visible name.",
+    "required: string keys in the game's MenuStringsEn.cs whose CURRENT value must appear on the built site.",
+    "retired: names the game no longer shows, per key. None may appear in the site's visible text.",
+    "snapshot: the values at the last site sync. qa compares them with the game at REF; a difference means the game",
+    "renamed something: rebuild the site (tools/build.py, tools/build_wiki.py), add the old name to retired, update",
+    "snapshot. CI (no game repo access) checks retired + snapshot only."
+  ],
+  "game_strings": "Assets/_Project/Code/Menu/Services/MenuStringsEn.cs",
+  "required": [
+    "menu.heroes.name_blom", "menu.heroes.name_gusto", "menu.heroes.name_frosta", "menu.heroes.name_zappy",
+    "menu.heroes.name_ember", "menu.heroes.name_banshee",
+    "menu.codex.thorn_guard", "menu.codex.archer", "menu.codex.airship", "menu.codex.shellback", "menu.codex.cobblewatch",
+    "menu.codex.twig_scout", "menu.codex.burr_bomber", "menu.codex.tier_3",
+    "menu.worlds.green_lands"
+  ],
+  "retired": {
+    "menu.codex.thorn_guard": ["Thorn Guard"],
+    "menu.codex.archer": ["Rage Tower"],
+    "menu.codex.airship": ["airship"],
+    "menu.codex.shellback": ["Shellback"],
+    "menu.codex.cobblewatch": ["Cobblewatch"],
+    "menu.codex.twig_scout": ["Twig Scout"],
+    "menu.codex.burr_bomber": ["Burr Bomber"]
+  },
+  "snapshot": {
+    "ref": "origin/coordinator/release-107-1119",
+    "values": {
+      "menu.heroes.name_blom": "Blom",
+      "menu.heroes.name_gusto": "Gusto",
+      "menu.heroes.name_frosta": "Frosta",
+      "menu.heroes.name_zappy": "Zappy",
+      "menu.heroes.name_ember": "Ember",
+      "menu.heroes.name_banshee": "Banshee",
+      "menu.codex.thorn_guard": "Grimdorn",
+      "menu.codex.archer": "Arko",
+      "menu.codex.airship": "Nimbo",
+      "menu.codex.shellback": "Turto",
+      "menu.codex.cobblewatch": "Gardo",
+      "menu.codex.twig_scout": "Tiko",
+      "menu.codex.burr_bomber": "Bombo",
+      "menu.codex.tier_3": "Bramble Lobber",
+      "menu.worlds.green_lands": "Green Lands"
+    }
+  }
+}

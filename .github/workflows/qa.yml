@@ -1,0 +1,22 @@
+# Site QA on every push and pull request. Report-only: it never deploys (GitHub Pages publishes master as before) and
+# needs no secrets. Without the private game repo the name check uses the snapshot in tools/game_names.json; the full
+# game comparison (tools/qa.sh --rebuild) runs locally, where the game repo is.
+name: site-qa
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # lastmod checks read the commit history
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: QA (links, sitemap, meta, noindex, JSON-LD, availability, names)
+        run: tools/qa.sh
