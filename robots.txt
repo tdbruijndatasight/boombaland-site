@@ -1,3 +1,15 @@
+# Boombaland robots.txt
+# Search engines and AI search / answer bots: welcome, everywhere.
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Applebot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+Allow: /
+
+# Everyone else, including the AI training crawlers (GPTBot, Google-Extended, CCBot, ClaudeBot, anthropic-ai,
+# Applebot-Extended): allowed, as before. Whether to block the training crawlers is the PO's decision (README.md).
 User-agent: *
 Allow: /
 

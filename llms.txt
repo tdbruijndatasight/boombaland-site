@@ -1,0 +1,21 @@
+# Boombaland
+
+> Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android phones and tablets, made by DataSight,
+> the one-person studio of Tom de Bruijn in the Netherlands. Status: Coming soon to the App Store and Google Play.
+
+- You drop bombs, run from the blasts, break crates, grab power-ups and outsmart enemies on grid boards, with bosses
+  and push-block puzzles.
+- 25 levels in Green Lands and on Castle Road; six heroes (Blom, Gusto, Frosta, Zappy, Ember and Banshee), each with
+  their own skill; four difficulties from Easy to Impossible. Single player, against computer-controlled enemies.
+- Bosses and special enemies: Grimdorn, Arko, Nimbo, Turto and Gardo.
+- Free to play, with optional in-app purchases. Ads only play when you choose to watch one for a reward. No loot boxes:
+  every chest shows the item it guarantees and the chance of everything else.
+
+## Pages
+
+- [Home](https://www.boombaland.com/): what the game is, trailer, screenshots
+- [Wiki](https://www.boombaland.com/wiki/): heroes, enemies, power-ups, levels, gear, chests, read from the game's data
+- [Press kit](https://www.boombaland.com/press/): fact sheet and images
+- [How Boombaland is made](https://www.boombaland.com/development/): the studio, its tools and its process
+- [Support](https://www.boombaland.com/support/): help, purchases, deleting your data (support@boombaland.com)
+- [Privacy Policy](https://www.boombaland.com/privacy/) and [Terms](https://www.boombaland.com/terms/)

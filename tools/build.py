@@ -674,6 +674,42 @@ def port_legal():
         page(path, body, title, desc, current=path)
 
 
+def llms_txt():
+    """/llms.txt (optional, experimental): the same plain facts as the home page, generated so names and status follow the game."""
+    h = hero_names()
+    status = "Out now on the App Store and Google Play." if stores_live() else "Coming soon to the App Store and Google Play."
+    bosses = [name(k) for k in ("thorn_guard", "archer", "airship", "shellback", "cobblewatch")]
+    out = f"""# Boombaland
+
+> Boombaland is {GENRE_LINE} for iPhone, iPad and Android phones and tablets, made by DataSight,
+> the one-person studio of Tom de Bruijn in the Netherlands. Status: {status}
+
+- You drop bombs, run from the blasts, break crates, grab power-ups and outsmart enemies on grid boards, with bosses
+  and push-block puzzles.
+- 25 levels in {text('menu.worlds.green_lands')} and on Castle Road; six heroes ({", ".join(h[:-1])} and {h[-1]}), each with
+  their own skill; four difficulties from Easy to Impossible. Single player, against computer-controlled enemies.
+- Bosses and special enemies: {", ".join(bosses[:-1])} and {bosses[-1]}.
+- Free to play, with optional in-app purchases. Ads only play when you choose to watch one for a reward. No loot boxes:
+  every chest shows the item it guarantees and the chance of everything else.
+"""
+    links = store_links()
+    if stores_live():
+        out += f"- App Store: {links['ios']}\n- Google Play: {links['android']}\n"
+    out += f"""
+## Pages
+
+- [Home]({SITE}/): what the game is, trailer, screenshots
+- [Wiki]({SITE}/wiki/): heroes, enemies, power-ups, levels, gear, chests, read from the game's data
+- [Press kit]({SITE}/press/): fact sheet and images
+- [How Boombaland is made]({SITE}/development/): the studio, its tools and its process
+- [Support]({SITE}/support/): help, purchases, deleting your data ({MAIL})
+- [Privacy Policy]({SITE}/privacy/) and [Terms]({SITE}/terms/)
+"""
+    with open(os.path.join(ROOT, "llms.txt"), "w", encoding="utf-8") as f:
+        f.write(out)
+    print("wrote llms.txt")
+
+
 def sync_footer():
     """Pages this script does not write every time (the ported legal pages, the redeem page) get the current shared footer.
     Only the <footer> block is replaced; the legal wording above it is never touched."""
@@ -693,3 +729,4 @@ if __name__ == "__main__":
     not_found()
     port_legal()
     sync_footer()
+    llms_txt()
