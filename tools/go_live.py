@@ -3,14 +3,17 @@
 
   python3 -I tools/go_live.py                     check both store pages are live; show what would change
   python3 -I tools/go_live.py --apply             ... then fill STORE_LINKS, rebuild everything, run QA (--online)
+  python3 -I tools/go_live.py --only android     partial launch: verify and fill only that store (or --only ios); the other
+                                                  STORE_LINKS key is left as it is, so its button and copy stay "coming soon"
   options: --ios URL --android URL                (defaults: the canonical URLs for id6821619320 / com.datasight.boomworld)
            --live-poster NAME --live-poster-alt TEXT   use assets/img/NAME-640/1280 as the trailer poster once live
 
 What --apply changes (nothing is committed or pushed; the PO publishes):
-  assets/site.js     STORE_LINKS = the two verified URLs (the one config spot)
+  assets/site.js     STORE_LINKS = the verified URL(s) (the one config spot)
   tools/build.py     TRAILER_POSTER_LIVE, only with --live-poster
   rebuilt pages      store buttons -> official badges (assets/badges/, else the green button), JSON-LD VideoGame
-                     gets offers (price 0) + sameAs, "Coming soon" lines -> live wording, llms.txt, wiki What's new,
+                     gets offers (price 0) + sameAs for the live store(s), "Coming soon" lines -> live wording (per store
+                     with --only: "out now on Google Play and coming soon to the App Store"), llms.txt, wiki What's new,
                      sitemap.xml
 Stops without changing anything when a store page is not live or not the right app.
 """
@@ -43,13 +46,19 @@ def fetch(url):
         return 0, url, str(e)
 
 
-def verify(ios, android):
+def verify(ios, android, only=None):
+    ok = True
+    if only != "android":
+        ok = verify_ios(ios) and ok
+    if only != "ios":
+        ok = verify_android(android) and ok
+    return ok
+
+
+def verify_ios(ios):
     ok = True
     if not qa.IOS_URL.match(ios):
         print(f"FAIL ios URL {ios!r} is not an App Store URL for id{qa.APPLE_ID}")
-        ok = False
-    if not qa.PLAY_URL.match(android):
-        print(f"FAIL android URL {android!r} is not the Play URL for {qa.PLAY_ID}")
         ok = False
     # Apple: the public lookup API is the reliable signal (the page itself rate-limits non-iPhone clients).
     st, _, body = fetch(f"https://itunes.apple.com/lookup?id={qa.APPLE_ID}")
@@ -66,6 +75,14 @@ def verify(ios, android):
     st, final, _ = fetch(ios)
     print(f"{'ok  ' if st == 200 else 'note'} App Store page {ios} -> HTTP {st}"
           + (" (Apple rate-limits desktop clients; the lookup above decides)" if st == 429 else ""))
+    return ok
+
+
+def verify_android(android):
+    ok = True
+    if not qa.PLAY_URL.match(android):
+        print(f"FAIL android URL {android!r} is not the Play URL for {qa.PLAY_ID}")
+        ok = False
     st, final, body = fetch(android + ("&" if "?" in android else "?") + "hl=en")
     if st != 200 or qa.PLAY_ID not in body:
         print(f"FAIL Google Play: {android} -> HTTP {st}: not public yet (or not this app)" + (f" ({body[:120]})" if st == 0 else ""))
@@ -75,11 +92,15 @@ def verify(ios, android):
     return ok
 
 
-def set_store_links(ios, android):
+def set_store_links(ios, android, only=None):
+    """Fill STORE_LINKS; with only="ios"/"android" just that key (the other is left exactly as it is)."""
     p = os.path.join(ROOT, "assets", "site.js")
     s = open(p, encoding="utf-8").read()
-    new = re.sub(r'(ios:\s*)"[^"]*"', lambda m: f'{m.group(1)}"{ios}"', s, count=1)
-    new = re.sub(r'(android:\s*)"[^"]*"', lambda m: f'{m.group(1)}"{android}"', new, count=1)
+    new = s
+    if only != "android":
+        new = re.sub(r'(ios:\s*)"[^"]*"', lambda m: f'{m.group(1)}"{ios}"', new, count=1)
+    if only != "ios":
+        new = re.sub(r'(android:\s*)"[^"]*"', lambda m: f'{m.group(1)}"{android}"', new, count=1)
     return p, s, new
 
 
@@ -101,15 +122,17 @@ def main():
     ap.add_argument("--android", default=PLAY_DEFAULT)
     ap.add_argument("--live-poster")
     ap.add_argument("--live-poster-alt", default="Play the Boombaland trailer")
+    ap.add_argument("--only", choices=["ios", "android"],
+                    help="partial launch: verify and fill only this store's link (default: both, and both must be live)")
     ap.add_argument("--apply", action="store_true", help="make the changes (default: dry run)")
     a = ap.parse_args()
 
-    print("== 1. verify the store pages")
-    if not verify(a.ios, a.android):
+    print("== 1. verify the store page" + (f"s ({a.only} only)" if a.only else "s"))
+    if not verify(a.ios, a.android, a.only):
         print("STOP: not switching. Nothing was changed.")
         return 1
 
-    edits = [set_store_links(a.ios, a.android)]
+    edits = [set_store_links(a.ios, a.android, a.only)]
     if a.live_poster:
         for size in (640, 1280):
             for ext in ("avif", "jpg"):
@@ -118,8 +141,8 @@ def main():
                     print(f"STOP: live poster file missing: {os.path.relpath(f, ROOT)}")
                     return 1
         edits.append(set_live_poster(a.live_poster, a.live_poster_alt))
-    for f in ("assets/badges/app-store-badge.svg", "assets/badges/google-play-badge.png"):
-        if not os.path.exists(os.path.join(ROOT, f)):
+    for k, f in (("ios", "assets/badges/app-store-badge.svg"), ("android", "assets/badges/google-play-badge.png")):
+        if a.only in (None, k) and not os.path.exists(os.path.join(ROOT, f)):
             print(f"note {f} missing: that store gets the green text button. Official artwork: Apple Marketing Tools /"
                   " Google Play badges page, unchanged (IMAGE_NEEDS.md #10).")
 

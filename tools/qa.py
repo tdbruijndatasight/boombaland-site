@@ -30,6 +30,12 @@ PLAY_URL = re.compile(r"^https://play\.google\.com/store/apps/details\?id=" + re
 # Words that claim the game can be played or downloaded now. Not allowed while STORE_LINKS are empty.
 LIVE_CLAIMS = re.compile(r"\b(out now|play (?:it )?(?:for )?free now|download (?:it )?now|available now|free download|"
                          r"get it on google play|download on the app store|play now)\b", re.I)
+# Claims that one particular store has the game. Not allowed while that store's link is empty (partial launch).
+_CLAIM = r"(?:out(?: now)?|available(?: now)?|free download|download(?: it)?(?: now)?|get it|play(?: it)? (?:for )?free(?: now)?)"
+STORE_CLAIMS = {
+    "ios": re.compile(r"\b(" + _CLAIM + r" (?:on|in|from) the App Store|download on the app store)\b", re.I),
+    "android": re.compile(r"\b(" + _CLAIM + r" (?:on|in|from) (?:the App Store and )?Google Play|get it on google play)\b", re.I),
+}
 # The old trailer poster has "Play free now" baked into the image: allowed only once the stores are live.
 LIVE_ONLY_IMAGES = ["/assets/img/trailer-640.", "/assets/img/trailer-1280."]
 FORBIDDEN_LD = {"aggregateRating", "review", "reviews", "ratingValue", "reviewCount", "ratingCount", "interactionStatistic",
@@ -211,7 +217,8 @@ def check_noindex():
 
 
 def check_jsonld():
-    live = all(store_links().values())
+    links = store_links()
+    live_urls = [u for u in (links["ios"], links["android"]) if u]
     blocks, game = 0, None
     for f in all_html():
         for b in parse(f).ld:
@@ -241,10 +248,14 @@ def check_jsonld():
             fail("jsonld", f"{f}: VideoGame.name is {g.get('name')!r}")
         if "bomberman" in json.dumps(g).lower():
             fail("jsonld", f"{f}: the trademark 'Bomberman' must not be used")
-        if "offers" in g and not live:
+        if "offers" in g and not live_urls:
             fail("jsonld", f"{f}: VideoGame has offers while STORE_LINKS are empty")
-        if live and "offers" not in g:
-            fail("jsonld", f"{f}: stores are live but VideoGame has no offers")
+        if live_urls and "offers" not in g:
+            fail("jsonld", f"{f}: a store is live but VideoGame has no offers")
+        if live_urls and sorted(o.get("url", "") for o in g.get("offers", [])) != sorted(live_urls):
+            fail("jsonld", f"{f}: VideoGame offers do not list exactly the live store(s) {live_urls}")
+        if sorted(g.get("sameAs", [])) != sorted(live_urls):
+            fail("jsonld", f"{f}: VideoGame sameAs {g.get('sameAs', [])} != the live store(s) {live_urls}")
         for o in g.get("offers", []):
             if str(o.get("price")) != "0":
                 fail("jsonld", f"{f}: offer price {o.get('price')!r}, expected 0")
@@ -254,10 +265,24 @@ def check_jsonld():
 def check_availability(online=False):
     links = store_links()
     live = all(links.values())
-    if any(links.values()) and not live:
-        warn("availability", "only one store link is filled; the site stays in 'coming soon' mode until both are")
+    partial = any(links.values()) and not live
     texts = site_texts()
-    if not live:
+    if partial:
+        # One store live (e.g. Google Play first): live claims are fine for that store only, and only its button links.
+        for k in ("ios", "android"):
+            if links[k]:
+                continue
+            for f, t in texts.items():
+                for m in STORE_CLAIMS[k].finditer(t):
+                    fail("availability", f"{f}: says {m.group(0)!r} while the {k} link is empty")
+            for f in all_html():
+                if re.search(r'<a[^>]*data-store="' + k + r'"[^>]*href="https?://', read(f)):
+                    fail("availability", f"{f}: the {k} store button links somewhere while its link is empty")
+        for f in all_html():
+            for img in LIVE_ONLY_IMAGES:
+                if img in read(f):
+                    fail("availability", f"{f}: uses the 'Play free now' poster {img}* before both stores are live")
+    if not any(links.values()):
         for f, t in texts.items():
             for m in LIVE_CLAIMS.finditer(t):
                 fail("availability", f"{f}: says {m.group(0)!r} while STORE_LINKS are empty")
@@ -268,15 +293,17 @@ def check_availability(online=False):
                     fail("availability", f"{f}: uses the 'Play free now' poster {img}* while the stores are not live")
             if re.search(r'<a[^>]*data-store[^>]*href="https?://', s):
                 fail("availability", f"{f}: a store button links somewhere while STORE_LINKS are empty")
-    else:
-        if not IOS_URL.match(links["ios"]):
+    if any(links.values()):
+        if links["ios"] and not IOS_URL.match(links["ios"]):
             fail("availability", f"ios link {links['ios']!r} is not the App Store page of id{APPLE_ID}")
-        if not PLAY_URL.match(links["android"]):
+        if links["android"] and not PLAY_URL.match(links["android"]):
             fail("availability", f"android link {links['android']!r} is not the Play page of {PLAY_ID}")
-        if "Coming soon" in texts.get("index.html", ""):
+        if live and "Coming soon" in texts.get("index.html", ""):
             fail("availability", "index.html still says 'Coming soon' while the stores are live (rebuild)")
         if online:
             for k, u in links.items():
+                if not u:
+                    continue
                 try:
                     req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0 (site QA)"})
                     with urlopen(req) as r:
@@ -286,13 +313,16 @@ def check_availability(online=False):
                     fail("availability", f"{k}: {u} -> HTTP {e.code}")
                 except OSError as e:
                     fail("availability", f"{k}: {u} -> {e}")
-            try:
-                with urlopen(f"https://itunes.apple.com/lookup?id={APPLE_ID}") as r:
-                    if json.load(r).get("resultCount", 0) < 1:
-                        fail("availability", f"Apple lookup id={APPLE_ID}: resultCount 0 (not public yet)")
-            except OSError as e:
-                fail("availability", f"Apple lookup failed: {e}")
-    print(f"availability: stores {'LIVE' if live else 'not live (coming soon)'}")
+            if links["ios"]:
+                try:
+                    with urlopen(f"https://itunes.apple.com/lookup?id={APPLE_ID}") as r:
+                        if json.load(r).get("resultCount", 0) < 1:
+                            fail("availability", f"Apple lookup id={APPLE_ID}: resultCount 0 (not public yet)")
+                except OSError as e:
+                    fail("availability", f"Apple lookup failed: {e}")
+    state = ("LIVE" if live else "PARTIAL (" + ", ".join(f"{k} {'live' if u else 'coming soon'}" for k, u in links.items()) + ")"
+             if partial else "not live (coming soon)")
+    print(f"availability: stores {state}")
 
 
 def game_values(cfg):

@@ -233,9 +233,38 @@ def store_links():
     return out
 
 
-def stores_live():
+STORES = ("ios", "android")
+STORE_NAMES = {"ios": "the App Store", "android": "Google Play"}
+STORE_PLATFORMS = {"ios": "iPhone and iPad", "android": "Android"}
+
+
+def live_stores():
+    """The stores whose link is filled in STORE_LINKS, in a fixed order (ios, android)."""
     links = store_links()
-    return bool(links["ios"] and links["android"])
+    return [k for k in STORES if links[k]]
+
+
+def stores_live():
+    """Both stores live (the full launch)."""
+    return len(live_stores()) == len(STORES)
+
+
+def partial_live():
+    """One store live, the other still coming (e.g. Google Play first). Returns (live_key, coming_key) or None."""
+    live = live_stores()
+    if len(live) != 1:
+        return None
+    return live[0], next(k for k in STORES if k not in live)
+
+
+def partial_status(sep=" and "):
+    """'out now on Google Play and coming soon to the App Store' for a partial launch (lower case, no full stop)."""
+    on, soon = partial_live()
+    return f"out now on {STORE_NAMES[on]}{sep}coming soon to {STORE_NAMES[soon]}"
+
+
+def cap(s):
+    return s[:1].upper() + s[1:]
 
 
 BADGES = {  # official artwork, downloaded unchanged from Apple / Google on launch day (IMAGE_NEEDS.md #10)
@@ -334,8 +363,12 @@ def hero_names():
 def about():
     """Plain, quotable facts (answer engines quote these). No AI here: that story lives on /development/."""
     heroes = hero_names()
-    status = ("<p>Yes. Boombaland is out now on the App Store and Google Play.</p>" if stores_live() else
-              "<p>Not yet. Boombaland is coming soon to the App Store and Google Play.</p>")
+    if stores_live():
+        status = "<p>Yes. Boombaland is out now on the App Store and Google Play.</p>"
+    elif partial_live():
+        status = f"<p>Yes, on {STORE_PLATFORMS[partial_live()[0]]}. Boombaland is {partial_status()}.</p>"
+    else:
+        status = "<p>Not yet. Boombaland is coming soon to the App Store and Google Play.</p>"
     return f"""<section class="section" aria-labelledby="about-title">
 <div class="wrap prose about">
 <h2 class="section-title" id="about-title">What is Boombaland?</h2>
@@ -357,7 +390,7 @@ reward. There are no loot boxes.</p>
 
 
 def home_jsonld():
-    """Organization + WebSite + VideoGame. offers only once both stores are live (tools/go_live.py)."""
+    """Organization + WebSite + VideoGame. offers + sameAs list only the live store(s) (tools/go_live.py)."""
     links = store_links()
     game = {"@type": "VideoGame", "@id": SITE + "/#game", "name": "Boombaland", "url": SITE + "/",
             "description": f"Boombaland is {GENRE_LINE} for iPhone, iPad and Android: drop bombs, dodge the blasts, beat "
@@ -369,10 +402,11 @@ def home_jsonld():
                         "embedUrl": f"https://www.youtube-nocookie.com/embed/{TRAILER_ID}",
                         "url": f"https://youtu.be/{TRAILER_ID}",
                         "thumbnailUrl": f"{SITE}/assets/img/{trailer_poster()[0]}-1280.jpg"}}
-    if stores_live():
+    live = live_stores()
+    if live:
         game["offers"] = [{"@type": "Offer", "price": "0", "priceCurrency": "EUR", "availability": "https://schema.org/InStock",
-                           "url": links[k]} for k in ("ios", "android")]
-        game["sameAs"] = [links["ios"], links["android"]]
+                           "url": links[k]} for k in live]
+        game["sameAs"] = [links[k] for k in live]
     site = {"@type": "WebSite", "@id": SITE + "/#website", "name": "Boombaland", "url": SITE + "/",
             "publisher": {"@id": ORG["@id"]}}
     return [{"@context": "https://schema.org", "@graph": [ORG, site, game]}]
@@ -403,7 +437,7 @@ def home():
 <p class="hero-tag">Ready, Set, BOOM!</p>
 <p class="hero-pitch">Drop a bomb, run, and watch the board explode. Battle brutal bosses and unlock epic heroes in bright 3D adventures.</p>
 <p class="hero-classic">Classic bomb battles with a fresh new twist.</p>
-{"" if stores_live() else '<p class="date-plank">Coming soon</p>'}
+{"" if stores_live() else f'<p class="date-plank">Out now on {STORE_NAMES[partial_live()[0]]}</p>' if partial_live() else '<p class="date-plank">Coming soon</p>'}
 {store_buttons()}
 <p class="hero-note">For iPhone, iPad and Android phones and tablets. Free to play.</p>
 </div>
@@ -468,7 +502,7 @@ def home():
 
 <section class="section cta" aria-labelledby="cta-title">
 <div class="wrap">
-<h2 class="section-title" id="cta-title">{"Play Boombaland" if stores_live() else "Coming soon"}</h2>
+<h2 class="section-title" id="cta-title">{"Play Boombaland" if live_stores() else "Coming soon"}</h2>
 {pic("key-art", [1024, 2048], "(min-width: 700px) 640px, 92vw", f"Blom and {name('thorn_guard')} face off over a burning board, with the Boombaland logo between them", 1024, 1024, 500, cls="art")}
 {store_buttons()}
 </div>
@@ -483,7 +517,8 @@ def home():
 """
     page("/", body, "Boombaland: drop a bomb, run, BOOM!",
          "Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android. Battle bosses, unlock six heroes "
-         "and solve castle puzzles. " + ("Free to play." if stores_live() else "Coming soon."),
+         "and solve castle puzzles. " + ("Free to play." if stores_live() else
+                                         f"Out now on {STORE_NAMES[partial_live()[0]]}." if partial_live() else "Coming soon."),
          current="/", script=True, jsonld=home_jsonld())
 
 
@@ -511,7 +546,7 @@ def press():
 <dl class="facts">
 <dt>Game</dt><dd>Boombaland</dd>
 <dt>Developer</dt><dd>DataSight (Tom de Bruijn), the Netherlands</dd>
-<dt>Release date</dt><dd>{"Out now on the App Store and Google Play" if stores_live() else "Coming soon"}</dd>
+<dt>Release date</dt><dd>{"Out now on the App Store and Google Play" if stores_live() else cap(partial_status("; ")) if partial_live() else "Coming soon"}</dd>
 <dt>Platforms</dt><dd>iPhone, iPad and Android phones and tablets</dd>
 <dt>Price</dt><dd>Free to play, with optional in-app purchases and optional rewarded video ads</dd>
 <dt>Genre</dt><dd>Arcade bomber: a classic bomb-maze arcade game with bosses and puzzles</dd>
@@ -604,7 +639,7 @@ bridges, belts and towers, and <strong>Castle Road</strong>, where push-block pu
 nine-chapter comic tells the story between the levels. {GOAL}</p>
 
 <h2 id="next">What's next</h2>
-<p>{"Boombaland is out now on the App Store and Google Play." if stores_live() else "Boombaland is coming soon to the App Store and Google Play."} From there, Boombaland keeps growing: more to discover, and your ideas can shape what
+<p>{"Boombaland is out now on the App Store and Google Play." if stores_live() else f"Boombaland is {partial_status()}." if partial_live() else "Boombaland is coming soon to the App Store and Google Play."} From there, Boombaland keeps growing: more to discover, and your ideas can shape what
 comes next.</p>
 
 <section class="panel" id="ideas" aria-labelledby="ideas-title">
@@ -678,7 +713,8 @@ def port_legal():
 def llms_txt():
     """/llms.txt (optional, experimental): the same plain facts as the home page, generated so names and status follow the game."""
     h = hero_names()
-    status = "Out now on the App Store and Google Play." if stores_live() else "Coming soon to the App Store and Google Play."
+    status = ("Out now on the App Store and Google Play." if stores_live() else cap(partial_status("; ")) + "." if partial_live()
+              else "Coming soon to the App Store and Google Play.")
     bosses = [name(k) for k in ("thorn_guard", "archer", "airship", "shellback", "cobblewatch")]
     out = f"""# Boombaland
 
@@ -694,8 +730,8 @@ def llms_txt():
   every chest shows the item it guarantees and the chance of everything else.
 """
     links = store_links()
-    if stores_live():
-        out += f"- App Store: {links['ios']}\n- Google Play: {links['android']}\n"
+    for k in live_stores():
+        out += f"- {'App Store' if k == 'ios' else 'Google Play'}: {links[k]}\n"
     out += f"""
 ## Pages
 

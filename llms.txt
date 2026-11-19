@@ -1,7 +1,7 @@
 # Boombaland
 
 > Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android phones and tablets, made by DataSight,
-> the one-person studio of Tom de Bruijn in the Netherlands. Status: Coming soon to the App Store and Google Play.
+> the one-person studio of Tom de Bruijn in the Netherlands. Status: Out now on Google Play; coming soon to the App Store.
 
 - You drop bombs, run from the blasts, break crates, grab power-ups and outsmart enemies on grid boards, with bosses
   and push-block puzzles.
@@ -10,6 +10,7 @@
 - Bosses and special enemies: Grimdorn, Arko, Nimbo, Turto and Gardo.
 - Free to play, with optional in-app purchases. Ads only play when you choose to watch one for a reward. No loot boxes:
   every chest shows the item it guarantees and the chance of everything else.
+- Google Play: https://play.google.com/store/apps/details?id=com.datasight.boomworld
 
 ## Pages
 

@@ -921,8 +921,13 @@ as No Ads come back. See <a href="/support/#how-do-i-get-my-no-ads-or-unlimited-
 
 def whatsnew_section():
     n = lambda k: esc(T("menu.codex." + k))  # noqa: E731
-    status = ("Boombaland is out on the App Store and Google Play." if build.stores_live() else
-              "Coming soon: Boombaland is not in the App Store or on Google Play yet.")
+    if build.stores_live():
+        status = "Boombaland is out on the App Store and Google Play."
+    elif build.partial_live():
+        on, soon = build.partial_live()
+        status = f"Boombaland is out on {build.STORE_NAMES[on]}. Coming soon to {build.STORE_NAMES[soon]}."
+    else:
+        status = "Coming soon: Boombaland is not in the App Store or on Google Play yet."
     body = f"""<h2 id="v1-0">The first release</h2>
 <p>{status}</p>
 <ul>
