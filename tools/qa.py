@@ -38,6 +38,16 @@ FORBIDDEN_LD = {"aggregateRating", "review", "reviews", "ratingValue", "reviewCo
 FAILS, WARNS = [], []
 
 
+def urlopen(req, timeout=20):
+    """urllib with a CA bundle that also works on a python.org macOS Python (no certs installed): the system bundle."""
+    import ssl
+    ctx = ssl.create_default_context()
+    for ca in ("/etc/ssl/cert.pem", "/etc/ssl/certs/ca-certificates.crt"):
+        if os.path.exists(ca):
+            ctx.load_verify_locations(ca)
+    return urllib.request.urlopen(req, timeout=timeout, context=ctx)
+
+
 def fail(check, msg):
     FAILS.append(f"[{check}] {msg}")
 
@@ -269,7 +279,7 @@ def check_availability(online=False):
             for k, u in links.items():
                 try:
                     req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0 (site QA)"})
-                    with urllib.request.urlopen(req, timeout=20) as r:
+                    with urlopen(req) as r:
                         if r.status != 200:
                             fail("availability", f"{k}: {u} -> HTTP {r.status}")
                 except urllib.error.HTTPError as e:
@@ -277,7 +287,7 @@ def check_availability(online=False):
                 except OSError as e:
                     fail("availability", f"{k}: {u} -> {e}")
             try:
-                with urllib.request.urlopen(f"https://itunes.apple.com/lookup?id={APPLE_ID}", timeout=20) as r:
+                with urlopen(f"https://itunes.apple.com/lookup?id={APPLE_ID}") as r:
                     if json.load(r).get("resultCount", 0) < 1:
                         fail("availability", f"Apple lookup id={APPLE_ID}: resultCount 0 (not public yet)")
             except OSError as e:

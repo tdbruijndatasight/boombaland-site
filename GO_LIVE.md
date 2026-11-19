@@ -279,14 +279,42 @@ behaviour observed elsewhere holds. Check it after the switch:
 `Location: https://www.boombaland.com/privacy/`. Also check `curl -sI https://tdbruijndatasight.github.io/boomworld-legal/`.
 If either does not redirect, fall back to option A.
 
-## 6. Launch-day edits to this site
+## 6. Launch day (the stores go public)
 
-1. In `assets/site.js` (`STORE_LINKS`), fill in the App Store URL (`https://apps.apple.com/app/id<Apple ID>`) and the
-   Play URL (`https://play.google.com/store/apps/details?id=com.datasight.boomworld`). The buttons switch from
-   "Coming 19 November" to "Download now".
-2. Optionally, replace the text buttons with the official badges (IMAGE_NEEDS.md #10), and change the "Coming 19
-   November" date plank in `tools/build.py`. Run `python3 -I tools/build.py` (set `LEGAL_SRC` only to re-port the legal
-   pages), then `python3 -I tools/check_links.py`, then commit and push.
+> Updated 19 Nov 2026. The site's DNS is at **Cloudflare** now (not Porkbun, as sections 1–2 still say); mail MX is
+> still Porkbun. Until launch the site says "Coming soon" everywhere and the store buttons are status planks, not links.
+
+**Checklist, in order. Nothing is published until the PO merges to `master`.**
+
+1. **Both listings are public.** Apple: `https://itunes.apple.com/lookup?id=6821619320` returns `resultCount` ≥ 1.
+   Google: `https://play.google.com/store/apps/details?id=com.datasight.boomworld` returns 200 (not 404).
+2. **Official badges** (optional but recommended): download Apple's "Download on the App Store" and Google's "Get it on
+   Google Play" artwork unchanged from their marketing pages and save them as `assets/badges/app-store-badge.svg` and
+   `assets/badges/google-play-badge.png` (IMAGE_NEEDS.md #10). Without them the buttons are the green kit buttons.
+3. **Trailer poster, LIVE variant.** The poster is set in one place, `tools/build.py`: `TRAILER_POSTER` (now the
+   temporary text-free frame `shot1`; the old poster with "Play free now" baked in must not show before launch) and
+   `TRAILER_POSTER_LIVE`. Put the new LIVE poster as `assets/img/<name>-640/-1280.{avif,jpg}` and pass
+   `--live-poster <name> --live-poster-alt "<alt text>"` to step 4. Put the new pre-launch poster in `TRAILER_POSTER`
+   as soon as it is approved.
+4. **Dry run, then apply:**
+   ```
+   python3 -I tools/go_live.py                 # verifies both stores (ids, HTTP 200, Apple lookup), shows the edit
+   python3 -I tools/go_live.py --apply [--live-poster trailer-live --live-poster-alt "..."]
+   ```
+   `--apply` stops without changing anything if a store is not live. Otherwise it fills `STORE_LINKS` in
+   `assets/site.js` (the one config spot), rebuilds every page (buttons → badges, JSON-LD `VideoGame` gets `offers` with
+   price 0 and `sameAs` = the store URLs, "Coming soon" → live wording on home, press, development, wiki What's new and
+   `llms.txt`), rewrites `sitemap.xml`, and runs `tools/qa.sh --online`.
+5. **Review** `git diff` and the preview (`python3 -m http.server 8080`), commit on a branch, and the PO merges to
+   `master` (that is the publish).
+6. **After it is live:** `python3 -I tools/indexnow.py --submit` (Bing and other IndexNow engines); Search Console →
+   URL inspection → `https://www.boombaland.com/` → Request indexing (repeat for `/wiki/` and `/press/`).
+7. **Store texts:** make sure neither store text says "Out now!" before its own listing is live (AUDIT.md §8.4).
+
+**Before launch, once (owner):** verify Google Search Console (Domain property, TXT record at Cloudflare) and Bing
+Webmaster Tools (import from GSC), submit `https://www.boombaland.com/sitemap.xml` in both; check Cloudflare's
+"Block AI bots" / "AI Crawl Control" / "Managed robots.txt" settings match `robots.txt`; decide on the AI training
+crawlers (README.md).
 
 ## 7. The "Help develop Boombaland" idea form
 
