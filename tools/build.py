@@ -342,8 +342,9 @@ def about():
 <p>Boombaland is {GENRE_LINE} for iPhone, iPad and Android phones and tablets. You drop bombs, run from the blasts, break
 crates, grab power-ups and outsmart enemies on grid boards, with bosses and push-block puzzles along the way.</p>
 <p>It has 25 levels in {text('menu.worlds.green_lands')} and on Castle Road, six heroes ({", ".join(heroes[:-1])} and
-{heroes[-1]}), each with their own skill, and four difficulties from Easy to Impossible. You play on your own, against
-computer-controlled enemies.</p>
+{heroes[-1]}), each with their own skill, and four difficulties from Easy to Impossible. Besides the
+{text('menu.main.play')} there is the {text('menu.main.quickmatch')}: quick battles against CPU opponents. You play on
+your own, against computer-controlled enemies.</p>
 <p>Boombaland is free to play. It offers optional in-app purchases. Ads only play when you choose to watch one for a
 reward. There are no loot boxes.</p>
 <h3>Is Boombaland out yet?</h3>
