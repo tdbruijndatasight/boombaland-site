@@ -30,8 +30,8 @@ import build  # noqa: E402  (the site's shared head / top bar / footer)
 import level_maps  # noqa: E402  (the level grids, drawn from the level assets)
 
 ROOT = build.ROOT
-BW = os.environ.get("BOMBWORLD", "/Users/tomdebruijn/Dev/BombWorld")
-REF = os.environ.get("REF", "origin/coordinator/integrate-1028")
+BW = build.BW
+REF = build.REF  # one setting for both scripts (env REF=<git ref> overrides)
 UNSOURCED = []
 TPS = 60  # simulation ticks per second (Fixed.TicksPerSecond)
 
@@ -287,14 +287,19 @@ def render_all(pages):
 <p class="lede-left">{intro}</p>
 {clip_html}
 {body}
-<p class="wiki-source">Every number on this page comes from the game's own data for version 1.0. Something wrong? Mail <a href="mailto:{build.MAIL}">{build.MAIL}</a>.</p>
+<p class="wiki-source">Every number on this page comes from the game's own data, read from the release build. Something wrong? Mail <a href="mailto:{build.MAIL}">{build.MAIL}</a>.</p>
 </article>
 </div>
 </main>
 """
         path = f"/wiki/{slug}/" if slug else "/wiki/"
+        crumbs = [{"@type": "ListItem", "position": 1, "name": "Boombaland", "item": build.SITE + "/"},
+                  {"@type": "ListItem", "position": 2, "name": "Wiki", "item": build.SITE + "/wiki/"}]
+        if slug:
+            crumbs.append({"@type": "ListItem", "position": 3, "name": title, "item": build.SITE + path})
         build.page(path, content, f"{title} · Boombaland Wiki" if slug else "Boombaland Wiki", desc,
-                   current="/wiki/", script=True, extra_script="/assets/wiki.js")
+                   current="/wiki/", script=True, extra_script="/assets/wiki.js",
+                   jsonld=[{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": crumbs}])
 
 
 # ---------------------------------------------------------------- the Heroes screen's skill lines, as the game words them
@@ -499,17 +504,18 @@ def enemies_section():
 <p>{esc(T('menu.codex.' + body_key, '', '', b('towerHitPoints')))}</p><p>{esc(stat)}</p></div></div></section>""")
     dmg = table(["Distance from the bomb", "0 tiles", "1", "2", "3", "4"], [["Damage"] + [b(f"damageAtDistance{i}") for i in range(5)]])
     body = f"""<h2 id="bombers">Bombers</h2>
-<p>Thorn Guard's bombers play by the same rules as you: they drop bombs, grab power-ups and can be blown up.</p>
+<p>{esc(T('menu.codex.thorn_guard'))}'s bombers play by the same rules as you: they drop bombs, grab power-ups and can be blown up.</p>
 {''.join(rows)}
 <h2 id="bosses">The boss</h2>
 {boss}
-<h2 id="hazards">Towers, the airship and the castle guards</h2>
+<h2 id="hazards">{esc(T('menu.codex.archer'))}, {esc(T('menu.codex.airship'))} and the castle guards</h2>
 {''.join(others)}
 <h2 id="damage">How much a blast hurts</h2>
 <p>Everyone has {b('maxHealth')} health. The closer you stand to the bomb, the more it hurts:</p>
 {dmg}"""
     return wiki_page("enemies", "Enemies and bosses", "Who you are up against in Green Lands and on Castle Road.", body,
-                     "Boombaland enemies and bosses: the bombers, Thorn Guard, Rage Towers, the airship, Shellback and Cobblewatch.",
+                     "Boombaland enemies and bosses: the bombers, " + ", ".join(T("menu.codex." + k) for k in
+                     ("thorn_guard", "archer", "airship", "shellback")) + " and " + T("menu.codex.cobblewatch") + ".",
                      clip="bosses")
 
 
@@ -914,12 +920,15 @@ as No Ads come back. See <a href="/support/#how-do-i-get-my-no-ads-or-unlimited-
 
 
 def whatsnew_section():
-    body = """<h2 id="v1-0">Version 1.0: November 2026</h2>
-<p>Boombaland launches on the App Store and Google Play.</p>
+    n = lambda k: esc(T("menu.codex." + k))  # noqa: E731
+    status = ("Boombaland is out on the App Store and Google Play." if build.stores_live() else
+              "Coming soon: Boombaland is not in the App Store or on Google Play yet.")
+    body = f"""<h2 id="v1-0">The first release</h2>
+<p>{status}</p>
 <ul>
 <li>25 levels across Green Lands and Castle Road, each in Easy, Normal, Hard and Impossible.</li>
 <li>Six heroes: Blom, Gusto, Frosta, Zappy, Ember and Banshee.</li>
-<li>Bosses, Rage Towers, an airship and the castle's guards.</li>
+<li>Bosses and special enemies: {n('thorn_guard')}, {n('archer')}, {n('airship')}, {n('shellback')} and {n('cobblewatch')}.</li>
 <li>Gear, the Blacksmith, chests that show what they guarantee, and the Lucky Chest.</li>
 <li>Daily login, daily and weekly tasks, and achievements in Game Center and Google Play Games.</li>
 </ul>"""
@@ -938,6 +947,9 @@ def index_section(pages):
 
 
 def main():
+    # The level-map legend names the game's characters as the game does (never the internal asset names).
+    level_maps.LEGEND.update({"shellback": T("menu.codex.shellback"), "cobble": T("menu.codex.cobblewatch") + " (on the wall)",
+                              "airship": T("menu.codex.airship") + "'s side"})
     sections = [start_section(), heroes_section_wrapper(), enemies_section(), powerups_section(), levels_section(), board_section(),
                 gear_section(), chests_section(), currencies_section(), achievements_section(), faq_section(), whatsnew_section()]
     index = index_section(sections)

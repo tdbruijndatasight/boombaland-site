@@ -2,7 +2,7 @@
 (function () {
   "use strict";
 
-  // ---- CONFIG: fill these in once the store pages are live (see GO_LIVE.md, step 4). ----------------------------------
+  // ---- CONFIG: filled in on launch day by tools/go_live.py (see GO_LIVE.md, "Launch day"); then rebuild. ---------------
   // While a URL is empty, its button stays a "Coming soon" label that links to nothing.
   var STORE_LINKS = {
     ios: "",      // TODO: https://apps.apple.com/app/id<APPLE_ID> (the numeric Apple ID from App Store Connect, App Information)
@@ -10,13 +10,15 @@
   };
   // -------------------------------------------------------------------------------------------------------------------
 
-  document.querySelectorAll("[data-store]").forEach(function (a) {
+  // tools/build.py renders the buttons from this same config (status planks while empty, badges once filled), so this only
+  // patches links that are anchors already.
+  document.querySelectorAll("a[data-store]").forEach(function (a) {
     var url = STORE_LINKS[a.getAttribute("data-store")];
     if (url) {
       a.href = url;
       a.removeAttribute("aria-disabled");
       var note = a.querySelector("[data-store-note]");
-      if (note) note.textContent = "Download now";
+      if (note) note.textContent = "Free download";
     }
   });
   document.querySelectorAll('[data-store][aria-disabled="true"]').forEach(function (a) {

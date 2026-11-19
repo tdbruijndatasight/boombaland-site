@@ -9,6 +9,7 @@ plus the approved D-33.449 patch). Pass the path of that patched copy as LEGAL_S
   - links: ../ relative paths -> site-root paths, and the old github.io URLs -> https://www.boombaland.com/... .
 """
 import html
+import json
 import os
 import re
 import sys
@@ -16,26 +17,51 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+BW = os.environ.get("BOMBWORLD", "/Users/tomdebruijn/Dev/BombWorld")
+# The game branch the site's facts and names are read from. Point it at the branch that is (or will be) in the stores.
+REF = os.environ.get("REF", "origin/coordinator/release-107-1119")
+_STRINGS = None
+
+
+def game_strings():
+    """Every player-facing English string of the game, read from MenuStringsEn.cs at REF (cached)."""
+    global _STRINGS
+    if _STRINGS is None:
+        import subprocess
+        src = subprocess.run(["git", "-C", BW, "show", f"{REF}:Assets/_Project/Code/Menu/Services/MenuStringsEn.cs"],
+                             capture_output=True, check=True).stdout.decode("utf-8")
+        lit = r'"(?:[^"\\]|\\.)*"'
+        out = {}
+        for m in re.finditer(r'\["([^"]+)"\]\s*=\s*((?:' + lit + r'\s*\+?\s*)+)[,\n]', src):
+            v = "".join(p[1:-1] for p in re.findall(lit, m.group(2)))
+            v = re.sub(r"\\u([0-9a-fA-F]{4})", lambda u: chr(int(u.group(1), 16)), v)
+            out[m.group(1)] = v.replace('\\"', '"').replace("\\n", "\n").replace("\\\\", "\\")
+        _STRINGS = out
+    return _STRINGS
+
+
+def text(key):
+    s = game_strings()
+    if key not in s:
+        raise SystemExit(f"build.py: string {key} not found in MenuStringsEn.cs at {REF}")
+    return s[key]
+
+
+def name(key):
+    """A player-visible name from the game's Codex (menu.codex.<key>), e.g. name("thorn_guard") -> "Grimdorn"."""
+    return text("menu.codex." + key)
+
+
 def skill_bullets():
     """The home page's six skill bullets, in the game's own words: each skill's name (menu.heroes.skill_<hero>) and the
     Heroes screen's description (menu.heroes.skill_<hero>_text), read from MenuStringsEn.cs on the game's branch."""
-    import subprocess
-    bw = os.environ.get("BOMBWORLD", "/Users/tomdebruijn/Dev/BombWorld")
-    ref = os.environ.get("REF", "origin/coordinator/integrate-1028")
-    src = subprocess.run(["git", "-C", bw, "show", f"{ref}:Assets/_Project/Code/Menu/Services/MenuStringsEn.cs"],
-                         capture_output=True, check=True).stdout.decode("utf-8")
-
-    def text(key):
-        m = re.search(r'\["' + re.escape(key) + r'"\]\s*=\s*"((?:[^"\\]|\\.)*)"', src)
-        if not m:
-            raise SystemExit(f"build.py: string {key} not found in MenuStringsEn.cs")
-        return m.group(1).replace('\\"', '"')
-
     out = []
     for h in ["blom", "gusto", "frosta", "zappy", "ember", "banshee"]:
         out.append(f"<li><strong>{html.escape(text('menu.heroes.skill_' + h))}</strong>: "
                    f"{html.escape(text('menu.heroes.skill_' + h + '_text'))}</li>")
     return "\n".join(out)
+
+
 SITE = "https://www.boombaland.com"
 OLD_MAIL = "info.tomdebruijn@gmail.com"
 MAIL = "support@boombaland.com"
@@ -54,7 +80,18 @@ def nav(current, cls="nav"):
     return f'<ul class="{cls}">' + "".join(items) + "</ul>"
 
 
-def head(title, description, path, og_image="/assets/img/og-image-1200x630.jpg", noindex=False):
+def ld_script(items):
+    """JSON-LD blocks. Facts only: never aggregateRating, review, download counts or awards (tools/qa checks this)."""
+    if not items:
+        return ""
+    out = []
+    for it in items:
+        j = json.dumps(it, ensure_ascii=False, indent=1).replace("</", "<\\/")
+        out.append(f'\n<script type="application/ld+json">\n{j}\n</script>')
+    return "".join(out)
+
+
+def head(title, description, path, og_image="/assets/img/og-image-1200x630.jpg", noindex=False, jsonld=None):
     url = SITE + path
     t = html.escape(title)
     d = html.escape(description)
@@ -88,7 +125,7 @@ def head(title, description, path, og_image="/assets/img/og-image-1200x630.jpg",
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{t}">
 <meta name="twitter:description" content="{d}">
-<meta name="twitter:image" content="{SITE}{og_image}">
+<meta name="twitter:image" content="{SITE}{og_image}">{ld_script(jsonld)}
 </head>
 """
 
@@ -109,7 +146,8 @@ def topbar(current):
 FOOTER = f"""<footer class="footer">
 <div class="wrap">
 <nav aria-label="Footer">{nav(None)}</nav>
-<p>Boombaland is free to play. It offers optional in-app purchases and may show ads.</p>
+<p>Boombaland is free to play. It offers optional in-app purchases. Ads only play when you choose to watch one for a reward.</p>
+<p><a href="/development/">How Boombaland is made</a>: by a one-person studio working with AI tools, with every change reviewed and approved.</p>
 <p>Follow Boombaland on <a href="https://www.youtube.com/@BoombalandGame" rel="noopener">YouTube</a>, <a href="https://www.instagram.com/boombaland.game/" rel="noopener">Instagram</a> and <a href="https://www.tiktok.com/@boombaland" rel="noopener">TikTok</a>.</p>
 <p class="legal-id">Boombaland is made by DataSight (Tom de Bruijn), Tulameenpad 10, 1461 HN Zuidoostbeemster, the Netherlands.
 KvK 93353413. Contact: <a href="mailto:{MAIL}">{MAIL}</a></p>
@@ -118,12 +156,12 @@ KvK 93353413. Contact: <a href="mailto:{MAIL}">{MAIL}</a></p>
 """
 
 
-def page(path, body, title, description, current=None, script=False, noindex=False, extra_script=None):
+def page(path, body, title, description, current=None, script=False, noindex=False, extra_script=None, jsonld=None):
     s = '<script src="/assets/nav.js" defer></script>\n'
     s += '<script src="/assets/site.js" defer></script>\n' if script else ""
     if extra_script:
         s += f'<script src="{extra_script}" defer></script>\n'
-    out = head(title, description, path, noindex=noindex) + topbar(current) + body + FOOTER + s + "</body>\n</html>\n"
+    out = head(title, description, path, noindex=noindex, jsonld=jsonld) + topbar(current) + body + FOOTER + s + "</body>\n</html>\n"
     dest = os.path.join(ROOT, path.strip("/"), "index.html") if path.endswith("/") else os.path.join(ROOT, path.strip("/"))
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     with open(dest, "w", encoding="utf-8") as f:
@@ -144,7 +182,7 @@ def pic(name, widths, sizes, alt, fallback_w, w, h, ext="jpg", cls="", lazy=True
 # Gameplay clips (tools/make_clips.sh writes assets/clips/<name>.mp4/.webm/-poster.jpg). A clip whose files are missing is
 # simply left out. They play muted and looped, only while on screen, and never under prefers-reduced-motion (site.js).
 CLIP_CAPTIONS = {
-    "boss": "Thorn Guard arrives",
+    "boss": f"{name('thorn_guard')} arrives",
     "bosses": "A boss fight",
     "heroes": "A hero's skill in action",
     "powerups": "Blasts, chains and power-ups",
@@ -155,15 +193,22 @@ CLIP_CAPTIONS = {
 
 
 # The story goal, in the PO's words (round 3). Spoiler-free: no throne hall, no epilogue. Used on home, development, wiki.
-GOAL = "Your goal: defeat Thorn Guard and free Boombaland from his thorns."
+GOAL = f"Your goal: defeat {name('thorn_guard')} and free Boombaland from his thorns."
 
 # The home page's clips, in order (FOOTAGE_NEEDS.md shots 1-4). Missing ones are skipped.
 HOME_CLIPS = ["basics", "heroes", "castle", "bosses"]
 
 
+def tracked(path):
+    """True when the file is committed (or staged) in the site repo: local, unpublished renders are left out."""
+    import subprocess
+    r = subprocess.run(["git", "-C", ROOT, "ls-files", "--error-unmatch", os.path.relpath(path, ROOT)], capture_output=True)
+    return r.returncode == 0
+
+
 def clip_html(name, caption=None):
     base = os.path.join(ROOT, "assets", "clips", name)
-    if not all(os.path.exists(base + ext) for ext in (".mp4", ".webm", "-poster.jpg")):
+    if not all(os.path.exists(base + ext) and tracked(base + ext) for ext in (".mp4", ".webm", "-poster.jpg")):
         return ""
     cap = html.escape(caption or CLIP_CAPTIONS.get(name, ""))
     u = f"/assets/clips/{name}"
@@ -173,28 +218,83 @@ def clip_html(name, caption=None):
             f'<figcaption>{cap}</figcaption></figure>')
 
 
+APPLE_ID = "6821619320"
+PLAY_ID = "com.datasight.boomworld"
+
+
+def store_links():
+    """The store URLs, read from the one config spot: STORE_LINKS in assets/site.js (filled by tools/go_live.py)."""
+    js = open(os.path.join(ROOT, "assets", "site.js"), encoding="utf-8").read()
+    m = re.search(r"var STORE_LINKS = \{(.*?)\};", js, re.S)
+    out = {}
+    for k in ("ios", "android"):
+        mm = re.search(k + r':\s*"([^"]*)"', m.group(1))
+        out[k] = mm.group(1) if mm else ""
+    return out
+
+
+def stores_live():
+    links = store_links()
+    return bool(links["ios"] and links["android"])
+
+
+BADGES = {  # official artwork, downloaded unchanged from Apple / Google on launch day (IMAGE_NEEDS.md #10)
+    "ios": ("/assets/badges/app-store-badge.svg", "Download on the App Store", 120, 40),
+    "android": ("/assets/badges/google-play-badge.png", "Get it on Google Play", 135, 40),
+}
+
+
 def store_buttons():
-    return """<div class="stores">
-<a class="btn" data-store="ios" href="#" aria-disabled="true"><span class="stack"><span>App Store</span><small data-store-note>Coming soon</small></span></a>
-<a class="btn" data-store="android" href="#" aria-disabled="true"><span class="stack"><span>Google Play</span><small data-store-note>Coming soon</small></span></a>
-</div>"""
+    """Not live: a status plank per store that is NOT a link (nothing to tap). Live: the official badge (or, if the badge
+    file is missing, the green kit button) linking to the verified store page."""
+    links = store_links()
+    out = []
+    for key, label in (("ios", "App Store"), ("android", "Google Play")):
+        url = links[key]
+        if not url:
+            out.append(f'<span class="btn btn--soon" data-store="{key}"><span class="stack">'
+                       f'<span>{label}</span><small data-store-note>Coming soon</small></span></span>')
+            continue
+        src, alt, w, h = BADGES[key]
+        if os.path.exists(os.path.join(ROOT, src.lstrip("/"))):
+            out.append(f'<a class="store-badge" data-store="{key}" href="{html.escape(url)}" rel="noopener">'
+                       f'<img src="{src}" alt="{alt}" width="{w * 4}" height="{h * 4}"></a>')
+        else:
+            out.append(f'<a class="btn" data-store="{key}" href="{html.escape(url)}" rel="noopener"><span class="stack">'
+                       f'<span>{label}</span><small data-store-note>Free download</small></span></a>')
+    return '<div class="stores">\n' + "\n".join(out) + "\n</div>"
 
 
 SHOTS = [  # the store images v7 (PO 4 Nov 2026)
-    ("shot1", "Six heroes against the Thorn Guard and his airship crew", "Fan art: the six heroes, the Thorn Guard and his airship crew, with the Boombaland logo"),
+    ("shot1", f"Six heroes against {name('thorn_guard')} and his flying warship, {name('airship')}",
+     f"Key art: the six heroes, {name('thorn_guard')} and his flying warship {name('airship')}, with the Boombaland logo"),
     ("shot2", "Drop. Run. BOOM! Outsmart every enemy", "Blom drops a bomb on a crate-filled board as the blasts go off"),
-    ("shot3", "Fight epic bosses: beat the Thorn Guard and his tricks", "The Thorn Guard on his forest arena"),
+    ("shot3", f"Fight epic bosses: beat {name('thorn_guard')} and his tricks", f"{name('thorn_guard')} on his forest arena"),
     ("shot4", "Unlock unique heroes, each with their own power", "Zappy's storm lightning hits an enemy on a conveyor board"),
     ("shot5", "Use powerful skills: Frosta's Frost Ring freezes the enemies around her", "Frosta's Frost Ring freezes the enemy beside her in an ice casing"),
     ("shot6", "Explore evolving levels: conveyor belts carry you, your bombs and crates", "Gusto on a level full of conveyor belts"),
     ("shot7", "Solve complex puzzles: push the block into the gap to cross", "Banshee pushes a block into the gap in a castle puzzle"),
-    ("shot8", "Claim the throne: fight your way to the Thorn Guard's throne", "Ember fights the castle guards on the way to the throne"),
+    ("shot8", f"Claim the throne: fight your way to {name('thorn_guard')}'s throne", "Ember fights the castle guards on the way to the throne"),
 ]
+# Shots whose image has a retired boss name baked into its banner ("Thorn Guard"). They stay off the site until the
+# store images are re-exported with the game's current names (then remove them from this set and rerun make_images.sh).
+SHOTS_HIDDEN = {"shot3", "shot8"}
+
+# The trailer's poster: ONE hook. The old poster (assets/img/trailer-*) has "Play free now" and "THORN GUARD" baked in,
+# so until the new posters arrive the poster is the text-free key-art frame shot1 (TEMPORARY, same 16:9 size).
+# To drop in a new poster: put trailer-<name>-640/1280.{avif,jpg} in assets/img (tools/make_images.sh) and set the name
+# here. On launch day tools/go_live.py can switch to the LIVE variant (TRAILER_POSTER_LIVE) when it exists.
+TRAILER_POSTER = ("shot1", f"The six heroes, {name('thorn_guard')} and {name('airship')}: play the Boombaland trailer")
+TRAILER_POSTER_LIVE = None  # e.g. ("trailer-live", "...") once the "Play free now" poster may be shown
 
 TRAILER_ID = "ctIskTtDOoI"
 CHANNEL = "https://www.youtube.com/@BoombalandGame"
 INSTAGRAM = "https://www.instagram.com/boombaland.game/"
 TIKTOK = "https://www.tiktok.com/@boombaland"
+
+
+def trailer_poster():
+    return TRAILER_POSTER_LIVE if (TRAILER_POSTER_LIVE and stores_live()) else TRAILER_POSTER
 
 
 def trailer():
@@ -203,7 +303,7 @@ def trailer():
 <div class="wrap">
 <h2 class="section-title" id="trailer-title">Watch the trailer</h2>
 <div class="trailer" data-trailer="{TRAILER_ID}">
-<a class="trailer-play" href="https://youtu.be/{TRAILER_ID}" aria-label="Play the Boombaland trailer">{pic("trailer", [640, 1280], "(min-width: 900px) 860px, 92vw", "Blom versus the Thorn Guard: the Boombaland trailer", 1280, 1280, 720)}<span class="trailer-btn" aria-hidden="true"></span></a>
+<a class="trailer-play" href="https://youtu.be/{TRAILER_ID}" aria-label="Play the Boombaland trailer">{pic(trailer_poster()[0], [640, 1280], "(min-width: 900px) 860px, 92vw", trailer_poster()[1], 1280, 1280, 720)}<span class="trailer-btn" aria-hidden="true"></span></a>
 </div>
 <p class="trailer-note">The trailer plays from YouTube, which loads only when you press play.</p>
 <div class="stores">
@@ -216,12 +316,73 @@ def trailer():
 """
 
 
+HEROES = ["blom", "gusto", "frosta", "zappy", "ember", "banshee"]
+# One genre wording everywhere (store drafts: "Bomber Game", "Bomb puzzle adventure", keyword "arcade"). Never the
+# trademark "Bomberman" (Konami) in copy, titles, meta or JSON-LD.
+GENRE_LINE = "a classic bomb-maze arcade game"
+GENRES = ["Arcade", "Action", "Puzzle"]
+ORG = {"@type": "Organization", "@id": SITE + "/#org", "name": "DataSight", "url": SITE + "/",
+       "email": MAIL, "logo": SITE + "/assets/img/icon-192.png",
+       "address": {"@type": "PostalAddress", "addressCountry": "NL"},
+       "sameAs": [CHANNEL, INSTAGRAM, TIKTOK]}
+
+
+def hero_names():
+    return [text("menu.heroes.name_" + h) for h in HEROES]
+
+
+def about():
+    """Plain, quotable facts (answer engines quote these). No AI here: that story lives on /development/."""
+    heroes = hero_names()
+    status = ("<p>Yes. Boombaland is out now on the App Store and Google Play.</p>" if stores_live() else
+              "<p>Not yet. Boombaland is coming soon to the App Store and Google Play.</p>")
+    return f"""<section class="section" aria-labelledby="about-title">
+<div class="wrap prose about">
+<h2 class="section-title" id="about-title">What is Boombaland?</h2>
+<p>Boombaland is {GENRE_LINE} for iPhone, iPad and Android phones and tablets. You drop bombs, run from the blasts, break
+crates, grab power-ups and outsmart enemies on grid boards, with bosses and push-block puzzles along the way.</p>
+<p>It has 25 levels in {text('menu.worlds.green_lands')} and on Castle Road, six heroes ({", ".join(heroes[:-1])} and
+{heroes[-1]}), each with their own skill, and four difficulties from Easy to Impossible. You play on your own, against
+computer-controlled enemies.</p>
+<p>Boombaland is free to play. It offers optional in-app purchases. Ads only play when you choose to watch one for a
+reward. There are no loot boxes.</p>
+<h3>Is Boombaland out yet?</h3>
+{status}
+<h3>Who makes Boombaland?</h3>
+<p>DataSight, the one-person studio of Tom de Bruijn in the Netherlands.</p>
+</div>
+</section>
+"""
+
+
+def home_jsonld():
+    """Organization + WebSite + VideoGame. offers only once both stores are live (tools/go_live.py)."""
+    links = store_links()
+    game = {"@type": "VideoGame", "@id": SITE + "/#game", "name": "Boombaland", "url": SITE + "/",
+            "description": f"Boombaland is {GENRE_LINE} for iPhone, iPad and Android: drop bombs, dodge the blasts, beat "
+                           f"bosses and solve push-block puzzles across 25 levels with six heroes.",
+            "genre": GENRES, "gamePlatform": ["iOS", "Android"], "operatingSystem": "iOS, Android",
+            "applicationCategory": "GameApplication", "playMode": "SinglePlayer", "numberOfPlayers": 1,
+            "image": SITE + "/assets/img/key-art-2048.jpg", "author": {"@id": ORG["@id"]}, "publisher": {"@id": ORG["@id"]},
+            "trailer": {"@type": "VideoObject", "name": "Boombaland – Official Trailer",
+                        "embedUrl": f"https://www.youtube-nocookie.com/embed/{TRAILER_ID}",
+                        "url": f"https://youtu.be/{TRAILER_ID}",
+                        "thumbnailUrl": f"{SITE}/assets/img/{trailer_poster()[0]}-1280.jpg"}}
+    if stores_live():
+        game["offers"] = [{"@type": "Offer", "price": "0", "priceCurrency": "EUR", "availability": "https://schema.org/InStock",
+                           "url": links[k]} for k in ("ios", "android")]
+        game["sameAs"] = [links["ios"], links["android"]]
+    site = {"@type": "WebSite", "@id": SITE + "/#website", "name": "Boombaland", "url": SITE + "/",
+            "publisher": {"@id": ORG["@id"]}}
+    return [{"@context": "https://schema.org", "@graph": [ORG, site, game]}]
+
+
 def home():
     gallery = "\n".join(
         f'<li><figure><a href="/assets/img/{n}-1280.jpg" data-lightbox data-caption="{html.escape(c)}">'
         + pic(n, [640, 1280], "(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw", alt, 640, 640, 360)
         + f"</a><figcaption>{html.escape(c)}</figcaption></figure></li>"
-        for n, c, alt in SHOTS)
+        for n, c, alt in SHOTS if n not in SHOTS_HIDDEN)
     clips = "\n".join(c for c in (clip_html(n) for n in HOME_CLIPS) if c)
     clips_section = (f"""<section class="section" aria-labelledby="clips-title">
 <div class="wrap">
@@ -241,7 +402,7 @@ def home():
 <p class="hero-tag">Ready, Set, BOOM!</p>
 <p class="hero-pitch">Drop a bomb, run, and watch the board explode. Battle brutal bosses and unlock epic heroes in bright 3D adventures.</p>
 <p class="hero-classic">Classic bomb battles with a fresh new twist.</p>
-<p class="date-plank">Coming soon</p>
+{"" if stores_live() else '<p class="date-plank">Coming soon</p>'}
 {store_buttons()}
 <p class="hero-note">For iPhone, iPad and Android phones and tablets. Free to play.</p>
 </div>
@@ -250,6 +411,7 @@ def home():
 </section>
 
 {trailer()}
+{about()}
 <section class="section" aria-labelledby="features-title">
 <div class="wrap">
 <h2 class="section-title" id="features-title">Drop. Run. Boom!</h2>
@@ -266,12 +428,13 @@ def home():
 </article>
 
 <article class="panel feature" aria-labelledby="f-bosses">
-<h3 class="panel-header" id="f-bosses">Battle brutal bosses</h3>
-{pic("thorn-guard", [360, 720], "220px", "The Thorn Guard, a giant wooden forest warrior wrapped in thorny vines", 360, 360, 480, ext="png", cls="art art--tall")}
+<h3 class="panel-header" id="f-bosses">Battle big bosses</h3>
+{pic("thorn-guard", [360, 720], "220px", f"{name('thorn_guard')}, a giant wooden forest warrior wrapped in thorny vines", 360, 360, 480, ext="png", cls="art art--tall")}
 <ul>
-<li>The Thorn Guard hides behind a thorn shield, rains bomb barrages and gets faster when he is enraged</li>
-<li>The Rage Tower wakes up and fires arrow-bombs across the board</li>
-<li>An enemy airship drops in with its crew and cannons</li>
+<li>{name('thorn_guard')} hides behind a thorn shield, rains bomb barrages and gets faster when he is enraged</li>
+<li>{name('archer')}, the tower, shoots arrow-bombs across the board</li>
+<li>{name('airship')}, {name('thorn_guard')}'s flying warship, fires cannonballs that explode the moment they land</li>
+<li>On Castle Road, {name('shellback')} blocks every blast with its shell until it walks</li>
 <li>{GOAL[:-1]}</li>
 </ul>
 </article>
@@ -279,7 +442,7 @@ def home():
 <article class="panel feature" aria-labelledby="f-castle">
 <h3 class="panel-header" id="f-castle">Castle puzzles</h3>
 {pic("shot7", [640, 1280], "(min-width: 720px) 34rem, 90vw", "Banshee pushes a block into the gap in a castle puzzle", 640, 640, 360, cls="art art--shot")}
-<p>25 levels across the floating forest and Castle Road, each with its own twist: bridges, switches, towers, timed gates and push-block puzzles. Story comics between chapters, and 4 difficulties, from Easy to Impossible, each with its own three stars on every level.</p>
+<p>25 levels across {text('menu.worlds.green_lands')} and Castle Road, each with its own twist: bridges, switches, towers, timed gates and push-block puzzles. Story comics between chapters, and 4 difficulties, from Easy to Impossible, each with its own three stars on every level.</p>
 </article>
 
 <article class="panel feature" aria-labelledby="f-chests">
@@ -304,8 +467,8 @@ def home():
 
 <section class="section cta" aria-labelledby="cta-title">
 <div class="wrap">
-<h2 class="section-title" id="cta-title">Coming soon</h2>
-{pic("key-art", [1024, 2048], "(min-width: 700px) 640px, 92vw", "Blom and the Thorn Guard face off over a burning board, with the Boombaland logo between them", 1024, 1024, 500, cls="art")}
+<h2 class="section-title" id="cta-title">{"Play Boombaland" if stores_live() else "Coming soon"}</h2>
+{pic("key-art", [1024, 2048], "(min-width: 700px) 640px, 92vw", f"Blom and {name('thorn_guard')} face off over a burning board, with the Boombaland logo between them", 1024, 1024, 500, cls="art")}
 {store_buttons()}
 </div>
 </section>
@@ -318,8 +481,9 @@ def home():
 </dialog>
 """
     page("/", body, "Boombaland: drop a bomb, run, BOOM!",
-         "Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets. Battle brutal bosses, unlock six heroes and solve castle puzzles. Coming soon.",
-         current="/", script=True)
+         "Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android. Battle bosses, unlock six heroes "
+         "and solve castle puzzles. " + ("Free to play." if stores_live() else "Coming soon."),
+         current="/", script=True, jsonld=home_jsonld())
 
 
 PRESS_FILES = [
@@ -328,7 +492,8 @@ PRESS_FILES = [
     ("boombaland-key-art-2048x1000.jpg", "Key art", "2048 × 1000 JPEG", "/assets/img/key-art-1024.jpg"),
     ("boombaland-castle-logo-1920x1080.jpg", "Castle island with logo", "1920 × 1080 JPEG", "/assets/img/og-image-1200x630.jpg"),
     ("boombaland-blom-1024x1536.png", "Blom, the first hero", "1024 × 1536 PNG, transparent", "/assets/img/blom-360.png"),
-] + [(f"boombaland-screenshot-{i}.jpg", c, "full-size JPEG", f"/assets/img/{n}-640.jpg") for i, (n, c, _a) in enumerate(SHOTS, 1)]
+] + [(f"boombaland-screenshot-{i}.jpg", c, "full-size JPEG", f"/assets/img/{n}-640.jpg")
+     for i, (n, c, _a) in enumerate(SHOTS, 1) if n not in SHOTS_HIDDEN]
 
 
 def press():
@@ -339,17 +504,17 @@ def press():
     body = f"""<main id="main" class="page">
 <div class="wrap prose">
 <h1>Press kit</h1>
-<p>Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets. Drop a bomb, run, and watch the board explode: battle brutal bosses, unlock six heroes with their own superpowers, and solve castle puzzles across 25 levels.</p>
+<p>Boombaland is {GENRE_LINE} for iPhone, iPad and Android phones and tablets. Drop a bomb, run, and watch the board explode: battle bosses, unlock six heroes with their own superpowers, and solve castle puzzles across 25 levels.</p>
 <section class="panel" aria-labelledby="facts-title">
 <h2 class="panel-header" id="facts-title">Fact sheet</h2>
 <dl class="facts">
 <dt>Game</dt><dd>Boombaland</dd>
 <dt>Developer</dt><dd>DataSight (Tom de Bruijn), the Netherlands</dd>
-<dt>Release date</dt><dd>End of November 2026</dd>
+<dt>Release date</dt><dd>{"Out now on the App Store and Google Play" if stores_live() else "Coming soon"}</dd>
 <dt>Platforms</dt><dd>iPhone, iPad and Android phones and tablets</dd>
 <dt>Price</dt><dd>Free to play, with optional in-app purchases and optional rewarded video ads</dd>
-<dt>Genre</dt><dd>Bomb-blasting arcade game with bosses and puzzles</dd>
-<dt>Content</dt><dd>25 levels across the floating forest and Castle Road, 6 heroes, bosses including the Thorn Guard, the Rage Tower and an enemy airship, story comics between chapters, 4 difficulties</dd>
+<dt>Genre</dt><dd>Arcade bomber: a classic bomb-maze arcade game with bosses and puzzles</dd>
+<dt>Content</dt><dd>25 levels across {text('menu.worlds.green_lands')} and Castle Road, 6 heroes ({", ".join(hero_names())}), bosses and special enemies including {name('thorn_guard')}, {name('archer')}, {name('airship')} and {name('shellback')}, story comics between chapters, 4 difficulties</dd>
 <dt>Chests</dt><dd>No loot boxes: every chest shows the item it guarantees and the chance of everything else</dd>
 <dt>Website</dt><dd><a href="https://www.boombaland.com/">www.boombaland.com</a></dd>
 <dt>Press contact</dt><dd><a href="mailto:{MAIL}">{MAIL}</a></dd>
@@ -364,7 +529,7 @@ def press():
 </main>
 """
     page("/press/", body, "Boombaland press kit",
-         "Fact sheet, app icon, logo, key art and screenshots of Boombaland, a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets.",
+         "Fact sheet, app icon, logo, key art and screenshots of Boombaland, a classic bomb-maze arcade game for iPhone, iPad and Android phones and tablets.",
          current="/press/")
 
 
@@ -434,11 +599,11 @@ starts the next round.</p>
 loop: one bomb, one opponent, one small arena. Then power-ups, score and menus. Then the full game: a living board with
 bridges, belts and gates, bosses, six heroes, gear and chests.</p>
 <p>Version 1.0 has 25 levels in two parts of the same world: <strong>Green Lands</strong>, a floating forest of
-bridges, belts and towers, and <strong>Castle Road</strong>, where push-block puzzles lead to Thorn Guard's castle. A
+bridges, belts and towers, and <strong>Castle Road</strong>, where push-block puzzles lead to {name('thorn_guard')}'s castle. A
 nine-chapter comic tells the story between the levels. {GOAL}</p>
 
 <h2 id="next">What's next</h2>
-<p>Boombaland launches in November 2026. After that, Boombaland keeps growing: more to discover, and your ideas can shape what
+<p>{"Boombaland is out now on the App Store and Google Play." if stores_live() else "Boombaland is coming soon to the App Store and Google Play."} From there, Boombaland keeps growing: more to discover, and your ideas can shape what
 comes next.</p>
 
 <section class="panel" id="ideas" aria-labelledby="ideas-title">
@@ -452,7 +617,11 @@ the details.</p>
 """
     page("/development/", body, "How Boombaland is made",
          "How Boombaland is made by a one-person studio with AI tools, how a change reaches players, what comes next, and how to send us your idea for the game.",
-         current="/development/", script=True)
+         current="/development/", script=True, jsonld=[{
+             "@context": "https://schema.org", "@type": "AboutPage", "@id": SITE + "/development/#page",
+             "name": "How Boombaland is made", "url": SITE + "/development/", "inLanguage": "en",
+             "about": {"@id": SITE + "/#game"}, "publisher": {"@id": SITE + "/#org"},
+             "isPartOf": {"@id": SITE + "/#website"}}])
 
 
 def idea_form():
@@ -505,9 +674,22 @@ def port_legal():
         page(path, body, title, desc, current=path)
 
 
+def sync_footer():
+    """Pages this script does not write every time (the ported legal pages, the redeem page) get the current shared footer.
+    Only the <footer> block is replaced; the legal wording above it is never touched."""
+    for rel in ("privacy/index.html", "terms/index.html", "support/index.html", "redeem/index.html"):
+        f = os.path.join(ROOT, rel)
+        src = open(f, encoding="utf-8").read()
+        new = re.sub(r'<footer class="footer">.*?</footer>\n', lambda _m: FOOTER, src, count=1, flags=re.S)
+        if new != src:
+            open(f, "w", encoding="utf-8").write(new)
+            print("footer", rel)
+
+
 if __name__ == "__main__":
     home()
     press()
     development()
     not_found()
     port_legal()
+    sync_footer()

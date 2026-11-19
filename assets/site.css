@@ -87,6 +87,13 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.15; l
 .btn small { display: block; font-size: .78rem; font-weight: 600; opacity: .95; }
 .btn .stack { display: flex; flex-direction: column; align-items: center; }
 .btn[aria-disabled="true"] { cursor: default; }
+/* Not in the store yet: a wooden status plank (the date plank's look), not a green button, and not a link. */
+.btn--soon, .btn--soon:hover { border-image: none; border: 3px solid var(--wood-dark); border-radius: 10px; background: var(--wood);
+  color: var(--parchment); min-height: 52px; padding: .3rem 1rem; box-shadow: 0 3px 0 var(--outline); filter: none; }
+.btn--soon small { color: var(--gold); }
+/* Live: the official store badges, unchanged artwork. */
+.store-badge { display: inline-block; line-height: 0; }
+.store-badge img { height: 56px; width: auto; }
 
 /* ---- Hero ---------------------------------------------------------------------------------------------------- */
 .hero { position: relative; overflow: hidden; background: var(--sky); color: #fff; }
@@ -208,7 +215,8 @@ dialog.lightbox button { position: absolute; top: 8px; right: 8px; width: 44px; 
 .footer .nav { margin-bottom: 1rem; }
 .footer .nav a { color: var(--gold); }
 .footer p { margin: .3rem 0; font-weight: 600; }
-.footer .legal-id { margin-top: 1.4rem; opacity: .7; font-size: .7rem; font-weight: 400; line-height: 1.4; }
+.footer .legal-id { margin-top: 1.4rem; color: var(--parchment); font-size: .75rem; font-weight: 400; line-height: 1.4; }
+.footer .legal-id a { color: var(--gold); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
@@ -348,3 +356,7 @@ dialog.lightbox button { position: absolute; top: 8px; right: 8px; width: 44px; 
 .trailer-btn::after { content: ""; position: absolute; left: 38px; top: 20px; border-style: solid; border-width: 12px 0 12px 21px; border-color: transparent transparent transparent #fff; }
 .trailer a:hover .trailer-btn, .trailer a:focus-visible .trailer-btn { background: rgb(230, 33, 23); }
 .trailer-note { text-align: center; font: 600 .85rem var(--ui); color: var(--ink-muted); margin: .5rem 0 1rem; }
+
+/* ---- "What is Boombaland?": plain facts ------------------------------------------------------------------------- */
+.about { max-width: 46rem; }
+.about h3 { margin: 1.2rem 0 .3rem; font: 400 1.3rem/1.2 var(--display); }

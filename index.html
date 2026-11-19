@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Boombaland: drop a bomb, run, BOOM!</title>
-<meta name="description" content="Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets. Battle brutal bosses, unlock six heroes and solve castle puzzles. Coming soon.">
+<meta name="description" content="Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android. Battle bosses, unlock six heroes and solve castle puzzles. Coming soon.">
 <link rel="canonical" href="https://www.boombaland.com/">
 <meta name="theme-color" content="#4a2c16">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -18,7 +18,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Boombaland">
 <meta property="og:title" content="Boombaland: drop a bomb, run, BOOM!">
-<meta property="og:description" content="Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets. Battle brutal bosses, unlock six heroes and solve castle puzzles. Coming soon.">
+<meta property="og:description" content="Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android. Battle bosses, unlock six heroes and solve castle puzzles. Coming soon.">
 <meta property="og:url" content="https://www.boombaland.com/">
 <meta property="og:image" content="https://www.boombaland.com/assets/img/og-image-1200x630.jpg">
 <meta property="og:image:width" content="1200">
@@ -26,8 +26,75 @@
 <meta property="og:image:alt" content="The Boombaland logo over a castle on a floating island">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Boombaland: drop a bomb, run, BOOM!">
-<meta name="twitter:description" content="Boombaland is a bomb-blasting arcade game for iPhone, iPad and Android phones and tablets. Battle brutal bosses, unlock six heroes and solve castle puzzles. Coming soon.">
+<meta name="twitter:description" content="Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android. Battle bosses, unlock six heroes and solve castle puzzles. Coming soon.">
 <meta name="twitter:image" content="https://www.boombaland.com/assets/img/og-image-1200x630.jpg">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://www.boombaland.com/#org",
+   "name": "DataSight",
+   "url": "https://www.boombaland.com/",
+   "email": "support@boombaland.com",
+   "logo": "https://www.boombaland.com/assets/img/icon-192.png",
+   "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "NL"
+   },
+   "sameAs": [
+    "https://www.youtube.com/@BoombalandGame",
+    "https://www.instagram.com/boombaland.game/",
+    "https://www.tiktok.com/@boombaland"
+   ]
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://www.boombaland.com/#website",
+   "name": "Boombaland",
+   "url": "https://www.boombaland.com/",
+   "publisher": {
+    "@id": "https://www.boombaland.com/#org"
+   }
+  },
+  {
+   "@type": "VideoGame",
+   "@id": "https://www.boombaland.com/#game",
+   "name": "Boombaland",
+   "url": "https://www.boombaland.com/",
+   "description": "Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android: drop bombs, dodge the blasts, beat bosses and solve push-block puzzles across 25 levels with six heroes.",
+   "genre": [
+    "Arcade",
+    "Action",
+    "Puzzle"
+   ],
+   "gamePlatform": [
+    "iOS",
+    "Android"
+   ],
+   "operatingSystem": "iOS, Android",
+   "applicationCategory": "GameApplication",
+   "playMode": "SinglePlayer",
+   "numberOfPlayers": 1,
+   "image": "https://www.boombaland.com/assets/img/key-art-2048.jpg",
+   "author": {
+    "@id": "https://www.boombaland.com/#org"
+   },
+   "publisher": {
+    "@id": "https://www.boombaland.com/#org"
+   },
+   "trailer": {
+    "@type": "VideoObject",
+    "name": "Boombaland – Official Trailer",
+    "embedUrl": "https://www.youtube-nocookie.com/embed/ctIskTtDOoI",
+    "url": "https://youtu.be/ctIskTtDOoI",
+    "thumbnailUrl": "https://www.boombaland.com/assets/img/shot1-1280.jpg"
+   }
+  }
+ ]
+}
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -49,8 +116,8 @@
 <p class="hero-classic">Classic bomb battles with a fresh new twist.</p>
 <p class="date-plank">Coming soon</p>
 <div class="stores">
-<a class="btn" data-store="ios" href="#" aria-disabled="true"><span class="stack"><span>App Store</span><small data-store-note>Coming soon</small></span></a>
-<a class="btn" data-store="android" href="#" aria-disabled="true"><span class="stack"><span>Google Play</span><small data-store-note>Coming soon</small></span></a>
+<span class="btn btn--soon" data-store="ios"><span class="stack"><span>App Store</span><small data-store-note>Coming soon</small></span></span>
+<span class="btn btn--soon" data-store="android"><span class="stack"><span>Google Play</span><small data-store-note>Coming soon</small></span></span>
 </div>
 <p class="hero-note">For iPhone, iPad and Android phones and tablets. Free to play.</p>
 </div>
@@ -62,7 +129,7 @@
 <div class="wrap">
 <h2 class="section-title" id="trailer-title">Watch the trailer</h2>
 <div class="trailer" data-trailer="ctIskTtDOoI">
-<a class="trailer-play" href="https://youtu.be/ctIskTtDOoI" aria-label="Play the Boombaland trailer"><picture><source type="image/avif" srcset="/assets/img/trailer-640.avif 640w, /assets/img/trailer-1280.avif 1280w" sizes="(min-width: 900px) 860px, 92vw"><img src="/assets/img/trailer-1280.jpg" srcset="/assets/img/trailer-640.jpg 640w, /assets/img/trailer-1280.jpg 1280w" sizes="(min-width: 900px) 860px, 92vw" width="1280" height="720" alt="Blom versus the Thorn Guard: the Boombaland trailer" loading="lazy" decoding="async"></picture><span class="trailer-btn" aria-hidden="true"></span></a>
+<a class="trailer-play" href="https://youtu.be/ctIskTtDOoI" aria-label="Play the Boombaland trailer"><picture><source type="image/avif" srcset="/assets/img/shot1-640.avif 640w, /assets/img/shot1-1280.avif 1280w" sizes="(min-width: 900px) 860px, 92vw"><img src="/assets/img/shot1-1280.jpg" srcset="/assets/img/shot1-640.jpg 640w, /assets/img/shot1-1280.jpg 1280w" sizes="(min-width: 900px) 860px, 92vw" width="1280" height="720" alt="The six heroes, Grimdorn and Nimbo: play the Boombaland trailer" loading="lazy" decoding="async"></picture><span class="trailer-btn" aria-hidden="true"></span></a>
 </div>
 <p class="trailer-note">The trailer plays from YouTube, which loads only when you press play.</p>
 <div class="stores">
@@ -70,6 +137,23 @@
 <a class="btn" href="https://www.instagram.com/boombaland.game/" rel="noopener"><span class="stack"><span>Instagram</span><small>@boombaland.game</small></span></a>
 <a class="btn" href="https://www.tiktok.com/@boombaland" rel="noopener"><span class="stack"><span>TikTok</span><small>@boombaland</small></span></a>
 </div>
+</div>
+</section>
+
+<section class="section" aria-labelledby="about-title">
+<div class="wrap prose about">
+<h2 class="section-title" id="about-title">What is Boombaland?</h2>
+<p>Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android phones and tablets. You drop bombs, run from the blasts, break
+crates, grab power-ups and outsmart enemies on grid boards, with bosses and push-block puzzles along the way.</p>
+<p>It has 25 levels in Green Lands and on Castle Road, six heroes (Blom, Gusto, Frosta, Zappy, Ember and
+Banshee), each with their own skill, and four difficulties from Easy to Impossible. You play on your own, against
+computer-controlled enemies.</p>
+<p>Boombaland is free to play. It offers optional in-app purchases. Ads only play when you choose to watch one for a
+reward. There are no loot boxes.</p>
+<h3>Is Boombaland out yet?</h3>
+<p>Not yet. Boombaland is coming soon to the App Store and Google Play.</p>
+<h3>Who makes Boombaland?</h3>
+<p>DataSight, the one-person studio of Tom de Bruijn in the Netherlands.</p>
 </div>
 </section>
 
@@ -94,20 +178,21 @@
 </article>
 
 <article class="panel feature" aria-labelledby="f-bosses">
-<h3 class="panel-header" id="f-bosses">Battle brutal bosses</h3>
-<picture><source type="image/avif" srcset="/assets/img/thorn-guard-360.avif 360w, /assets/img/thorn-guard-720.avif 720w" sizes="220px"><img class="art art--tall" src="/assets/img/thorn-guard-360.png" srcset="/assets/img/thorn-guard-360.png 360w" sizes="220px" width="360" height="480" alt="The Thorn Guard, a giant wooden forest warrior wrapped in thorny vines" loading="lazy" decoding="async"></picture>
+<h3 class="panel-header" id="f-bosses">Battle big bosses</h3>
+<picture><source type="image/avif" srcset="/assets/img/thorn-guard-360.avif 360w, /assets/img/thorn-guard-720.avif 720w" sizes="220px"><img class="art art--tall" src="/assets/img/thorn-guard-360.png" srcset="/assets/img/thorn-guard-360.png 360w" sizes="220px" width="360" height="480" alt="Grimdorn, a giant wooden forest warrior wrapped in thorny vines" loading="lazy" decoding="async"></picture>
 <ul>
-<li>The Thorn Guard hides behind a thorn shield, rains bomb barrages and gets faster when he is enraged</li>
-<li>The Rage Tower wakes up and fires arrow-bombs across the board</li>
-<li>An enemy airship drops in with its crew and cannons</li>
-<li>Your goal: defeat Thorn Guard and free Boombaland from his thorns</li>
+<li>Grimdorn hides behind a thorn shield, rains bomb barrages and gets faster when he is enraged</li>
+<li>Arko, the tower, shoots arrow-bombs across the board</li>
+<li>Nimbo, Grimdorn's flying warship, fires cannonballs that explode the moment they land</li>
+<li>On Castle Road, Turto blocks every blast with its shell until it walks</li>
+<li>Your goal: defeat Grimdorn and free Boombaland from his thorns</li>
 </ul>
 </article>
 
 <article class="panel feature" aria-labelledby="f-castle">
 <h3 class="panel-header" id="f-castle">Castle puzzles</h3>
 <picture><source type="image/avif" srcset="/assets/img/shot7-640.avif 640w, /assets/img/shot7-1280.avif 1280w" sizes="(min-width: 720px) 34rem, 90vw"><img class="art art--shot" src="/assets/img/shot7-640.jpg" srcset="/assets/img/shot7-640.jpg 640w, /assets/img/shot7-1280.jpg 1280w" sizes="(min-width: 720px) 34rem, 90vw" width="640" height="360" alt="Banshee pushes a block into the gap in a castle puzzle" loading="lazy" decoding="async"></picture>
-<p>25 levels across the floating forest and Castle Road, each with its own twist: bridges, switches, towers, timed gates and push-block puzzles. Story comics between chapters, and 4 difficulties, from Easy to Impossible, each with its own three stars on every level.</p>
+<p>25 levels across Green Lands and Castle Road, each with its own twist: bridges, switches, towers, timed gates and push-block puzzles. Story comics between chapters, and 4 difficulties, from Easy to Impossible, each with its own three stars on every level.</p>
 </article>
 
 <article class="panel feature" aria-labelledby="f-chests">
@@ -125,14 +210,12 @@
 <div class="wrap">
 <h2 class="section-title" id="gallery-title">Screenshots</h2>
 <ul class="gallery">
-<li><figure><a href="/assets/img/shot1-1280.jpg" data-lightbox data-caption="Six heroes against the Thorn Guard and his airship crew"><picture><source type="image/avif" srcset="/assets/img/shot1-640.avif 640w, /assets/img/shot1-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot1-640.jpg" srcset="/assets/img/shot1-640.jpg 640w, /assets/img/shot1-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Fan art: the six heroes, the Thorn Guard and his airship crew, with the Boombaland logo" loading="lazy" decoding="async"></picture></a><figcaption>Six heroes against the Thorn Guard and his airship crew</figcaption></figure></li>
+<li><figure><a href="/assets/img/shot1-1280.jpg" data-lightbox data-caption="Six heroes against Grimdorn and his flying warship, Nimbo"><picture><source type="image/avif" srcset="/assets/img/shot1-640.avif 640w, /assets/img/shot1-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot1-640.jpg" srcset="/assets/img/shot1-640.jpg 640w, /assets/img/shot1-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Key art: the six heroes, Grimdorn and his flying warship Nimbo, with the Boombaland logo" loading="lazy" decoding="async"></picture></a><figcaption>Six heroes against Grimdorn and his flying warship, Nimbo</figcaption></figure></li>
 <li><figure><a href="/assets/img/shot2-1280.jpg" data-lightbox data-caption="Drop. Run. BOOM! Outsmart every enemy"><picture><source type="image/avif" srcset="/assets/img/shot2-640.avif 640w, /assets/img/shot2-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot2-640.jpg" srcset="/assets/img/shot2-640.jpg 640w, /assets/img/shot2-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Blom drops a bomb on a crate-filled board as the blasts go off" loading="lazy" decoding="async"></picture></a><figcaption>Drop. Run. BOOM! Outsmart every enemy</figcaption></figure></li>
-<li><figure><a href="/assets/img/shot3-1280.jpg" data-lightbox data-caption="Fight epic bosses: beat the Thorn Guard and his tricks"><picture><source type="image/avif" srcset="/assets/img/shot3-640.avif 640w, /assets/img/shot3-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot3-640.jpg" srcset="/assets/img/shot3-640.jpg 640w, /assets/img/shot3-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="The Thorn Guard on his forest arena" loading="lazy" decoding="async"></picture></a><figcaption>Fight epic bosses: beat the Thorn Guard and his tricks</figcaption></figure></li>
 <li><figure><a href="/assets/img/shot4-1280.jpg" data-lightbox data-caption="Unlock unique heroes, each with their own power"><picture><source type="image/avif" srcset="/assets/img/shot4-640.avif 640w, /assets/img/shot4-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot4-640.jpg" srcset="/assets/img/shot4-640.jpg 640w, /assets/img/shot4-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Zappy&#x27;s storm lightning hits an enemy on a conveyor board" loading="lazy" decoding="async"></picture></a><figcaption>Unlock unique heroes, each with their own power</figcaption></figure></li>
 <li><figure><a href="/assets/img/shot5-1280.jpg" data-lightbox data-caption="Use powerful skills: Frosta&#x27;s Frost Ring freezes the enemies around her"><picture><source type="image/avif" srcset="/assets/img/shot5-640.avif 640w, /assets/img/shot5-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot5-640.jpg" srcset="/assets/img/shot5-640.jpg 640w, /assets/img/shot5-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Frosta&#x27;s Frost Ring freezes the enemy beside her in an ice casing" loading="lazy" decoding="async"></picture></a><figcaption>Use powerful skills: Frosta&#x27;s Frost Ring freezes the enemies around her</figcaption></figure></li>
 <li><figure><a href="/assets/img/shot6-1280.jpg" data-lightbox data-caption="Explore evolving levels: conveyor belts carry you, your bombs and crates"><picture><source type="image/avif" srcset="/assets/img/shot6-640.avif 640w, /assets/img/shot6-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot6-640.jpg" srcset="/assets/img/shot6-640.jpg 640w, /assets/img/shot6-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Gusto on a level full of conveyor belts" loading="lazy" decoding="async"></picture></a><figcaption>Explore evolving levels: conveyor belts carry you, your bombs and crates</figcaption></figure></li>
 <li><figure><a href="/assets/img/shot7-1280.jpg" data-lightbox data-caption="Solve complex puzzles: push the block into the gap to cross"><picture><source type="image/avif" srcset="/assets/img/shot7-640.avif 640w, /assets/img/shot7-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot7-640.jpg" srcset="/assets/img/shot7-640.jpg 640w, /assets/img/shot7-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Banshee pushes a block into the gap in a castle puzzle" loading="lazy" decoding="async"></picture></a><figcaption>Solve complex puzzles: push the block into the gap to cross</figcaption></figure></li>
-<li><figure><a href="/assets/img/shot8-1280.jpg" data-lightbox data-caption="Claim the throne: fight your way to the Thorn Guard&#x27;s throne"><picture><source type="image/avif" srcset="/assets/img/shot8-640.avif 640w, /assets/img/shot8-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot8-640.jpg" srcset="/assets/img/shot8-640.jpg 640w, /assets/img/shot8-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Ember fights the castle guards on the way to the throne" loading="lazy" decoding="async"></picture></a><figcaption>Claim the throne: fight your way to the Thorn Guard&#x27;s throne</figcaption></figure></li>
 </ul>
 </div>
 </section>
@@ -140,10 +223,10 @@
 <section class="section cta" aria-labelledby="cta-title">
 <div class="wrap">
 <h2 class="section-title" id="cta-title">Coming soon</h2>
-<picture><source type="image/avif" srcset="/assets/img/key-art-1024.avif 1024w, /assets/img/key-art-2048.avif 2048w" sizes="(min-width: 700px) 640px, 92vw"><img class="art" src="/assets/img/key-art-1024.jpg" srcset="/assets/img/key-art-1024.jpg 1024w, /assets/img/key-art-2048.jpg 2048w" sizes="(min-width: 700px) 640px, 92vw" width="1024" height="500" alt="Blom and the Thorn Guard face off over a burning board, with the Boombaland logo between them" loading="lazy" decoding="async"></picture>
+<picture><source type="image/avif" srcset="/assets/img/key-art-1024.avif 1024w, /assets/img/key-art-2048.avif 2048w" sizes="(min-width: 700px) 640px, 92vw"><img class="art" src="/assets/img/key-art-1024.jpg" srcset="/assets/img/key-art-1024.jpg 1024w, /assets/img/key-art-2048.jpg 2048w" sizes="(min-width: 700px) 640px, 92vw" width="1024" height="500" alt="Blom and Grimdorn face off over a burning board, with the Boombaland logo between them" loading="lazy" decoding="async"></picture>
 <div class="stores">
-<a class="btn" data-store="ios" href="#" aria-disabled="true"><span class="stack"><span>App Store</span><small data-store-note>Coming soon</small></span></a>
-<a class="btn" data-store="android" href="#" aria-disabled="true"><span class="stack"><span>Google Play</span><small data-store-note>Coming soon</small></span></a>
+<span class="btn btn--soon" data-store="ios"><span class="stack"><span>App Store</span><small data-store-note>Coming soon</small></span></span>
+<span class="btn btn--soon" data-store="android"><span class="stack"><span>Google Play</span><small data-store-note>Coming soon</small></span></span>
 </div>
 </div>
 </section>
@@ -157,7 +240,8 @@
 <footer class="footer">
 <div class="wrap">
 <nav aria-label="Footer"><ul class="nav"><li><a href="/">Home</a></li><li><a href="/wiki/">Wiki</a></li><li><a href="/development/">Development</a></li><li><a href="/press/">Press</a></li><li><a href="/redeem/">Redeem</a></li><li><a href="/support/">Support</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></nav>
-<p>Boombaland is free to play. It offers optional in-app purchases and may show ads.</p>
+<p>Boombaland is free to play. It offers optional in-app purchases. Ads only play when you choose to watch one for a reward.</p>
+<p><a href="/development/">How Boombaland is made</a>: by a one-person studio working with AI tools, with every change reviewed and approved.</p>
 <p>Follow Boombaland on <a href="https://www.youtube.com/@BoombalandGame" rel="noopener">YouTube</a>, <a href="https://www.instagram.com/boombaland.game/" rel="noopener">Instagram</a> and <a href="https://www.tiktok.com/@boombaland" rel="noopener">TikTok</a>.</p>
 <p class="legal-id">Boombaland is made by DataSight (Tom de Bruijn), Tulameenpad 10, 1461 HN Zuidoostbeemster, the Netherlands.
 KvK 93353413. Contact: <a href="mailto:support@boombaland.com">support@boombaland.com</a></p>
