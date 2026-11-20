@@ -53,10 +53,10 @@ no access to the private game repo, so there the name check uses the snapshot on
 
 ## Search engines and AI crawlers
 
-- `robots.txt` names the search and answer bots (Googlebot, Bingbot, Applebot, OAI-SearchBot, ChatGPT-User,
-  PerplexityBot) and allows everything. **PO decision open:** the AI *training* crawlers (GPTBot, Google-Extended,
-  CCBot, ClaudeBot, anthropic-ai, Applebot-Extended) are allowed by `User-agent: *`, as before. To block them, add a
-  group with those user-agents and `Disallow: /`, and set Cloudflare's AI-crawler settings to match.
+- `robots.txt` allows the search and answer bots (Googlebot, Bingbot, Applebot, DuckDuckBot, OAI-SearchBot,
+  ChatGPT-User, Claude-SearchBot, Claude-User, PerplexityBot, Perplexity-User) and **blocks the AI training crawlers**
+  (GPTBot, Google-Extended, Applebot-Extended, ClaudeBot, anthropic-ai, CCBot, Meta-ExternalAgent, Bytespider,
+  cohere-training-data-crawler): PO decision 2026-11-20. Everyone else is allowed.
 - `llms.txt` is optional and experimental; `build.py` generates it from the same facts as the home page.
 - IndexNow: the key file `<32 hex>.txt` is at the root. After a publish, `python3 -I tools/indexnow.py --submit`
   (dry run without `--submit`). Or switch on Cloudflare Crawler Hints instead.
