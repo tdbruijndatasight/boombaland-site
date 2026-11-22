@@ -82,3 +82,24 @@
     });
   });
 })();
+
+/* Press kit: "Copy the text" copies the approved short description (no clipboard library, no permission prompt). */
+(function () {
+  "use strict";
+  document.querySelectorAll("button[data-copy]").forEach(function (b) {
+    var src = document.getElementById(b.getAttribute("data-copy"));
+    var done = b.parentNode.querySelector(".copy-done");
+    if (!src) return;
+    var say = function (t) { if (done) done.textContent = t; };
+    var fallback = function () {  // no clipboard API: select the text so the reader can copy it
+      var r = document.createRange(); r.selectNodeContents(src);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      say("Selected: copy it with your keyboard or menu.");
+    };
+    b.addEventListener("click", function () {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(src.textContent.trim()).then(function () { say("Copied."); }, fallback);
+      } else { fallback(); }
+    });
+  });
+})();

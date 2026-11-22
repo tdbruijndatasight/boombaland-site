@@ -316,7 +316,7 @@ SHOTS_HIDDEN = {"shot3", "shot8"}
 TRAILER_POSTER = ("shot1", f"The six heroes, {name('thorn_guard')} and {name('airship')}: play the Boombaland trailer")
 TRAILER_POSTER_LIVE = None  # e.g. ("trailer-live", "...") once the "Play free now" poster may be shown
 
-TRAILER_ID = "ctIskTtDOoI"
+TRAILER_ID = "TECFHLAUPcM"
 CHANNEL = "https://www.youtube.com/@BoombalandGame"
 INSTAGRAM = "https://www.instagram.com/boombaland.game/"
 TIKTOK = "https://www.tiktok.com/@boombaland"
@@ -522,51 +522,136 @@ def home():
          current="/", script=True, jsonld=home_jsonld())
 
 
-PRESS_FILES = [
+LANG_NAMES = {"en": "English", "de": "German", "nl": "Dutch", "fr": "French", "es": "Spanish", "pt-BR": "Portuguese (Brazil)",
+              "ru": "Russian", "ja": "Japanese", "ko": "Korean", "zh-Hans": "Chinese (Simplified)", "zh-Hant": "Chinese (Traditional)"}
+
+
+def game_languages():
+    """The game's languages, in the in-game picker's order: Languages.Codes in Languages.cs at REF."""
+    import subprocess
+    src = subprocess.run(["git", "-C", BW, "show", f"{REF}:Assets/_Project/Code/Menu/Services/Languages.cs"],
+                         capture_output=True, check=True).stdout.decode("utf-8")
+    codes = re.findall(r'"([^"]+)"', re.search(r"Codes \{ get; \} = new\[\]\s*\{(.*?)\}", src, re.S).group(1))
+    missing = [c for c in codes if c not in LANG_NAMES]
+    if missing:
+        raise SystemExit(f"build.py: add an English name for language code(s) {missing} to LANG_NAMES")
+    return [LANG_NAMES[c] for c in codes]
+
+
+# The press kit's screenshots: the store images v8 (PO approved 20 Nov 2026), made by tools/make_press_images.sh.
+# Captions are the frames' own banners; the alt text says what is on screen. No painted Grimdorn (PO 20 Nov 2026).
+PRESS_SHOTS = [
+    ("press-shot1", "The six heroes", "Blom, Gusto, Frosta, Zappy, Ember and Banshee together under the Boombaland logo"),
+    ("press-shot2", "Drop. Run. BOOM! Outsmart every enemy", "Blom holds up a lit bomb next to a board full of crates"),
+    ("press-shot3", f"Fight epic bosses: beat {name('thorn_guard')} and his tricks", f"{name('thorn_guard')} on his forest arena, bombs falling around him"),
+    ("press-shot4", "Unlock unique heroes, each with their own power", "Zappy next to a board with conveyor belts"),
+    ("press-shot5", "Use powerful skills: Frosta's Frost Ring freezes the enemies around her", "Frosta next to a board where her Frost Ring has frozen the enemies"),
+    ("press-shot6", "Explore evolving levels: conveyor belts carry you, your bombs and crates", "Gusto next to a level full of conveyor belts and crates"),
+    ("press-shot7", "Solve complex puzzles: push the block into the gap to cross", "Banshee next to a castle puzzle with push blocks and a gap"),
+    ("press-shot8", f"Claim the throne: fight your way to {name('thorn_guard')}'s throne", "Ember next to a castle board with towers and guards"),
+]
+
+PRESS_FILES = [  # (file in assets/press, label, size, thumbnail)
     ("boombaland-app-icon-1024.png", "App icon", "1024 × 1024 PNG", "/assets/img/icon-192.png"),
     ("boombaland-logo.png", "Logo", "PNG, transparent", "/assets/img/logo-480.png"),
-    ("boombaland-key-art-2048x1000.jpg", "Key art", "2048 × 1000 JPEG", "/assets/img/key-art-1024.jpg"),
+    ("boombaland-key-art-heroes-2048x1000.jpg", "Key art: the six heroes", "2048 × 1000 JPEG", "/assets/img/press-key-art-640.jpg"),
+    ("boombaland-castle-heroes-3840x1646.jpg", "The heroes at the castle", "3840 × 1646 JPEG", "/assets/img/press-castle-640.jpg"),
     ("boombaland-castle-logo-1920x1080.jpg", "Castle island with logo", "1920 × 1080 JPEG", "/assets/img/og-image-1200x630.jpg"),
-    ("boombaland-blom-1024x1536.png", "Blom, the first hero", "1024 × 1536 PNG, transparent", "/assets/img/blom-360.png"),
-] + [(f"boombaland-screenshot-{i}.jpg", c, "full-size JPEG", f"/assets/img/{n}-640.jpg")
-     for i, (n, c, _a) in enumerate(SHOTS, 1) if n not in SHOTS_HIDDEN]
+    ("boombaland-blom-1024x1536.png", "Blom, the first hero", "1024 × 1536 PNG, transparent", "/assets/img/press-blom-360.png"),
+]
+PRESS_ZIP = "boombaland-press-kit.zip"
+
+
+def press_status():
+    """Release status in one line, from STORE_LINKS: 'Out now on Google Play; coming soon to the App Store'."""
+    return ("Out now on the App Store and Google Play" if stores_live() else cap(partial_status("; ")) if partial_live()
+            else "Coming soon to the App Store and Google Play")
+
+
+def press_blurb():
+    """The PO-approved fact sheet text (marketing/community_kit_2026-11-21.md, approved 22 Nov 2026), kept true: the friends
+    room is still in testing, so its sentence is left out, and the status follows STORE_LINKS."""
+    return ("Boombaland is a bomb-arena game for iPhone and Android. Place bombs, break crates, trap the enemies and get out "
+            "before the blast. Play through a campaign with castles and bosses. Free to play; ads can be removed. "
+            f"{press_status()}.")
 
 
 def press():
+    links = store_links()
     items = "\n".join(
         f'<li><a href="/assets/press/{f}" download><img src="{thumb}" alt="" loading="lazy" decoding="async" width="320" height="200">'
         f'<span>{html.escape(label)}</span></a><br><small>{html.escape(size)}</small></li>'
         for f, label, size, thumb in PRESS_FILES)
+    gallery = "\n".join(
+        f'<li><figure><a href="/assets/img/{n}-1280.jpg" data-lightbox data-caption="{html.escape(c)}">'
+        + pic(n, [640, 1280], "(min-width: 600px) 24rem, 92vw", alt, 640, 640, 360)
+        + f'</a><figcaption>{html.escape(c)}<br><a href="/assets/press/boombaland-screenshot-{i}.jpg" download>Full size</a>'
+          f' <small>(2560 × 1440 JPEG)</small></figcaption></figure></li>'
+        for i, (n, c, alt) in enumerate(PRESS_SHOTS, 1))
+    store_rows = "".join(
+        f'<dt>{"App Store" if k == "ios" else "Google Play"}</dt><dd>'
+        + (f'<a href="{html.escape(links[k])}" rel="noopener">{"App Store" if k == "ios" else "Google Play"} page</a>' if links[k] else "Coming soon")
+        + "</dd>\n" for k in STORES)
     body = f"""<main id="main" class="page">
 <div class="wrap prose">
 <h1>Press kit</h1>
-<p>Boombaland is {GENRE_LINE} for iPhone, iPad and Android phones and tablets. Drop a bomb, run, and watch the board explode: battle bosses, unlock six heroes with their own superpowers, and solve castle puzzles across 25 levels.</p>
+<p>Boombaland is {GENRE_LINE} for iPhone, iPad and Android phones and tablets. Place bombs, break crates, trap the enemies
+and get out before the blast. Play through a campaign with castles and bosses, unlock heroes with their own skills, and
+solve push-block puzzles along the way. {press_status()}.</p>
+{store_buttons()}
 <section class="panel" aria-labelledby="facts-title">
 <h2 class="panel-header" id="facts-title">Fact sheet</h2>
 <dl class="facts">
 <dt>Game</dt><dd>Boombaland</dd>
 <dt>Developer</dt><dd>DataSight (Tom de Bruijn), the Netherlands</dd>
-<dt>Release date</dt><dd>{"Out now on the App Store and Google Play" if stores_live() else cap(partial_status("; ")) if partial_live() else "Coming soon"}</dd>
-<dt>Platforms</dt><dd>iPhone, iPad and Android phones and tablets</dd>
-<dt>Price</dt><dd>Free to play, with optional in-app purchases and optional rewarded video ads</dd>
-<dt>Genre</dt><dd>Arcade bomber: a classic bomb-maze arcade game with bosses and puzzles</dd>
-<dt>Content</dt><dd>25 levels across {text('menu.worlds.green_lands')} and Castle Road, 6 heroes ({", ".join(hero_names())}), bosses and special enemies including {name('thorn_guard')}, {name('archer')}, {name('airship')} and {name('shellback')}, story comics between chapters, 4 difficulties</dd>
+<dt>Status</dt><dd>{press_status()}</dd>
+{store_rows}<dt>Platforms</dt><dd>iPhone, iPad and Android phones and tablets</dd>
+<dt>Price</dt><dd>Free to play, with optional in-app purchases. Ads only play when you choose to watch one for a reward; the No Ads purchase gives those rewards without an ad.</dd>
+<dt>Genre</dt><dd>Arcade bomber: {GENRE_LINE} with bosses and puzzles</dd>
+<dt>Modes</dt><dd>The {text('menu.main.play')} through {text('menu.worlds.green_lands')} and Castle Road, and the {text('menu.main.quickmatch')}: quick battles against CPU opponents. Single player.</dd>
+<dt>Heroes</dt><dd>{", ".join(hero_names())}, each with their own skill</dd>
+<dt>Languages</dt><dd>{", ".join(game_languages())}</dd>
 <dt>Chests</dt><dd>No loot boxes: every chest shows the item it guarantees and the chance of everything else</dd>
 <dt>Website</dt><dd><a href="https://www.boombaland.com/">www.boombaland.com</a></dd>
+<dt>Trailer</dt><dd><a href="https://youtu.be/{TRAILER_ID}" rel="noopener">youtu.be/{TRAILER_ID}</a></dd>
 <dt>Press contact</dt><dd><a href="mailto:{MAIL}">{MAIL}</a></dd>
 </dl>
 </section>
-<h2>Downloads</h2>
+
+<h2 id="copy">Short description to copy</h2>
+<p>Free to use as it is in an article, a listing or a profile.</p>
+<blockquote class="copy-text" id="blurb">{html.escape(press_blurb())}</blockquote>
+<p><button class="btn" type="button" data-copy="blurb">Copy the text</button> <span class="copy-done" role="status" aria-live="polite"></span></p>
+
+<h2 id="trailer-title">Trailer</h2>
+<div class="trailer" data-trailer="{TRAILER_ID}">
+<a class="trailer-play" href="https://youtu.be/{TRAILER_ID}" aria-label="Play the Boombaland trailer">{pic("press-shot1", [640, 1280], "(min-width: 900px) 47rem, 92vw", "The six heroes: play the Boombaland trailer", 1280, 1280, 720)}<span class="trailer-btn" aria-hidden="true"></span></a>
+</div>
+<p class="trailer-note">The trailer plays from YouTube, which loads only when you press play.</p>
+
+<h2 id="screenshots">Screenshots</h2>
+<ul class="gallery">
+{gallery}
+</ul>
+
+<h2 id="downloads">Logo, icon and art</h2>
 <p>You may use these images when you write about or show Boombaland. Please do not change the logo or the characters.</p>
+<p><a class="btn" href="/assets/press/{PRESS_ZIP}" download><span class="stack"><span>Download everything</span><small>ZIP, {os.path.getsize(os.path.join(ROOT, "assets", "press", PRESS_ZIP)) / 1e6:.0f} MB</small></span></a></p>
 <ul class="downloads">
 {items}
 </ul>
 </div>
 </main>
+
+<dialog class="lightbox" id="lightbox" aria-label="Screenshot">
+<button type="button" aria-label="Close">&times;</button>
+<img src="data:," alt="">
+<p></p>
+</dialog>
 """
     page("/press/", body, "Boombaland press kit",
-         "Fact sheet, app icon, logo, key art and screenshots of Boombaland, a classic bomb-maze arcade game for iPhone, iPad and Android phones and tablets.",
-         current="/press/")
+         "Boombaland press kit: fact sheet, trailer, screenshots, logo, icon and key art of the bomb-maze arcade game for iPhone, iPad and Android.",
+         current="/press/", script=True)
 
 
 # How a change reaches players (PO, 2 Nov: "add a flow chart"). Real text in every box; site.css lays it out as a vertical

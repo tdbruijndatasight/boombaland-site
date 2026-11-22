@@ -26,7 +26,6 @@ V7=$RA/store_screens_play_v7   # the store images v7 (PO 4 Nov: "update the imag
 for f in $V7/play_en_01.png $V7/play_en_02.png $V7/play_en_03.png $V7/play_en_04.png \
          $V7/play_en_05.png $V7/play_en_06.png $V7/play_en_07.png $V7/play_en_08.png; do
   i=$((i+1)); for x in 640 1280; do op "$f" shot$i $x; done
-  sips -s format jpeg -s formatOptions 85 "$f" --out "$P/boombaland-screenshot-$i.jpg" >/dev/null
 done
 # the trailer's click-to-play poster: the YouTube thumbnail (Blom VS Thorn Guard end card)
 for x in 640 1280; do op $RA/youtube_2026-11-04/youtube_thumbnail_1280x720.jpg trailer $x; done
@@ -38,8 +37,7 @@ ffmpeg -loglevel error -y -i "$I/icon-48.png" -i "$I/icon-32.png" -i "$I/icon-16
   || ffmpeg -loglevel error -y -i "$I/icon-32.png" "$S/favicon.ico"
 # Open Graph stand-in: the approved C7 R8 end card (castle island + R1 logo), 1920x1080 -> 1200x675 -> centre crop 1200x630
 ffmpeg -loglevel error -y -i $RA/endcard_redo_2026-10-29/C7_R8.png -vf "scale=1200:675,crop=1200:630" -q:v 3 "$I/og-image-1200x630.jpg"
-# press downloads
-sips -s format jpeg -s formatOptions 88 $B/store_kit/masters/feature_graphic_2048x1000_C1_R2.png --out "$P/boombaland-key-art-2048x1000.jpg" >/dev/null
+# press downloads (screenshots, key art, Blom and the zip come from tools/make_press_images.sh, called at the end)
 sips -s format jpeg -s formatOptions 88 $RA/endcard_redo_2026-10-29/C7_R8.png --out "$P/boombaland-castle-logo-1920x1080.jpg" >/dev/null
-sips --resampleWidth 1024 -s format png $B/store_kit/masters/blom_standing_2048x3072_C2_R3.png --out "$P/boombaland-blom-1024x1536.png" >/dev/null
 cp "$WORDMARK" "$P/boombaland-logo.png"
+"$S/tools/make_press_images.sh"

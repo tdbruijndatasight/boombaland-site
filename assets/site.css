@@ -360,3 +360,13 @@ dialog.lightbox button { position: absolute; top: 8px; right: 8px; width: 44px; 
 /* ---- "What is Boombaland?": plain facts ------------------------------------------------------------------------- */
 .about { max-width: 46rem; }
 .about h3 { margin: 1.2rem 0 .3rem; font: 400 1.3rem/1.2 var(--display); }
+
+/* ---- Press kit (/press/): gallery and copy block on the parchment page ---------------------------------------- */
+.page .gallery { margin: 1rem 0; }
+@media (min-width: 1000px) { .page .gallery { grid-template-columns: 1fr 1fr; } }
+.page .gallery figcaption { color: var(--ink); font: 600 .92rem/1.35 var(--ui); }
+.page .gallery figcaption a { display: inline; border: 0; border-radius: 0; background: none; box-shadow: none; color: var(--leaf-edge); }
+.page .stores { margin: 1rem 0; }
+.copy-text { font-family: var(--ui); font-weight: 600; white-space: pre-line; }
+button.btn { background: none; cursor: pointer; }
+.copy-done { font: 600 .92rem var(--ui); color: var(--leaf-edge); }
