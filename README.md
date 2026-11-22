@@ -28,8 +28,9 @@ hero, boss and enemy names from `MenuStringsEn.cs`, numbers from the balance and
    `tools/game_names.json`. When the game renames something (as Thorn Guard became Grimdorn), it fails with the old and
    the new name. Then: rebuild, move the old name to `retired`, update `snapshot`. A retired name anywhere in the
    site's visible text (pages, alt text, meta, JSON-LD, llms.txt, wiki search) fails the check.
-4. Images can't be rebuilt from the game. Store frames with a baked-in old name are listed in `SHOTS_HIDDEN`
-   (`tools/build.py`) until they are re-exported; the trailer poster is the one setting `TRAILER_POSTER`.
+4. Images can't be rebuilt from the game: `tools/make_images.sh` (and `tools/make_press_images.sh`) re-encode the approved
+   store art. `SHOTS_HIDDEN` (`tools/build.py`) keeps frames off the home gallery; the trailer poster is the one setting
+   `TRAILER_POSTER`. No painted Grimdorn anywhere (PO 20 Nov 2026): he appears only as he is in the game.
 
 CI (`.github/workflows/qa.yml`) runs `tools/qa.sh` on every push and pull request. It is report-only (no deploy) and has
 no access to the private game repo, so there the name check uses the snapshot only.

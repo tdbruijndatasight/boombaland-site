@@ -25,10 +25,11 @@ When an image is delivered and picked, drop it into `assets/` and re-run `tools/
 
 - **Hero background**: C7 R8 clean background, 1920 × 1080 (`review_assets/endcard_redo_2026-10-29/`, approved in `approved_2026-10-30/PO_PICKS.json`).
 - **Logo**: R1 wordmark (`review_assets/store_production_2026-10-29/boombaland_wordmark_R1.png`). The PO picked R1 in `art_feedback_2026-10-28/PO_PICKS.json` ("lofo of r1 looks good!").
-- **Blom cut-out**: C2 R3 (`store_kit/masters/blom_standing_2048x3072_C2_R3.png`).
-- **Six-hero lineup**: C3 R3 (`store_kit/shared/six_hero_lineup_2400x1100_C3_R3.png`).
-- **Thorn Guard cut-out**: C4 R3 (`store_kit/shared/thorn_guard_fullbody_1200x1600_C4_R3.png`).
-- **Key art**: C1 R2 feature graphic (`store_kit/masters/feature_graphic_2048x1000_C1_R2.png`).
+- **Blom cut-out**: C2 R3 with the current plain green scarf (`store_kit/v8_2026-11-20/masters/blom_standing_2048x3072_C2_R3_v1scarf.png`, store v8, PO approved 20 Nov).
+- **Six-hero lineup**: C3 R3 with the current scarf (`store_kit/v8_2026-11-20/shared/six_hero_lineup_2400x1100_C3_R3_v1scarf.png`).
+- **Boss (Grimdorn)**: an in-game crop of store v8 screenshot 3 (`store_kit/v8_2026-11-20/screens/play_en_03.png`). The painted C4 R3 cut-out is retired (PO 20 Nov: no painted Grimdorn anywhere).
+- **Key art**: the heroes-only v8 feature graphic (`store_kit/v8_2026-11-20/masters/feature_graphic_2048x1000_v8_heroes.png`). C1 R2 (painted Grimdorn) is retired.
+- **Screenshots and trailer poster**: store images v8 (`store_kit/v8_2026-11-20/screens/play_en_0[1-8].png`); the poster is screenshot 1 (heroes only).
 - **Chest badge**: C8 R1 with the green gem (`review_assets/approved_2026-10-30/C8_R1_green.png`).
 - **App icon and favicons**: BlomBomb (`app_icon_2026-11-01/BlomBomb_1024.png`, byte-identical to the build's `T_AppIcon_BlomBomb_1024.png`; the PO moved back to it on 1 Nov).
 - **Open Graph stand-in**: C7 R8 (`endcard_redo_2026-10-29/C7_R8.png`), cropped.

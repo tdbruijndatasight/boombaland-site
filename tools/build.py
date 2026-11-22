@@ -294,26 +294,26 @@ def store_buttons():
     return '<div class="stores">\n' + "\n".join(out) + "\n</div>"
 
 
-SHOTS = [  # the store images v7 (PO 4 Nov 2026)
-    ("shot1", f"Six heroes against {name('thorn_guard')} and his flying warship, {name('airship')}",
-     f"Key art: the six heroes, {name('thorn_guard')} and his flying warship {name('airship')}, with the Boombaland logo"),
-    ("shot2", "Drop. Run. BOOM! Outsmart every enemy", "Blom drops a bomb on a crate-filled board as the blasts go off"),
-    ("shot3", f"Fight epic bosses: beat {name('thorn_guard')} and his tricks", f"{name('thorn_guard')} on his forest arena"),
-    ("shot4", "Unlock unique heroes, each with their own power", "Zappy's storm lightning hits an enemy on a conveyor board"),
-    ("shot5", "Use powerful skills: Frosta's Frost Ring freezes the enemies around her", "Frosta's Frost Ring freezes the enemy beside her in an ice casing"),
-    ("shot6", "Explore evolving levels: conveyor belts carry you, your bombs and crates", "Gusto on a level full of conveyor belts"),
-    ("shot7", "Solve complex puzzles: push the block into the gap to cross", "Banshee pushes a block into the gap in a castle puzzle"),
-    ("shot8", f"Claim the throne: fight your way to {name('thorn_guard')}'s throne", "Ember fights the castle guards on the way to the throne"),
+SHOTS = [  # the store images v8 (PO approved 20 Nov 2026): captions are the frames' own banners, alt says what is on screen.
+    # No painted Grimdorn (PO 20 Nov 2026): he appears only as he is in the game (frames 3 and 8).
+    ("shot1", "The six heroes", "Blom, Gusto, Frosta, Zappy, Ember and Banshee together under the Boombaland logo"),
+    ("shot2", "Drop. Run. BOOM! Outsmart every enemy", "Blom holds up a lit bomb next to a board full of crates"),
+    ("shot3", f"Fight epic bosses: beat {name('thorn_guard')} and his tricks", f"{name('thorn_guard')} on his forest arena, bombs falling around him"),
+    ("shot4", "Unlock unique heroes, each with their own power", "Zappy next to a board with conveyor belts"),
+    ("shot5", "Use powerful skills: Frosta's Frost Ring freezes the enemies around her", "Frosta next to a board where her Frost Ring has frozen the enemies"),
+    ("shot6", "Explore evolving levels: conveyor belts carry you, your bombs and crates", "Gusto next to a level full of conveyor belts and crates"),
+    ("shot7", "Solve complex puzzles: push the block into the gap to cross", "Banshee next to a castle puzzle with push blocks and a gap"),
+    ("shot8", f"Claim the throne: fight your way to {name('thorn_guard')}'s throne", "Ember next to a castle board with towers and guards"),
 ]
-# Shots whose image has a retired boss name baked into its banner ("Thorn Guard"). They stay off the site until the
-# store images are re-exported with the game's current names (then remove them from this set and rerun make_images.sh).
+# The home gallery shows six of the eight (its layout); the press kit shows all eight. v8 frames 3 and 8 carry the game's
+# current boss name, so they may be unhidden at any time.
 SHOTS_HIDDEN = {"shot3", "shot8"}
 
-# The trailer's poster: ONE hook. The old poster (assets/img/trailer-*) has "Play free now" and "THORN GUARD" baked in,
-# so until the new posters arrive the poster is the text-free key-art frame shot1 (TEMPORARY, same 16:9 size).
-# To drop in a new poster: put trailer-<name>-640/1280.{avif,jpg} in assets/img (tools/make_images.sh) and set the name
-# here. On launch day tools/go_live.py can switch to the LIVE variant (TRAILER_POSTER_LIVE) when it exists.
-TRAILER_POSTER = ("shot1", f"The six heroes, {name('thorn_guard')} and {name('airship')}: play the Boombaland trailer")
+# The trailer's poster: ONE hook, the heroes-only v8 frame shot1 (16:9). The old poster (YouTube thumbnail with a painted
+# Thorn Guard and "Play free now") is gone (PO 20 Nov 2026: no painted Grimdorn anywhere). To drop in a new poster: put
+# trailer-<name>-640/1280.{avif,jpg} in assets/img (tools/make_images.sh) and set the name here. On launch day
+# tools/go_live.py can switch to the LIVE variant (TRAILER_POSTER_LIVE) when it exists.
+TRAILER_POSTER = ("shot1", "The six heroes: play the Boombaland trailer")
 TRAILER_POSTER_LIVE = None  # e.g. ("trailer-live", "...") once the "Play free now" poster may be shown
 
 TRAILER_ID = "TECFHLAUPcM"
@@ -464,7 +464,7 @@ def home():
 
 <article class="panel feature" aria-labelledby="f-bosses">
 <h3 class="panel-header" id="f-bosses">Battle big bosses</h3>
-{pic("thorn-guard", [360, 720], "220px", f"{name('thorn_guard')}, a giant wooden forest warrior wrapped in thorny vines", 360, 360, 480, ext="png", cls="art art--tall")}
+{pic("boss", [360, 570], "220px", f"{name('thorn_guard')} as he is in the game: a wooden forest giant raising his spiked fists on his arena", 360, 360, 480, cls="art art--tall art--shot")}
 <ul>
 <li>{name('thorn_guard')} hides behind a thorn shield, rains bomb barrages and gets faster when he is enraged</li>
 <li>{name('archer')}, the tower, shoots arrow-bombs across the board</li>
@@ -503,7 +503,7 @@ def home():
 <section class="section cta" aria-labelledby="cta-title">
 <div class="wrap">
 <h2 class="section-title" id="cta-title">{"Play Boombaland" if live_stores() else "Coming soon"}</h2>
-{pic("key-art", [1024, 2048], "(min-width: 700px) 640px, 92vw", f"Blom and {name('thorn_guard')} face off over a burning board, with the Boombaland logo between them", 1024, 1024, 500, cls="art")}
+{pic("key-art", [1024, 2048], "(min-width: 700px) 640px, 92vw", "The six heroes together under the Boombaland logo", 1024, 1024, 500, cls="art")}
 {store_buttons()}
 </div>
 </section>
@@ -538,26 +538,13 @@ def game_languages():
     return [LANG_NAMES[c] for c in codes]
 
 
-# The press kit's screenshots: the store images v8 (PO approved 20 Nov 2026), made by tools/make_press_images.sh.
-# Captions are the frames' own banners; the alt text says what is on screen. No painted Grimdorn (PO 20 Nov 2026).
-PRESS_SHOTS = [
-    ("press-shot1", "The six heroes", "Blom, Gusto, Frosta, Zappy, Ember and Banshee together under the Boombaland logo"),
-    ("press-shot2", "Drop. Run. BOOM! Outsmart every enemy", "Blom holds up a lit bomb next to a board full of crates"),
-    ("press-shot3", f"Fight epic bosses: beat {name('thorn_guard')} and his tricks", f"{name('thorn_guard')} on his forest arena, bombs falling around him"),
-    ("press-shot4", "Unlock unique heroes, each with their own power", "Zappy next to a board with conveyor belts"),
-    ("press-shot5", "Use powerful skills: Frosta's Frost Ring freezes the enemies around her", "Frosta next to a board where her Frost Ring has frozen the enemies"),
-    ("press-shot6", "Explore evolving levels: conveyor belts carry you, your bombs and crates", "Gusto next to a level full of conveyor belts and crates"),
-    ("press-shot7", "Solve complex puzzles: push the block into the gap to cross", "Banshee next to a castle puzzle with push blocks and a gap"),
-    ("press-shot8", f"Claim the throne: fight your way to {name('thorn_guard')}'s throne", "Ember next to a castle board with towers and guards"),
-]
-
 PRESS_FILES = [  # (file in assets/press, label, size, thumbnail)
     ("boombaland-app-icon-1024.png", "App icon", "1024 × 1024 PNG", "/assets/img/icon-192.png"),
     ("boombaland-logo.png", "Logo", "PNG, transparent", "/assets/img/logo-480.png"),
-    ("boombaland-key-art-heroes-2048x1000.jpg", "Key art: the six heroes", "2048 × 1000 JPEG", "/assets/img/press-key-art-640.jpg"),
+    ("boombaland-key-art-heroes-2048x1000.jpg", "Key art: the six heroes", "2048 × 1000 JPEG", "/assets/img/key-art-1024.jpg"),
     ("boombaland-castle-heroes-3840x1646.jpg", "The heroes at the castle", "3840 × 1646 JPEG", "/assets/img/press-castle-640.jpg"),
     ("boombaland-castle-logo-1920x1080.jpg", "Castle island with logo", "1920 × 1080 JPEG", "/assets/img/og-image-1200x630.jpg"),
-    ("boombaland-blom-1024x1536.png", "Blom, the first hero", "1024 × 1536 PNG, transparent", "/assets/img/press-blom-360.png"),
+    ("boombaland-blom-1024x1536.png", "Blom, the first hero", "1024 × 1536 PNG, transparent", "/assets/img/blom-360.png"),
 ]
 PRESS_ZIP = "boombaland-press-kit.zip"
 
@@ -587,7 +574,7 @@ def press():
         + pic(n, [640, 1280], "(min-width: 600px) 24rem, 92vw", alt, 640, 640, 360)
         + f'</a><figcaption>{html.escape(c)}<br><a href="/assets/press/boombaland-screenshot-{i}.jpg" download>Full size</a>'
           f' <small>(2560 × 1440 JPEG)</small></figcaption></figure></li>'
-        for i, (n, c, alt) in enumerate(PRESS_SHOTS, 1))
+        for i, (n, c, alt) in enumerate(SHOTS, 1))
     store_rows = "".join(
         f'<dt>{"App Store" if k == "ios" else "Google Play"}</dt><dd>'
         + (f'<a href="{html.escape(links[k])}" rel="noopener">{"App Store" if k == "ios" else "Google Play"} page</a>' if links[k] else "Coming soon")
@@ -625,7 +612,7 @@ solve push-block puzzles along the way. {press_status()}.</p>
 
 <h2 id="trailer-title">Trailer</h2>
 <div class="trailer" data-trailer="{TRAILER_ID}">
-<a class="trailer-play" href="https://youtu.be/{TRAILER_ID}" aria-label="Play the Boombaland trailer">{pic("press-shot1", [640, 1280], "(min-width: 900px) 47rem, 92vw", "The six heroes: play the Boombaland trailer", 1280, 1280, 720)}<span class="trailer-btn" aria-hidden="true"></span></a>
+<a class="trailer-play" href="https://youtu.be/{TRAILER_ID}" aria-label="Play the Boombaland trailer">{pic(trailer_poster()[0], [640, 1280], "(min-width: 900px) 47rem, 92vw", trailer_poster()[1], 1280, 1280, 720)}<span class="trailer-btn" aria-hidden="true"></span></a>
 </div>
 <p class="trailer-note">The trailer plays from YouTube, which loads only when you press play.</p>
 
