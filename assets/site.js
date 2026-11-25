@@ -5,7 +5,7 @@
   // ---- CONFIG: filled in on launch day by tools/go_live.py (see GO_LIVE.md, "Launch day"); then rebuild. ---------------
   // While a URL is empty, its button stays a "Coming soon" label that links to nothing.
   var STORE_LINKS = {
-    ios: "",      // TODO: https://apps.apple.com/app/id<APPLE_ID> (the numeric Apple ID from App Store Connect, App Information)
+    ios: "https://apps.apple.com/app/id6821619320",      // TODO: https://apps.apple.com/app/id<APPLE_ID> (the numeric Apple ID from App Store Connect, App Information)
     android: "https://play.google.com/store/apps/details?id=com.datasight.boomworld"   // TODO: https://play.google.com/store/apps/details?id=com.datasight.boomworld (fill in on launch day)
   };
   // -------------------------------------------------------------------------------------------------------------------
