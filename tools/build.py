@@ -91,12 +91,13 @@ def ld_script(items):
     return "".join(out)
 
 
-def head(title, description, path, og_image="/assets/img/og-image-1200x630.jpg", noindex=False, jsonld=None):
+def head(title, description, path, og_image="/assets/img/og-image-1200x630.jpg", noindex=False, jsonld=None, canonical=None):
+    """canonical: default only on indexable pages; True keeps it on a noindex page that has a real URL (/get/)."""
     url = SITE + path
     t = html.escape(title)
     d = html.escape(description)
     robots = '\n<meta name="robots" content="noindex">' if noindex else ""
-    canonical = "" if noindex else f'\n<link rel="canonical" href="{url}">'
+    canonical = f'\n<link rel="canonical" href="{url}">' if (canonical if canonical is not None else not noindex) else ""
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -156,12 +157,16 @@ KvK 93353413. Contact: <a href="mailto:{MAIL}">{MAIL}</a></p>
 """
 
 
-def page(path, body, title, description, current=None, script=False, noindex=False, extra_script=None, jsonld=None):
+def page(path, body, title, description, current=None, script=False, noindex=False, extra_script=None, jsonld=None,
+         canonical=None, inline_script=None):
     s = '<script src="/assets/nav.js" defer></script>\n'
     s += '<script src="/assets/site.js" defer></script>\n' if script else ""
     if extra_script:
         s += f'<script src="{extra_script}" defer></script>\n'
-    out = head(title, description, path, noindex=noindex, jsonld=jsonld) + topbar(current) + body + FOOTER + s + "</body>\n</html>\n"
+    if inline_script:
+        s += f"<script>\n{inline_script}</script>\n"
+    out = (head(title, description, path, noindex=noindex, jsonld=jsonld, canonical=canonical) + topbar(current) + body + FOOTER
+           + s + "</body>\n</html>\n")
     dest = os.path.join(ROOT, path.strip("/"), "index.html") if path.endswith("/") else os.path.join(ROOT, path.strip("/"))
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     with open(dest, "w", encoding="utf-8") as f:
@@ -267,10 +272,18 @@ def cap(s):
     return s[:1].upper() + s[1:]
 
 
-BADGES = {  # official artwork, downloaded unchanged from Apple / Google on launch day (IMAGE_NEEDS.md #10)
+BADGES = {  # official artwork, unchanged (IMAGE_NEEDS.md #10; source: assets/badges/SOURCE.txt), at the files' own size.
+    # The Google PNG carries Google's clear space (41 px of 250): site.css sizes it so both badges show the same height.
     "ios": ("/assets/badges/app-store-badge.svg", "Download on the App Store", 120, 40),
-    "android": ("/assets/badges/google-play-badge.png", "Get it on Google Play", 135, 40),
+    "android": ("/assets/badges/google-play-badge.png", "Get it on Google Play", 646, 250),
 }
+
+
+def badge(key, url, attr="data-store"):
+    """One official store badge linking to url (attr: data-store on home/press, data-get on /get/)."""
+    src, alt, w, h = BADGES[key]
+    return (f'<a class="store-badge store-badge--{key}" {attr}="{key}" href="{html.escape(url)}" rel="noopener">'
+            f'<img src="{src}" alt="{alt}" width="{w}" height="{h}"></a>')
 
 
 def store_buttons():
@@ -284,10 +297,8 @@ def store_buttons():
             out.append(f'<span class="btn btn--soon" data-store="{key}"><span class="stack">'
                        f'<span>{label}</span><small data-store-note>Coming soon</small></span></span>')
             continue
-        src, alt, w, h = BADGES[key]
-        if os.path.exists(os.path.join(ROOT, src.lstrip("/"))):
-            out.append(f'<a class="store-badge" data-store="{key}" href="{html.escape(url)}" rel="noopener">'
-                       f'<img src="{src}" alt="{alt}" width="{w * 4}" height="{h * 4}"></a>')
+        if os.path.exists(os.path.join(ROOT, BADGES[key][0].lstrip("/"))):
+            out.append(badge(key, url))
         else:
             out.append(f'<a class="btn" data-store="{key}" href="{html.escape(url)}" rel="noopener"><span class="stack">'
                        f'<span>{label}</span><small data-store-note>Free download</small></span></a>')
@@ -744,6 +755,49 @@ and send your idea from any email. Tell us the title of your idea and what it do
 reply. See the <a href="/privacy/">Privacy Policy</a>.</p>"""
 
 
+# /get/: the one link for social bios (a profile allows one). tools/get_redirect.js sends iPhone/iPad to the App Store and
+# Android to Google Play (carrying ?s=<source> as store tags); everyone else, and any in-app browser that blocks the
+# redirect, sees this page: both badges and a QR code of GET_URL. noindex, so it stays out of the sitemap.
+GET_URL = SITE + "/get/"
+# App Store Connect provider token (the pt= of an App Store campaign link, App Analytics > Campaigns > Generate a Link).
+# None on record: without it Apple ignores ct=. Fill it in and rebuild; the redirect then adds &pt=...&mt=8.
+APPLE_PROVIDER_TOKEN = ""
+
+
+def get_page():
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import qr  # noqa: E402 (tools/qr.py)
+    links = store_links()
+    if not (links["ios"] and links["android"]):
+        print("get/: skipped, a store link is empty (STORE_LINKS)")
+        return
+    js = open(os.path.join(ROOT, "tools", "get_redirect.js"), encoding="utf-8").read()
+    for k, v in (("__IOS__", links["ios"]), ("__PLAY__", links["android"]), ("__PT__", APPLE_PROVIDER_TOKEN)):
+        assert re.fullmatch(r"[A-Za-z0-9:/._?=-]*", v), (k, v)
+        js = js.replace(k, v)
+    body = f"""<main id="main" class="page get">
+<div class="wrap prose center">
+<img class="get-icon" src="/assets/img/icon-192.png" width="192" height="192" alt="">
+<h1>Get Boombaland</h1>
+<p class="get-line">Free to play on iPhone, iPad and Android</p>
+<div class="stores">
+{badge("ios", links["ios"], "data-get")}
+{badge("android", links["android"], "data-get")}
+</div>
+<section class="panel get-qr" aria-labelledby="qr-title">
+<h2 class="panel-header" id="qr-title">On a computer?</h2>
+{qr.svg(GET_URL, title="QR code for www.boombaland.com/get")}
+<p>Scan this code with your phone's camera, or type <strong>boombaland.com/get</strong> on your phone.</p>
+</section>
+<p><a href="/">More about Boombaland</a></p>
+</div>
+</main>
+"""
+    page("/get/", body, "Get Boombaland: free on iPhone, iPad and Android",
+         "Boombaland is free to play on iPhone, iPad and Android. Get it from the App Store or Google Play, or scan the "
+         "code with your phone.", noindex=True, canonical=True, inline_script=js)
+
+
 def not_found():
     body = """<main id="main" class="page">
 <div class="wrap prose center">
@@ -836,6 +890,7 @@ if __name__ == "__main__":
     press()
     development()
     not_found()
+    get_page()
     port_legal()
     sync_footer()
     llms_txt()

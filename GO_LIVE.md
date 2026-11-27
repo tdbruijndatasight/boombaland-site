@@ -291,6 +291,7 @@ If either does not redirect, fall back to option A.
 2. **Official badges** (optional but recommended): download Apple's "Download on the App Store" and Google's "Get it on
    Google Play" artwork unchanged from their marketing pages and save them as `assets/badges/app-store-badge.svg` and
    `assets/badges/google-play-badge.png` (IMAGE_NEEDS.md #10). Without them the buttons are the green kit buttons.
+   Done 27 Nov 2026 (branch `get-link-1127`, source in `assets/badges/SOURCE.txt`); `/get/` needs them.
 3. **Trailer poster, LIVE variant.** The poster is set in one place, `tools/build.py`: `TRAILER_POSTER` (now the
    temporary text-free frame `shot1`; the old poster with "Play free now" baked in must not show before launch) and
    `TRAILER_POSTER_LIVE`. Put the new LIVE poster as `assets/img/<name>-640/-1280.{avif,jpg}` and pass
@@ -307,9 +308,11 @@ If either does not redirect, fall back to option A.
    `llms.txt`), rewrites `sitemap.xml`, and runs `tools/qa.sh --online`.
 5. **Review** `git diff` and the preview (`python3 -m http.server 8080`), commit on a branch, and the PO merges to
    `master` (that is the publish).
-6. **After it is live:** `python3 -I tools/indexnow.py --submit` (Bing and other IndexNow engines); Search Console →
+6. **Bio link:** `https://www.boombaland.com/get/?s=<platform>` in every social profile (README.md, "The bio link").
+   Not in the sitemap (noindex), so no indexing request for it.
+7. **After it is live:** `python3 -I tools/indexnow.py --submit` (Bing and other IndexNow engines); Search Console →
    URL inspection → `https://www.boombaland.com/` → Request indexing (repeat for `/wiki/` and `/press/`).
-7. **Store texts:** make sure neither store text says "Out now!" before its own listing is live (AUDIT.md §8.4).
+8. **Store texts:** make sure neither store text says "Out now!" before its own listing is live (AUDIT.md §8.4).
 
 **Before launch, once (owner):** verify Google Search Console (Domain property, TXT record at Cloudflare) and Bing
 Webmaster Tools (import from GSC), submit `https://www.boombaland.com/sitemap.xml` in both; check Cloudflare's

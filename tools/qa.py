@@ -2,7 +2,7 @@
 """Site QA checks that run locally and in CI without any account (AUDIT.md section 9.3). Report-only: it changes nothing.
 
 Usage:  python3 -I tools/qa.py [check ...] [--online]
-Checks (all by default): sitemap meta noindex jsonld availability names
+Checks (all by default): sitemap meta noindex jsonld availability names getlink
   --online   also fetch the store pages when STORE_LINKS are filled (HTTP 200 + right ids; Apple lookup API)
 Env:     BOMBWORLD=/path/to/BombWorld  REF=<git ref>  (names: compare with the game; without the repo, only the
          retired names and the snapshot in tools/game_names.json are checked)
@@ -207,9 +207,12 @@ def check_meta():
     print(f"meta: {n} pages")
 
 
+NOINDEX_OK = {"404.html", "get/index.html"}  # /get/ is the social-bio redirect page: reachable, never indexed
+
+
 def check_noindex():
     for f in all_html():
-        if re.search(r'<meta name="robots" content="[^"]*noindex', read(f)) and f != "404.html":
+        if re.search(r'<meta name="robots" content="[^"]*noindex', read(f)) and f not in NOINDEX_OK:
             fail("noindex", f"unexpected noindex on {f}")
     if not re.search(r'noindex', read("404.html")):
         fail("noindex", "404.html should be noindex")
@@ -377,8 +380,208 @@ def check_names():
           f"source {'game ' + ref if game is not None else 'snapshot'}")
 
 
+# ---------------------------------------------------------------------------------------------------------- /get/
+GET_FILE = "get/index.html"
+GET_URL = SITE + "/get/"
+SOURCE_RE = re.compile(r"[a-z0-9_-]{1,24}")  # the ?s= whitelist; tools/get_redirect.js must use the same one
+
+
+def get_source(search):
+    """Python mirror of source() in tools/get_redirect.js: the first s= value if it passes the whitelist, else ''."""
+    m = re.search(r"[?&]s=([^&#]*)", search or "")
+    return m.group(1) if m and SOURCE_RE.fullmatch(m.group(1)) else ""
+
+
+def get_store_url(store, s, ios, play, pt=""):
+    """Python mirror of storeUrl() in tools/get_redirect.js."""
+    import urllib.parse
+    if store == "ios":
+        return ios + (f"?ct={s}" + (f"&pt={pt}&mt=8" if pt else "") if s else "")
+    return play + ("&referrer=" + urllib.parse.quote(f"utm_source={s}&utm_medium=social&utm_campaign=bio", safe="") if s else "")
+
+
+GET_UAS = {  # (userAgent, navigator.platform, maxTouchPoints) -> where the page must send it
+    "iphone": (("Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) "
+                "Version/18.1 Mobile/15E148 Safari/604.1"), "iPhone", 5, "ios"),
+    "iphone-instagram": (("Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) "
+                          "Mobile/22B83 Instagram 356.0.0.0 (iPhone15,2; iOS 18_1; en_US)"), "iPhone", 5, "ios"),
+    "ipad": ("Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148", "iPad", 5, "ios"),
+    "ipados-desktop": (("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) "
+                        "Version/18.1 Safari/605.1.15"), "MacIntel", 5, "ios"),
+    "android": (("Mozilla/5.0 (Linux; Android 15; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 "
+                 "Mobile Safari/537.36"), "Linux armv8l", 5, "android"),
+    "android-tiktok": (("Mozilla/5.0 (Linux; Android 14; SM-S918B Build/UP1A; wv) AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Version/4.0 Chrome/130.0 Mobile Safari/537.36 trill_370 musical_ly_2023"), "Linux aarch64", 5, "android"),
+    "mac": (("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) "
+             "Version/18.1 Safari/605.1.15"), "MacIntel", 0, ""),
+    "windows": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36", "Win32", 0, ""),
+    "linux": ("Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0", "Linux x86_64", 0, ""),
+    "empty": ("", "", 0, ""),
+}
+# (search, expected source): the sanitiser's unit test. Anything outside a-z 0-9 - _ (max 24) is dropped, not cleaned.
+GET_SOURCES = [("", ""), ("?s=tiktok", "tiktok"), ("?s=ig_bio-2", "ig_bio-2"), ("?s=" + "a" * 24, "a" * 24),
+               ("?s=" + "a" * 25, ""), ("?s=TikTok", ""), ("?s=", ""), ("?s=a%20b", ""), ("?s=a+b", ""), ("?s=a b", ""),
+               ("?s=%3Cscript%3E", ""), ("?s=<script>", ""), ("?s=javascript:alert(1)", ""), ("?s=x.y", ""),
+               ("?s=https://evil.example", ""), ("?s=yt&s=fb", "yt"), ("?a=1&s=yt", "yt"), ("?s=yt#top", "yt"),
+               ("?xs=yt", ""), ("?s=%2F", ""), (r"?s=\u0061", ""), ("?s=tik\ntok", ""), ("?s=café", "")]
+_NODE_HARNESS = r"""
+const vm = require("vm"); let inp = "";
+process.stdin.on("data", d => inp += d).on("end", () => {
+  const {code, cases} = JSON.parse(inp); const out = [];
+  for (const c of cases) {
+    const nav = [], hrefs = {ios: null, android: null};
+    const links = ["ios", "android"].map(k => ({getAttribute: a => a === "data-get" ? k : null,
+                                                 set href(v) { hrefs[k] = v; }, get href() { return hrefs[k]; }}));
+    const loc = {search: c.search, replace: u => nav.push(u), assign: u => nav.push("ASSIGN " + u)};
+    Object.defineProperty(loc, "href", {set: u => nav.push("HREF " + u), get: () => ""});
+    const win = {location: loc, navigator: {userAgent: c.ua, platform: c.platform, maxTouchPoints: c.touch},
+                 document: {querySelectorAll: () => links, cookie: ""}};
+    win.open = u => nav.push("OPEN " + u);
+    vm.runInNewContext(code, {window: win, location: loc, navigator: win.navigator, document: win.document});
+    out.push({nav, hrefs, cookie: win.document.cookie});
+  }
+  process.stdout.write(JSON.stringify(out));
+});
+"""
+
+
+class _Res(HTMLParser):
+    """Every resource a page would fetch by itself (not <a> links), plus its inline scripts and meta tags."""
+    LOAD = {"img": ("src", "srcset"), "script": ("src",), "source": ("src", "srcset"), "iframe": ("src",), "video": ("src", "poster"),
+            "audio": ("src",), "embed": ("src",), "object": ("data",), "track": ("src",), "image": ("href",), "use": ("href",),
+            "input": ("src",), "frame": ("src",)}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.urls, self.scripts, self.meta, self.links, self._in = [], [], {}, [], False
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        for k in self.LOAD.get(tag, ()):
+            if a.get(k):
+                self.urls += [u.strip().split(" ")[0] for u in a[k].split(",")] if k == "srcset" else [a[k]]
+        if tag == "link":
+            self.links.append(a)
+            if a.get("rel") != "canonical":
+                self.urls.append(a.get("href", ""))
+        if a.get("style") and "url(" in a["style"]:
+            self.urls.append(a["style"])
+        if tag == "meta":
+            self.meta[a.get("name") or a.get("property")] = a.get("content", "")
+        self._in = tag == "script" and not a.get("src") and a.get("type") in (None, "text/javascript")
+        if self._in:
+            self.scripts.append("")
+
+    def handle_endtag(self, tag):
+        if tag == "script":
+            self._in = False
+
+    def handle_data(self, data):
+        if self._in:
+            self.scripts[-1] += data
+
+
+def check_getlink():
+    if not os.path.exists(os.path.join(ROOT, GET_FILE)):
+        return fail("getlink", f"{GET_FILE} is missing (python3 -I tools/build.py)")
+    src = read(GET_FILE)
+    links = store_links()
+    ios, play = links["ios"], links["android"]
+    if not (IOS_URL.match(ios) and PLAY_URL.match(play)):
+        return fail("getlink", f"STORE_LINKS are not both live store URLs: {links}")
+    for u in (ios, play):
+        if f'href="{u}"' not in src:
+            fail("getlink", f"{GET_FILE}: no badge links to {u}")
+    p = _Res()
+    p.feed(src)
+    for u in p.urls:
+        if re.match(r"\s*(https?:)?//", u) or re.search(r"url\(\s*['\"]?(https?:)?//", u):
+            fail("getlink", f"{GET_FILE}: loads an external resource {u!r} (no third-party request before a click)")
+    if "/assets/site.js" in src:
+        fail("getlink", f"{GET_FILE}: must not load site.js (it would rewrite the tagged badge links)")
+    if not re.search(r'<meta name="robots" content="[^"]*noindex', src):
+        fail("getlink", f"{GET_FILE}: not noindex")
+    canon = [l.get("href") for l in p.links if l.get("rel") == "canonical"]
+    if canon != [GET_URL]:
+        fail("getlink", f"{GET_FILE}: canonical {canon} != [{GET_URL}]")
+    for k in ("og:title", "og:description", "og:image", "og:url", "twitter:card"):
+        if not p.meta.get(k):
+            fail("getlink", f"{GET_FILE}: no {k}")
+    if GET_URL in read("sitemap.xml") or "/get/" in read("sitemap.xml"):
+        fail("getlink", "sitemap.xml lists /get/ (it is noindex)")
+    if '<svg class="qr"' not in src:
+        fail("getlink", f"{GET_FILE}: no inline QR code")
+    code = "\n".join(s for s in p.scripts if "boombalandGet" in s)
+    if not code:
+        return fail("getlink", f"{GET_FILE}: the redirect script is missing")
+    for u in set(re.findall(r"https?://[^\"'\s)]+", code)):
+        if u not in (ios, play):
+            fail("getlink", f"redirect script names a URL other than the two stores: {u}")
+    if "/^[a-z0-9_-]{1,24}$/" not in code:
+        fail("getlink", "redirect script does not use the s whitelist /^[a-z0-9_-]{1,24}$/")
+    for bad in ("document.cookie", "localStorage", "sessionStorage", "indexedDB", "fetch(", "XMLHttpRequest", "sendBeacon",
+                "import(", ".assign(", "location.href", "location =", "window.open", "eval(", "innerHTML", "document.write"):
+        if bad in code:
+            fail("getlink", f"redirect script uses {bad!r}")
+    pt = (re.search(r'var PT = "([^"]*)"', code) or [None, None])[1]
+    if pt is None:
+        return fail("getlink", "redirect script: no PT line")
+    # the sanitiser's unit test (python mirror; node then checks the shipped script against the mirror)
+    for search, want in GET_SOURCES:
+        if get_source(search) != want:
+            fail("getlink", f"sanitiser mirror: {search!r} -> {get_source(search)!r}, expected {want!r}")
+    want_tt = {"ios": ios + "?ct=tiktok" + (f"&pt={pt}&mt=8" if pt else ""),
+               "android": play + "&referrer=utm_source%3Dtiktok%26utm_medium%3Dsocial%26utm_campaign%3Dbio"}
+    for k, w in want_tt.items():
+        if get_store_url(k, "tiktok", ios, play, pt) != w:
+            fail("getlink", f"URL builder mirror: {k} tiktok -> {get_store_url(k, 'tiktok', ios, play, pt)}, expected {w}")
+    import random
+    import shutil
+    rnd = random.Random(1127)
+    alphabet = "abcxyz019-_ABZ%&#=?+./:<>\"' é\n"
+    searches = [s for s, _ in GET_SOURCES] + ["?s=" + "".join(rnd.choice(alphabet) for _ in range(rnd.randint(0, 30)))
+                                              for _ in range(150)]
+    cases = [{"search": se, "ua": ua, "platform": pl, "touch": t, "want": w, "name": n}
+             for n, (ua, pl, t, w) in GET_UAS.items() for se in searches]
+    node = shutil.which("node")
+    if not node:
+        warn("getlink", "node not found: the shipped redirect script was not run; only the python mirror was tested")
+        return print(f"getlink: {GET_FILE} static checks + {len(GET_SOURCES)} sanitiser cases (mirror only)")
+    r = subprocess.run([node, "-e", _NODE_HARNESS], input=json.dumps({"code": code, "cases": cases}),
+                       capture_output=True, text=True, timeout=60)
+    if r.returncode != 0:
+        return fail("getlink", f"node harness failed: {r.stderr.strip()[:300]}")
+    bad = 0
+    for c, o in zip(cases, json.loads(r.stdout)):
+        s = get_source(c["search"])
+        want_nav = [get_store_url(c["want"], s, ios, play, pt)] if c["want"] else []
+        want_hrefs = {k: get_store_url(k, s, ios, play, pt) for k in ("ios", "android")}
+        problems = []
+        if o["nav"] != want_nav:
+            problems.append(f"navigated {o['nav']} expected {want_nav}")
+        if o["hrefs"] != want_hrefs:
+            problems.append(f"badges {o['hrefs']} expected {want_hrefs}")
+        for u in o["nav"] + list(o["hrefs"].values()):
+            if not isinstance(u, str):
+                problems.append(f"no URL set: {u!r}")
+                continue
+            if not ((u == ios or u.startswith(ios + "?ct=")) and IOS_URL.match(u)
+                    or (u == play or u.startswith(play + "&referrer=")) and PLAY_URL.match(u)):
+                problems.append(f"not a store URL: {u!r}")
+        if o["cookie"]:
+            problems.append("set a cookie")
+        if problems:
+            bad += 1
+            if bad <= 5:
+                fail("getlink", f"{c['name']} {c['search']!r}: " + "; ".join(problems))
+    if bad > 5:
+        fail("getlink", f"... {bad} redirect cases failed in all")
+    print(f"getlink: {GET_FILE} static checks, {len(GET_SOURCES)} sanitiser cases, {len(cases)} redirect cases in node "
+          f"({len(GET_UAS)} user agents), provider token {'set' if pt else 'not set (ct only)'}")
+
+
 CHECKS = {"sitemap": check_sitemap, "meta": check_meta, "noindex": check_noindex, "jsonld": check_jsonld,
-          "availability": None, "names": check_names}
+          "availability": None, "names": check_names, "getlink": check_getlink}
 
 
 def main(argv):

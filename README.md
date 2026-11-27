@@ -7,7 +7,7 @@ behind Cloudflare. No trackers, no cookies, no third-party requests before a cli
 ## Build
 
 ```
-python3 -I tools/build.py        # home, press, development, 404, llms.txt; syncs the footer onto legal + redeem pages
+python3 -I tools/build.py        # home, press, development, 404, get/, llms.txt; syncs the footer onto legal + redeem pages
 python3 -I tools/build_wiki.py   # wiki/** + wiki/search.json + assets/wiki/*, all from the game's own data
 python3 -I tools/sitemap.py      # sitemap.xml: every indexable page, lastmod = last commit of the page
 tools/qa.sh                      # the checks below; must say QA PASSED before the PO publishes
@@ -46,11 +46,30 @@ no access to the private game repo, so there the name check uses the snapshot on
 | jsonld | a block doesn't parse; `aggregateRating`/`review`/download counts/awards; `offers` before launch; "Bomberman" |
 | availability | while `STORE_LINKS` are empty: "out now", "download now", "play free now", "free download", store-badge wording, the old "Play free now" poster, or a store button that links. After launch: wrong store ids, "Coming soon" left on the home page (`--online` also fetches both store pages) |
 | names | a retired name in the site text; a current game name missing; the game renamed something since the snapshot |
+| getlink | `/get/` missing, a store URL missing, any external script/img/font/stylesheet, not `noindex`, canonical not `/get/`, listed in the sitemap, or the redirect script navigating anywhere but the two store URLs (the shipped script runs in node against 10 user agents × 173 `?s=` values, compared with a python mirror; the `s` whitelist has its own unit cases) |
 
 ## Launch day
 
 `tools/go_live.py` (dry run by default) checks both store URLs live, fills `STORE_LINKS` in `assets/site.js`, rebuilds
 (badges, JSON-LD `offers`, status lines) and runs QA. Steps and checklist: `GO_LIVE.md`, "Launch day".
+
+## The bio link: `/get/`
+
+`https://www.boombaland.com/get/` is the one link for social bios (a profile allows one). `tools/build.py` writes it from
+`STORE_LINKS`; its script (`tools/get_redirect.js`, inlined) sends iPhone/iPad (also iPadOS in desktop mode) to the App
+Store and Android to Google Play with `location.replace`. Everyone else, a browser without JavaScript, and an in-app
+browser that blocks the redirect see the page itself: both official badges (`assets/badges/`, unchanged artwork) and a
+QR code of `/get/` drawn at build time by `tools/qr.py` (no QR service). No cookie, no analytics, no third-party request
+before the store. `noindex`, not in the sitemap.
+
+`?s=<source>` (a-z 0-9 - _, max 24; anything else is dropped) tags the store links: Google Play gets
+`&referrer=utm_source%3D<s>%26utm_medium%3Dsocial%26utm_campaign%3Dbio` (Play Console's acquisition reports list
+UTM-tagged installs), the App Store `?ct=<s>`. Apple counts `ct` only together with the provider token `pt`: set
+`APPLE_PROVIDER_TOKEN` in `tools/build.py` (App Store Connect › Apps › App Analytics › Acquisition › Campaigns ›
+"Generate a campaign link": the `pt=` number) and rebuild; the redirect then adds `&pt=…&mt=8`.
+
+Bio links: TikTok `https://www.boombaland.com/get/?s=tiktok`, Instagram `…/get/?s=instagram`, YouTube
+`…/get/?s=youtube`, Facebook `…/get/?s=facebook`, X `…/get/?s=x`, Reddit `…/get/?s=reddit`.
 
 ## Search engines and AI crawlers
 

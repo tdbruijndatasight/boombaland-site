@@ -1,0 +1,7 @@
+Official store badges, unchanged artwork (20 Nov 2026, video lane):
+- app-store-badge_official.svg: https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg
+  ("Download on the App Store", black, US-UK). app-store-badge_1197.png = that SVG rasterised by headless Chrome at
+  10x (1197x400), nothing redrawn.
+- google-play-badge_official_646.png: https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png
+  ("Get it on Google Play"). The engine crops only its transparent margin.
+Use only to promote Boombaland, per Apple's and Google's badge guidelines (unmodified, same visual height side by side).

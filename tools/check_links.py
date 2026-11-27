@@ -11,7 +11,7 @@ import urllib.request
 from html.parser import HTMLParser
 
 BASE = (sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8766").rstrip("/")
-ROOTS = ["/", "/press/", "/support/", "/privacy/", "/terms/", "/404.html", "/app-ads.txt", "/robots.txt",
+ROOTS = ["/", "/get/", "/press/", "/support/", "/privacy/", "/terms/", "/404.html", "/app-ads.txt", "/robots.txt",
          "/sitemap.xml", "/CNAME", "/favicon.ico", "/apple-touch-icon.png", "/assets/site.css", "/assets/site.js"]
 
 
