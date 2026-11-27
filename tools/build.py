@@ -316,7 +316,7 @@ SHOTS_HIDDEN = {"shot3", "shot8"}
 TRAILER_POSTER = ("shot1", "The six heroes: play the Boombaland trailer")
 TRAILER_POSTER_LIVE = None  # e.g. ("trailer-live", "...") once the "Play free now" poster may be shown
 
-TRAILER_ID = "TECFHLAUPcM"
+TRAILER_ID = "rlRE_Cv3Jm4"
 CHANNEL = "https://www.youtube.com/@BoombalandGame"
 INSTAGRAM = "https://www.instagram.com/boombaland.game/"
 TIKTOK = "https://www.tiktok.com/@boombaland"
