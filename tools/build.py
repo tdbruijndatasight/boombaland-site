@@ -19,7 +19,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 BW = os.environ.get("BOMBWORLD", "/Users/tomdebruijn/Dev/BombWorld")
 # The game branch the site's facts and names are read from. Point it at the branch that is (or will be) in the stores.
-REF = os.environ.get("REF", "origin/coordinator/release-107-1119")
+REF = os.environ.get("REF", "origin/coordinator/candidate-j-1126")
 _STRINGS = None
 
 

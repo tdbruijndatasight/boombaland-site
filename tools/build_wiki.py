@@ -230,18 +230,27 @@ GOAL_ENUM = enum("Assets/_Project/Code/Data/LevelStarGoal.cs", "LevelStarGoal")
 
 
 def star_goal_text(goal, n):
+    """The game's own line for a star goal (LevelStarGoalText.Describe): its string key, the English plural form for n
+    (`_one` when n is 1, as PluralSuffix does for English), and n in its {0}. ReachScore writes n with thousands commas."""
     name = {v: k for k, v in GOAL_ENUM.items()}.get(goal)
     fn = src_star[src_star.index("class LevelStarGoalText"):]
     m = re.search(r"case LevelStarGoal\." + str(name) + r":\s*return ([^;]+);", fn)
-    if not m:
+    k = re.search(r'"(menu\.common\.star_goal_[a-z_]+)"', m.group(1)) if m else None
+    if not k:
         UNSOURCED.append(f"star goal text for {name}")
         return str(name)
-    expr = m.group(1)
-    expr = re.sub(r"\.ToString\([^)]*\)", "", expr)
-    parts = re.findall(r'"([^"]*)"|\b(n|amount)\b', expr)
-    out = ""
-    for lit, var in parts:
-        out += lit if lit else (f"{n:,}" if name == "ReachScore" else str(n))
+    key = k.group(1)
+    if "PluralSuffix" in m.group(1) and n == 1 and key + "_one" in S:
+        key += "_one"
+    return T(key, f"{n:,}" if name == "ReachScore" else str(n))
+
+
+def star_goals(a):
+    """Star goals 27 Nov 2026: each of a level's three stars is a goal (LevelConfig: starGoalOne, starGoalTwo, starGoal)."""
+    out = []
+    for g, amt in (("starGoalOne", "starGoalOneAmount"), ("starGoalTwo", "starGoalTwoAmount"), ("starGoal", "starGoalAmount")):
+        goal = field(a, g, 0)
+        out.append(star_goal_text(goal, field(a, amt, 0)) if goal else "–")
     return out
 
 
@@ -675,9 +684,8 @@ def levels_section():
     rows, cards = [], []
     for n, path, a in LEVELS:
         name = T(f"menu.worlds.level_1_{n}")
-        goal = field(a, "starGoal", 0)
-        amount = field(a, "starGoalAmount", 0)
-        star3 = star_goal_text(goal, amount) if goal else "–"
+        stars = star_goals(a)
+        star3 = " · ".join(stars)
         new = []
         for key in level_facts(n, a):
             if key not in seen_tiles:
@@ -719,7 +727,7 @@ def levels_section():
                      ", ".join(esc(s) for s in special) or "–"])
         cards.append(f"""<section class="wiki-level" id="level-{n}"><h3>Level {n}: {esc(name)}</h3>
 <ul>
-<li><strong>Stars:</strong> ★ Win · ★ Win without taking a hit · ★ {esc(star3)}</li>
+<li><strong>Stars:</strong> {" · ".join("★ " + esc(x) for x in stars)}</li>
 {f'<li><strong>Enemies:</strong> {esc(", ".join(foes))}</li>' if foes else ''}
 {f'<li><strong>Also here:</strong> {esc(", ".join(special))}</li>' if special else ''}
 {f'<li><strong>New here:</strong> {", ".join(new)}</li>' if new else ''}
@@ -729,7 +737,7 @@ def levels_section():
     tiers = f"""<p>Every level has four difficulties: Easy, Normal, Hard and Impossible. {esc(T('menu.main.tour_tier'))}
 {esc(T('menu.main.tour_stars'))}</p>"""
     body = f"""{tiers}
-{table(['#', 'Level', 'Where', 'Third star', 'Boss and specials'], rows)}
+{table(['#', 'Level', 'Where', 'Star goals', 'Boss and specials'], rows)}
 <h2 id="every-level">Level by level</h2>
 <p>"New here" lists what a level shows you for the first time: board tiles, power-ups and enemies.</p>
 <p>Each level has its map, seen from above with north at the top, drawn straight from the game's level data. Walls, gaps,
