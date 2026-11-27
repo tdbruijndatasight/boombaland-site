@@ -17,17 +17,20 @@ for x in 800 1280 1920; do op $RA/endcard_redo_2026-10-29/C7_R8_background_1920x
 WORDMARK="$S/assets/src/boombaland_wordmark.png"   # g164 boombaland_bomb_inside_o_v2.png (PO approved 2 Nov, "this is perfect"), review_assets/logo_fix_2026-11-02/
 for x in 480 960; do tr "$WORDMARK" logo $x; done
 V8=$B/store_kit/v8_2026-11-20   # store v8 (PO approved 20 Nov 2026): no painted Grimdorn, Blom's current plain green scarf
+V10=$B/store_kit/v10_2026-11-27 # store screens v10 (27 Nov 2026): recaptured in the 1.0.7 look (candidate J); masters stay v8
 for x in 360 720; do tr $V8/masters/blom_standing_2048x3072_C2_R3_v1scarf.png blom $x; done
 # the bosses panel: Grimdorn as he is in the game, cut from store screenshot 3 (PO 20 Nov: no painted Grimdorn anywhere)
+# v10 frame 3 is the in-game boss cinematic: a 780x1040 portrait around his head and shoulders, scaled to 570x760
 BOSS=$(mktemp -t boss).png
-sips --cropToHeightWidth 760 570 --cropOffset 330 975 $V8/screens/play_en_03.png --out "$BOSS" >/dev/null
+sips --cropToHeightWidth 1040 780 --cropOffset 60 960 $V10/screens/play_en_03.png --out "$BOSS" >/dev/null
+sips -z 760 570 "$BOSS" >/dev/null
 for x in 360 570; do op "$BOSS" boss $x; done; rm -f "$BOSS"
 for x in 480 800 1440; do tr $V8/shared/six_hero_lineup_2400x1100_C3_R3_v1scarf.png heroes $x; done  # 1600 with alpha decodes blank in Chrome (sips AVIF)
 tr $RA/approved_2026-10-30/C8_R1_green.png chest-badge 256
 for x in 1024 2048; do op $V8/masters/feature_graphic_2048x1000_v8_heroes.png key-art $x; done
 i=0
-# the store images v8 (PO 4 Nov: "update the images used on the website as well"; v8 approved 20 Nov)
-for f in $V8/screens/play_en_0{1,2,3,4,5,6,7,8}.png; do
+# the store images (PO 4 Nov: "update the images used on the website as well"); v10 = the 1.0.7 look, 27 Nov
+for f in $V10/screens/play_en_0{1,2,3,4,5,6,7,8}.png; do
   i=$((i+1)); for x in 640 1280; do op "$f" shot$i $x; done
 done
 # the trailer's click-to-play poster is shot1 (TRAILER_POSTER in build.py). The old YouTube-thumbnail poster (painted

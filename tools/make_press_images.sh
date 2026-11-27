@@ -1,6 +1,6 @@
 #!/bin/bash
 # The press kit's images (/press/), from the approved store art (macOS sips + zip; no other tools). Nothing is drawn.
-#   screenshots: store images v8 (PO approved 20 Nov 2026), store_kit/v8_2026-11-20/screens/play_en_0{1..8}.png
+#   screenshots: store images v10 (1.0.7 look, 27 Nov 2026), store_kit/v10_2026-11-27/screens/play_en_0{1..8}.png
 #   key art:     v8 heroes-only feature graphic master (PO approved with v8; live on Google Play)
 #   castle art:  App Store header R1 (PO approved 21 Nov 2026, store_kit/v9_2026-11-21/appstore/PO_APPROVAL.json)
 #   Blom:        v8 Blom cut-out with the current plain green scarf (store_kit/v8_2026-11-20/masters)
@@ -9,7 +9,7 @@ set -euo pipefail
 S="$(cd "$(dirname "$0")/.." && pwd)"; I="$S/assets/img"; P="$S/assets/press"; mkdir -p "$I" "$P"
 K=/Users/tomdebruijn/Dev/bombworld-status/store_kit
 for i in 1 2 3 4 5 6 7 8; do   # web sizes: shot1..8 from tools/make_images.sh
-  f=$K/v8_2026-11-20/screens/play_en_0$i.png
+  f=$K/v10_2026-11-27/screens/play_en_0$i.png
   sips -s format jpeg -s formatOptions 85 "$f" --out "$P/boombaland-screenshot-$i.jpg" >/dev/null
 done
 FG=$K/v8_2026-11-20/masters/feature_graphic_2048x1000_v8_heroes.png

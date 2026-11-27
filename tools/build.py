@@ -297,13 +297,13 @@ def store_buttons():
 SHOTS = [  # the store images v8 (PO approved 20 Nov 2026): captions are the frames' own banners, alt says what is on screen.
     # No painted Grimdorn (PO 20 Nov 2026): he appears only as he is in the game (frames 3 and 8).
     ("shot1", "The six heroes", "Blom, Gusto, Frosta, Zappy, Ember and Banshee together under the Boombaland logo"),
-    ("shot2", "Drop. Run. BOOM! Outsmart every enemy", "Blom holds up a lit bomb next to a board full of crates"),
-    ("shot3", f"Fight epic bosses: beat {name('thorn_guard')} and his tricks", f"{name('thorn_guard')} on his forest arena, bombs falling around him"),
-    ("shot4", "Unlock unique heroes, each with their own power", "Zappy next to a board with conveyor belts"),
-    ("shot5", "Use powerful skills: Frosta's Frost Ring freezes the enemies around her", "Frosta next to a board where her Frost Ring has frozen the enemies"),
-    ("shot6", "Explore evolving levels: conveyor belts carry you, your bombs and crates", "Gusto next to a level full of conveyor belts and crates"),
+    ("shot2", "Drop. Run. BOOM! Outsmart every enemy", "Blom holds up a lit bomb; on the board he has run clear while his blast hits an enemy and breaks crates"),
+    ("shot3", f"Fight epic bosses: beat {name('thorn_guard')} and his tricks", f"{name('thorn_guard')} up close on his arena, as he looks in the game"),
+    ("shot4", "Unlock unique heroes, each with their own power", "Zappy next to a board where her storm cloud strikes an enemy on a conveyor belt"),
+    ("shot5", "Use powerful skills: Frosta casts her Frost Ring", "Frosta next to a board where she casts her Frost Ring, ice shards all around her"),
+    ("shot6", "Explore evolving levels: conveyor belts carry you, your bombs and crates", "Gusto next to a level full of conveyor belts and crates, a chain blast beside him"),
     ("shot7", "Solve complex puzzles: push the block into the gap to cross", "Banshee next to a castle puzzle with push blocks and a gap"),
-    ("shot8", f"Claim the throne: fight your way to {name('thorn_guard')}'s throne", "Ember next to a castle board with towers and guards"),
+    ("shot8", f"Claim the throne: fight your way to {name('thorn_guard')}'s throne", "Ember next to a castle board, her burning trail behind her and the throne gate at the top"),
 ]
 # The home gallery shows six of the eight (its layout); the press kit shows all eight. v8 frames 3 and 8 carry the game's
 # current boss name, so they may be unhidden at any time.
