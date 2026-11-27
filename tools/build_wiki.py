@@ -849,12 +849,12 @@ You start with {e('_startingEnergy')}. Watching an ad gives {e('_adEnergyReward'
 <p>{esc(T('menu.main.tour_coins'))} A first win of a level gives {e('_campaignFirstClearCoins')} coins, a replay {e('_campaignReplayCoins')},
 plus {e('_coinsPerStar')} for every star. Coins also pay for gear levels and hero stars.</p></section>
 <section class="wiki-card" id="gems"><h2>{ic('ui_top_icon_gem', 'gem')} Gems</h2>
-<p>{esc(T('menu.main.tour_gems'))} Achievements pay gems, and so does the daily login on some days.</p></section>
+<p>{esc(T('menu.main.tour_gems'))} Achievements pay gems, and so does the daily reward on some days.</p></section>
 <h2 id="daily">{esc(T('menu.daily.login_title'))}</h2>
 <p>{esc(T('menu.main.tour_daily'))}</p>
 {table(['Day', 'Reward'], rows)}"""
-    return wiki_page("currencies", "Energy, coins and gems", "The three things you collect and spend, and the 28-day login.",
-                     body, "Boombaland energy, coins and gems: how you earn them, what they cost, and the 28-day login rewards.")
+    return wiki_page("currencies", "Energy, coins and gems", "The three things you collect and spend, and the daily reward.",
+                     body, "Boombaland energy, coins and gems: how you earn them, what they cost, and the daily rewards.")
 
 
 def achievements_section():
@@ -936,14 +936,24 @@ def whatsnew_section():
         status = f"Boombaland is out on {build.STORE_NAMES[on]}. Coming soon to {build.STORE_NAMES[soon]}."
     else:
         status = "Coming soon: Boombaland is not in the App Store or on Google Play yet."
-    body = f"""<h2 id="v1-0">The first release</h2>
+    body = f"""<h2 id="v1-0-7">Version 1.0.7</h2>
+<ul>
+<li>A fresh look: bigger blasts, score popups and a new health and score bar.</li>
+<li>Three star goals in every level, such as &ldquo;Win in 120 seconds&rdquo; or &ldquo;Defeat with a bomb chain&rdquo;. See <a href="/wiki/levels/">Levels</a>.</li>
+<li>Living arenas: trees sway, islands float, and each round has its own time of day.</li>
+<li>A new Home screen with a level carousel under a blue sky.</li>
+<li>Revive with full health, once per game, and a clearer defeat screen.</li>
+<li>Replays now show bosses, effects and sound.</li>
+<li>Many fixes: Daily Shop, buttons, popups and sign-in.</li>
+</ul>
+<h2 id="v1-0">The first release</h2>
 <p>{status}</p>
 <ul>
 <li>25 levels across Green Lands and Castle Road, each in Easy, Normal, Hard and Impossible.</li>
 <li>Six heroes: Blom, Gusto, Frosta, Zappy, Ember and Banshee.</li>
 <li>Bosses and special enemies: {n('thorn_guard')}, {n('archer')}, {n('airship')}, {n('shellback')} and {n('cobblewatch')}.</li>
 <li>Gear, the Blacksmith, chests that show what they guarantee, and the Lucky Chest.</li>
-<li>Daily login, daily and weekly tasks, and achievements in Game Center and Google Play Games.</li>
+<li>Daily rewards, daily and weekly tasks, and achievements in Game Center and Google Play Games.</li>
 </ul>"""
     return wiki_page("whats-new", "What's new", "Patch notes, newest first.", body, "Boombaland patch notes and version history: what is in each release of the game, newest first.")
 

@@ -25,7 +25,7 @@
     "menu.codex.burr_bomber": ["Burr Bomber"]
   },
   "snapshot": {
-    "ref": "origin/coordinator/release-107-1119",
+    "ref": "origin/coordinator/candidate-j-1126",
     "values": {
       "menu.heroes.name_blom": "Blom",
       "menu.heroes.name_gusto": "Gusto",
