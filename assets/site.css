@@ -96,6 +96,8 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.15; l
 .store-badge { display: inline-block; line-height: 0; --badge-h: 56px; }
 .store-badge img { height: var(--badge-h); width: auto; }
 .store-badge--android img { height: calc(var(--badge-h) * 250 / 168); }
+/* The two badges have different box heights (see above), so centre them on one line. */
+.stores { align-items: center; }
 
 /* ---- /get/: the social-bio download page (badges big, then the QR code for desktop visitors) ------------------- */
 .get .wrap { max-width: 40rem; }
