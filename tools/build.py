@@ -149,7 +149,7 @@ def topbar(current):
 def header_bar(current):
     return f"""<header class="topbar">
 <div class="wrap">
-<a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-192.png 4x" width="40" height="40" alt=""><span>Boombaland</span></a>
+<a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-96.png 2x, /assets/img/icon-192.png 4x" width="40" height="40" alt=""><span>Boombaland</span></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><img src="/assets/img/menu-96.png" width="48" height="48" alt=""><span class="sr-only">Menu</span></button>
 <nav class="site-nav" id="site-nav" aria-label="Main">{nav(current)}<a class="btn-get" href="/#get">Get the game</a></nav>
 </div>
@@ -161,7 +161,7 @@ FOOT_COLS = "".join(f'<div><p class="footer-h">{h}</p>{nav(None, "nav", items)}<
 FOOTER = f"""<footer class="footer">
 <div class="wrap footer-grid">
 <div class="footer-about">
-<a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-192.png 4x" width="40" height="40" alt="" loading="lazy" decoding="async"><span>Boombaland</span></a>
+<a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-96.png 2x, /assets/img/icon-192.png 4x" width="40" height="40" alt="" loading="lazy" decoding="async"><span>Boombaland</span></a>
 <p>Boombaland is free to play. It offers optional in-app purchases. Ads only play when you choose to watch one for a reward.</p>
 <p>Follow Boombaland on <a href="https://www.youtube.com/@BoombalandGame" rel="noopener">YouTube</a>, <a href="https://www.instagram.com/boombaland.game/" rel="noopener">Instagram</a> and <a href="https://www.tiktok.com/@boombaland" rel="noopener">TikTok</a>.</p>
 </div>
@@ -445,6 +445,8 @@ def home_jsonld():
 
 # Hero colours on the home page's hero cards: each hero's own colour in the game's art (CSS custom property --c).
 HERO_COLOURS = {"blom": "#4f9a2a", "gusto": "#6f9a2c", "frosta": "#3f86c9", "zappy": "#c28a00", "ember": "#d0571b", "banshee": "#8a5cc4"}
+# The same colours, darkened for text on the paper card (WCAG AA, 4.5:1 or more).
+HERO_INKS = {"blom": "#2f6b14", "gusto": "#4a6b12", "frosta": "#1f5f9c", "zappy": "#7a5600", "ember": "#9c3a0c", "banshee": "#6a3fa6"}
 HERO_CLIP = "basics"  # the hero's muted loop (FOOTAGE_NEEDS.md shot 1); left out until the clip is committed
 
 
@@ -454,7 +456,7 @@ def hero_art():
         return ", ".join(f"/assets/img/{name}-{w}.{ext} {w}w" for w in widths)
     heroes = hero_names()
     alt = f"{', '.join(heroes[:-1])} and {heroes[-1]} cheer on a castle terrace above the clouds"
-    sq, wd = [720, 1080], [1280, 1920, 2560]
+    sq, wd = [720, 840, 1080], [1280, 1920, 2560]
     art = (f'<picture>'
            f'<source media="(max-width: 599px)" type="image/avif" srcset="{ss("hero-square", sq, "avif")}" sizes="100vw" width="1080" height="1080">'
            f'<source media="(max-width: 599px)" srcset="{ss("hero-square", sq, "jpg")}" sizes="100vw" width="1080" height="1080">'
@@ -493,7 +495,7 @@ def features():
             media = pic(img, [256], "(min-width: 900px) 200px, 160px", alt, 256, 256, 256, ext="png", cls="badge-art")
             cls = "feature feature--badge"
         else:
-            media = pic(img, [640, 1280], "(min-width: 900px) 36rem, 92vw", alt, 640, 640, 360, cls="shot")
+            media = pic(img, [640, 960, 1280], "(min-width: 900px) 36rem, 92vw", alt, 640, 640, 360, cls="shot")
             cls = "feature"
         out.append(f'<article class="{cls}" data-reveal aria-labelledby="f-{i}">\n<div class="feature-media">{media}</div>\n'
                    f'<div class="feature-text">\n<h3 id="f-{i}">{title}</h3>\n{body.replace("{GL}", text("menu.worlds.green_lands"))}\n</div>\n</article>')
@@ -503,7 +505,7 @@ def features():
 def hero_cards():
     out = []
     for h, n in zip(HEROES, hero_names()):
-        out.append(f'<li class="hero-card" style="--c: {HERO_COLOURS[h]}">'
+        out.append(f'<li class="hero-card" style="--c: {HERO_COLOURS[h]}; --ct: {HERO_INKS[h]}">'
                    f'<img src="/assets/wiki/portrait-{h}.png" width="160" height="160" alt="" loading="lazy" decoding="async">'
                    f'<h3>{html.escape(n)}</h3>'
                    f'<p class="skill-name">{html.escape(text("menu.heroes.skill_" + h))}</p>'
@@ -523,7 +525,7 @@ MORE = [  # the home page's way on to the rest of the site
 def home():
     gallery = "\n".join(
         f'<li><figure><a href="/assets/img/{n}-1280.jpg" data-lightbox data-caption="{html.escape(c)}">'
-        + pic(n, [640, 1280], "(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw", alt, 640, 640, 360)
+        + pic(n, [640, 960, 1280], "(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw", alt, 640, 640, 360)
         + f"</a><figcaption>{html.escape(c)}</figcaption></figure></li>"
         for n, c, alt in SHOTS if n not in SHOTS_HIDDEN)
     clips = "\n".join(c for c in (clip_html(n) for n in HOME_CLIPS) if c)
@@ -710,7 +712,7 @@ def press():
         for f, label, size, thumb in PRESS_FILES)
     gallery = "\n".join(
         f'<li><figure><a href="/assets/img/{n}-1280.jpg" data-lightbox data-caption="{html.escape(c)}">'
-        + pic(n, [640, 1280], "(min-width: 600px) 24rem, 92vw", alt, 640, 640, 360)
+        + pic(n, [640, 960, 1280], "(min-width: 600px) 24rem, 92vw", alt, 640, 640, 360)
         + f'</a><figcaption>{html.escape(c)}<br><a href="/assets/press/boombaland-screenshot-{i}.jpg" download>Full size</a>'
           f' <small>(2560 × 1440 JPEG)</small></figcaption></figure></li>'
         for i, (n, c, alt) in enumerate(SHOTS, 1))

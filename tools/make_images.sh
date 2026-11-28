@@ -19,7 +19,7 @@ CH="$P/boombaland-castle-heroes-3840x1646.jpg"
 for x in 1280 1920 2560; do op "$CH" hero-wide $x; done
 SQ=$(mktemp -t herosq).png
 sips --cropToHeightWidth 1320 1320 --cropOffset 180 1230 "$CH" --out "$SQ" >/dev/null
-for x in 720 1080; do op "$SQ" hero-square $x; done; rm -f "$SQ"
+for x in 720 840 1080; do op "$SQ" hero-square $x; done; rm -f "$SQ"
 # The wordmark's master lives IN this repo, so a redrawn wordmark drops in by replacing this one file (IMAGE_NEEDS.md #7b).
 WORDMARK="$S/assets/src/boombaland_wordmark.png"   # g164 boombaland_bomb_inside_o_v2.png (PO approved 2 Nov, "this is perfect"), review_assets/logo_fix_2026-11-02/
 for x in 480 960; do tr "$WORDMARK" logo $x; done
@@ -35,13 +35,13 @@ for x in 1024 2048; do op $V8/masters/feature_graphic_2048x1000_v8_heroes.png ke
 i=0
 # the store images v8 (PO 4 Nov: "update the images used on the website as well"; v8 approved 20 Nov)
 for f in $V8/screens/play_en_0{1,2,3,4,5,6,7,8}.png; do
-  i=$((i+1)); for x in 640 1280; do op "$f" shot$i $x; done
+  i=$((i+1)); for x in 640 960 1280; do op "$f" shot$i $x; done
 done
 # the trailer's click-to-play poster is shot1 (TRAILER_POSTER in build.py). The old YouTube-thumbnail poster (painted
 # Thorn Guard, "Play free now") was removed on 22 Nov 2026.
 # icons and favicons (opaque square icon)
 sips -s format png "$ICON" --out "$P/boombaland-app-icon-1024.png" >/dev/null
-for x in 192 180 48 32 16; do sips -z $x $x -s format png "$ICON" --out "$I/icon-$x.png" >/dev/null; done
+for x in 192 180 96 48 32 16; do sips -z $x $x -s format png "$ICON" --out "$I/icon-$x.png" >/dev/null; done
 cp "$I/icon-180.png" "$S/apple-touch-icon.png"
 ffmpeg -loglevel error -y -i "$I/icon-48.png" -i "$I/icon-32.png" -i "$I/icon-16.png" -map 0 -map 1 -map 2 -c png "$S/favicon.ico" 2>/dev/null \
   || ffmpeg -loglevel error -y -i "$I/icon-32.png" "$S/favicon.ico"
