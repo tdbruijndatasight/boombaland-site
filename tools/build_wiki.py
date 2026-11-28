@@ -237,6 +237,9 @@ def star_goal_text(goal, n):
         UNSOURCED.append(f"star goal text for {name}")
         return str(name)
     expr = m.group(1)
+    k = re.search(r'GameText\.(?:Format|Get)\("([^"]+)"', expr)
+    if k:  # since the L10N audit (2026-11-06) the words are the string table's: menu.common.star_goal_*, {0} = the number
+        return T(k.group(1), f"{n:,}" if name == "ReachScore" else n)
     expr = re.sub(r"\.ToString\([^)]*\)", "", expr)
     parts = re.findall(r'"([^"]*)"|\b(n|amount)\b', expr)
     out = ""
