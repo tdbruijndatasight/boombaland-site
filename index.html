@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="/assets/fonts/Fredoka-SemiBold.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/site.css?v=50630e0d">
 <script>document.documentElement.classList.add("js")</script>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Boombaland">
@@ -122,53 +122,178 @@
 <div class="wrap">
 <a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-192.png 4x" width="40" height="40" alt=""><span>Boombaland</span></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><img src="/assets/img/menu-96.png" width="48" height="48" alt=""><span class="sr-only">Menu</span></button>
-<nav class="site-nav" id="site-nav" aria-label="Main"><ul class="nav"><li><a href="/" aria-current="page">Home</a></li><li><a href="/wiki/">Wiki</a></li><li><a href="/development/">Development</a></li><li><a href="/press/">Press</a></li><li><a href="/redeem/">Redeem</a></li><li><a href="/support/">Support</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></nav>
+<nav class="site-nav" id="site-nav" aria-label="Main"><ul class="nav"><li><a href="/wiki/">Wiki</a></li><li><a href="/press/">Press</a></li><li><a href="/development/">How it's made</a></li><li><a href="/redeem/">Redeem</a></li><li><a href="/support/">Support</a></li></ul><a class="btn-get" href="/#get">Get the game</a></nav>
 </div>
 </header>
 <main id="main">
 <section class="hero" aria-labelledby="hero-title">
-<picture class="bg"><source type="image/avif" srcset="/assets/img/hero-castle-800.avif 800w, /assets/img/hero-castle-1280.avif 1280w, /assets/img/hero-castle-1920.avif 1920w" sizes="100vw"><img src="/assets/img/hero-castle-1280.jpg" srcset="/assets/img/hero-castle-800.jpg 800w, /assets/img/hero-castle-1280.jpg 1280w, /assets/img/hero-castle-1920.jpg 1920w" sizes="100vw" width="1280" height="720" alt="" fetchpriority="high"></picture>
-<div class="wrap">
+<div class="hero-art"><picture><source media="(max-width: 599px)" type="image/avif" srcset="/assets/img/hero-square-720.avif 720w, /assets/img/hero-square-1080.avif 1080w" sizes="100vw" width="1080" height="1080"><source media="(max-width: 599px)" srcset="/assets/img/hero-square-720.jpg 720w, /assets/img/hero-square-1080.jpg 1080w" sizes="100vw" width="1080" height="1080"><source type="image/avif" srcset="/assets/img/hero-wide-1280.avif 1280w, /assets/img/hero-wide-1920.avif 1920w, /assets/img/hero-wide-2560.avif 2560w" sizes="100vw" width="2560" height="1097"><img src="/assets/img/hero-wide-1280.jpg" srcset="/assets/img/hero-wide-1280.jpg 1280w, /assets/img/hero-wide-1920.jpg 1920w, /assets/img/hero-wide-2560.jpg 2560w" sizes="100vw" width="2560" height="1097" alt="Blom, Gusto, Frosta, Zappy, Ember and Banshee cheer on a castle terrace above the clouds" fetchpriority="high"></picture></div>
+<div class="wrap hero-inner">
 <div class="hero-copy">
-<h1 id="hero-title" class="hero-h1"><picture><source type="image/avif" srcset="/assets/img/logo-480.avif 480w, /assets/img/logo-960.avif 960w" sizes="(min-width: 600px) 520px, 90vw"><img class="hero-logo" src="/assets/img/logo-480.png" srcset="/assets/img/logo-480.png 480w" sizes="(min-width: 600px) 520px, 90vw" width="480" height="110" alt="Boombaland" fetchpriority="high"></picture></h1>
-<p class="hero-tag">Ready, Set, BOOM!</p>
-<p class="hero-pitch">Drop a bomb, run, and watch the board explode. Battle brutal bosses and unlock epic heroes in bright 3D adventures.</p>
-<p class="hero-classic">Classic bomb battles with a fresh new twist.</p>
+<h1 id="hero-title" class="hero-h1"><picture><source type="image/avif" srcset="/assets/img/logo-480.avif 480w, /assets/img/logo-960.avif 960w" sizes="(min-width: 900px) 440px, min(84vw, 400px)"><img class="hero-logo" src="/assets/img/logo-480.png" srcset="/assets/img/logo-480.png 480w" sizes="(min-width: 900px) 440px, min(84vw, 400px)" width="480" height="137" alt="Boombaland" fetchpriority="high"></picture></h1>
+<p class="hero-tag">Drop a bomb, run, BOOM!</p>
+<p class="hero-pitch">Classic bomb-maze arcade game with six heroes, brutal bosses and castle puzzles.</p>
 
-<div class="stores">
-<a class="btn" data-store="ios" href="https://apps.apple.com/app/id6821619320" rel="noopener"><span class="stack"><span>App Store</span><small data-store-note>Free download</small></span></a>
-<a class="btn" data-store="android" href="https://play.google.com/store/apps/details?id=com.datasight.boomworld" rel="noopener"><span class="stack"><span>Google Play</span><small data-store-note>Free download</small></span></a>
+<div class="stores stores--hero">
+<a class="store-btn" data-store="ios" href="https://apps.apple.com/app/id6821619320" rel="noopener"><span class="store-small">Download on the</span><span class="store-big">App Store</span></a>
+<a class="store-btn" data-store="android" href="https://play.google.com/store/apps/details?id=com.datasight.boomworld" rel="noopener"><span class="store-small">Get it on</span><span class="store-big">Google Play</span></a>
 </div>
-<p class="hero-note">For iPhone, iPad and Android phones and tablets. Free to play.</p>
+<p class="hero-note">Free to play · iPhone, iPad and Android</p>
 </div>
-<picture><source type="image/avif" srcset="/assets/img/blom-360.avif 360w, /assets/img/blom-720.avif 720w" sizes="360px"><img class="hero-blom" src="/assets/img/blom-360.png" srcset="/assets/img/blom-360.png 360w" sizes="360px" width="360" height="540" alt="Blom, a cheerful sprout hero, holds up a lit bomb" fetchpriority="high"></picture>
 </div>
 </section>
 
-<section class="section" aria-labelledby="trailer-title">
+<section class="section section--dark" id="trailer" aria-labelledby="trailer-title">
 <div class="wrap">
+<div class="section-head">
+<p class="eyebrow">Trailer</p>
 <h2 class="section-title" id="trailer-title">Watch the trailer</h2>
+</div>
 <div class="trailer" data-trailer="rlRE_Cv3Jm4">
-<a class="trailer-play" href="https://youtu.be/rlRE_Cv3Jm4" aria-label="Play the Boombaland trailer"><picture><source type="image/avif" srcset="/assets/img/shot1-640.avif 640w, /assets/img/shot1-1280.avif 1280w" sizes="(min-width: 900px) 860px, 92vw"><img src="/assets/img/shot1-1280.jpg" srcset="/assets/img/shot1-640.jpg 640w, /assets/img/shot1-1280.jpg 1280w" sizes="(min-width: 900px) 860px, 92vw" width="1280" height="720" alt="The six heroes: play the Boombaland trailer" loading="lazy" decoding="async"></picture><span class="trailer-btn" aria-hidden="true"></span></a>
+<a class="trailer-play" href="https://youtu.be/rlRE_Cv3Jm4" aria-label="Play the Boombaland trailer"><picture><source type="image/avif" srcset="/assets/img/shot1-640.avif 640w, /assets/img/shot1-1280.avif 1280w" sizes="(min-width: 1040px) 960px, 92vw"><img src="/assets/img/shot1-1280.jpg" srcset="/assets/img/shot1-640.jpg 640w, /assets/img/shot1-1280.jpg 1280w" sizes="(min-width: 1040px) 960px, 92vw" width="1280" height="720" alt="The six heroes: play the Boombaland trailer" loading="lazy" decoding="async"></picture><span class="trailer-btn" aria-hidden="true"></span></a>
 </div>
 <p class="trailer-note">The trailer plays from YouTube, which loads only when you press play.</p>
-<div class="stores">
-<a class="btn" href="https://www.youtube.com/@BoombalandGame" rel="noopener"><span class="stack"><span>YouTube</span><small>@BoombalandGame</small></span></a>
-<a class="btn" href="https://www.instagram.com/boombaland.game/" rel="noopener"><span class="stack"><span>Instagram</span><small>@boombaland.game</small></span></a>
-<a class="btn" href="https://www.tiktok.com/@boombaland" rel="noopener"><span class="stack"><span>TikTok</span><small>@boombaland</small></span></a>
-</div>
+<ul class="socials" aria-label="Boombaland on social media"><li><a href="https://www.youtube.com/@BoombalandGame" rel="noopener"><strong>YouTube</strong> <span>@BoombalandGame</span></a></li><li><a href="https://www.instagram.com/boombaland.game/" rel="noopener"><strong>Instagram</strong> <span>@boombaland.game</span></a></li><li><a href="https://www.tiktok.com/@boombaland" rel="noopener"><strong>TikTok</strong> <span>@boombaland</span></a></li></ul>
 </div>
 </section>
 
 <section class="section" aria-labelledby="about-title">
-<div class="wrap prose about">
+<div class="wrap">
+<div class="section-head">
+<p class="eyebrow">The game</p>
 <h2 class="section-title" id="about-title">What is Boombaland?</h2>
-<p>Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android phones and tablets. You drop bombs, run from the blasts, break
-crates, grab power-ups and outsmart enemies on grid boards, with bosses and push-block puzzles along the way.</p>
+<p class="lede">Boombaland is a classic bomb-maze arcade game for iPhone, iPad and Android phones and tablets. You drop bombs, run from the
+blasts, break crates, grab power-ups and outsmart enemies on grid boards, with bosses and push-block puzzles along the way.</p>
+</div>
+<ul class="stats" aria-label="Boombaland in numbers">
+<li><strong>25</strong> levels</li><li><strong>6</strong> heroes</li><li><strong>4</strong> difficulties</li><li><strong>0</strong> loot boxes</li>
+</ul>
+<div class="features">
+<article class="feature" data-reveal aria-labelledby="f-0">
+<div class="feature-media"><picture><source type="image/avif" srcset="/assets/img/shot2-640.avif 640w, /assets/img/shot2-1280.avif 1280w" sizes="(min-width: 900px) 36rem, 92vw"><img class="shot" src="/assets/img/shot2-640.jpg" srcset="/assets/img/shot2-640.jpg 640w, /assets/img/shot2-1280.jpg 1280w" sizes="(min-width: 900px) 36rem, 92vw" width="640" height="360" alt="Blom holds up a lit bomb next to a board full of crates" loading="lazy" decoding="async"></picture></div>
+<div class="feature-text">
+<h3 id="f-0">Drop. Run. BOOM!</h3>
+<p>Simple touch controls: move, drop a bomb, use your skill. Kick bombs, grab power-ups and plan every blast, then get out before it goes off.</p>
+</div>
+</article>
+<article class="feature" data-reveal aria-labelledby="f-1">
+<div class="feature-media"><picture><source type="image/avif" srcset="/assets/img/shot6-640.avif 640w, /assets/img/shot6-1280.avif 1280w" sizes="(min-width: 900px) 36rem, 92vw"><img class="shot" src="/assets/img/shot6-640.jpg" srcset="/assets/img/shot6-640.jpg 640w, /assets/img/shot6-1280.jpg 1280w" sizes="(min-width: 900px) 36rem, 92vw" width="640" height="360" alt="Gusto next to a level full of conveyor belts and crates" loading="lazy" decoding="async"></picture></div>
+<div class="feature-text">
+<h3 id="f-1">Levels that move</h3>
+<p>25 levels across Green Lands and Castle Road, each with its own twist: bridges, switches, towers, conveyor belts and timed gates. Story comics play between the chapters.</p>
+</div>
+</article>
+<article class="feature" data-reveal aria-labelledby="f-2">
+<div class="feature-media"><picture><source type="image/avif" srcset="/assets/img/shot7-640.avif 640w, /assets/img/shot7-1280.avif 1280w" sizes="(min-width: 900px) 36rem, 92vw"><img class="shot" src="/assets/img/shot7-640.jpg" srcset="/assets/img/shot7-640.jpg 640w, /assets/img/shot7-1280.jpg 1280w" sizes="(min-width: 900px) 36rem, 92vw" width="640" height="360" alt="Banshee pushes a block into the gap in a castle puzzle" loading="lazy" decoding="async"></picture></div>
+<div class="feature-text">
+<h3 id="f-2">Castle puzzles</h3>
+<p>On Castle Road, push blocks into the gaps to cross. Four difficulties, from Easy to Impossible, each with its own three stars on every level.</p>
+</div>
+</article>
+<article class="feature feature--badge" data-reveal aria-labelledby="f-3">
+<div class="feature-media"><picture><source type="image/avif" srcset="/assets/img/chest-badge-256.avif 256w" sizes="(min-width: 900px) 200px, 160px"><img class="badge-art" src="/assets/img/chest-badge-256.png" srcset="/assets/img/chest-badge-256.png 256w" sizes="(min-width: 900px) 200px, 160px" width="256" height="256" alt="A treasure chest with a green gem" loading="lazy" decoding="async"></picture></div>
+<div class="feature-text">
+<h3 id="f-3">No loot boxes</h3>
+<p>Every chest shows the item it guarantees, and the chance of everything else, before you open it. No mystery, no surprises.</p><p>Earn new heroes, gear, power-ups and Codex entries as you play. Equip boots, gloves and helmets, level them up and merge them at the Blacksmith.</p>
+</div>
+</article>
+</div>
+</div>
+</section>
+
+<section class="section section--sky" id="heroes" aria-labelledby="heroes-title">
+<div class="wrap">
+<div class="section-head">
+<p class="eyebrow">Heroes</p>
+<h2 class="section-title" id="heroes-title">Six heroes, six skills</h2>
+<p class="lede">Every hero drops bombs. Each one has a skill of their own. Star up every hero and make each skill stronger.</p>
+</div>
+<picture><source type="image/avif" srcset="/assets/img/heroes-480.avif 480w, /assets/img/heroes-800.avif 800w, /assets/img/heroes-1440.avif 1440w" sizes="(min-width: 900px) 52rem, 92vw"><img class="lineup" src="/assets/img/heroes-480.png" srcset="/assets/img/heroes-480.png 480w" sizes="(min-width: 900px) 52rem, 92vw" width="800" height="367" alt="The six heroes side by side: Blom, Gusto, Frosta, Zappy, Ember and Banshee" loading="lazy" decoding="async"></picture>
+<ul class="hero-grid">
+<li class="hero-card" style="--c: #4f9a2a"><img src="/assets/wiki/portrait-blom.png" width="160" height="160" alt="" loading="lazy" decoding="async"><h3>Blom</h3><p class="skill-name">Bomb Dash</p><p>Blom dashes ahead and cannot be hit during the dash.</p></li>
+<li class="hero-card" style="--c: #6f9a2c"><img src="/assets/wiki/portrait-gusto.png" width="160" height="160" alt="" loading="lazy" decoding="async"><h3>Gusto</h3><p class="skill-name">Gust</p><p>A blast of wind in front of Gusto pushes enemies and their bombs away.</p></li>
+<li class="hero-card" style="--c: #3f86c9"><img src="/assets/wiki/portrait-frosta.png" width="160" height="160" alt="" loading="lazy" decoding="async"><h3>Frosta</h3><p class="skill-name">Frost Ring</p><p>A ring of frost freezes every enemy near Frosta.</p></li>
+<li class="hero-card" style="--c: #c28a00"><img src="/assets/wiki/portrait-zappy.png" width="160" height="160" alt="" loading="lazy" decoding="async"><h3>Zappy</h3><p class="skill-name">Storm Call</p><p>Lightning strikes the enemies nearest to Zappy.</p></li>
+<li class="hero-card" style="--c: #d0571b"><img src="/assets/wiki/portrait-ember.png" width="160" height="160" alt="" loading="lazy" decoding="async"><h3>Ember</h3><p class="skill-name">Ember Trail</p><p>For a while every tile Ember walks over catches fire.</p></li>
+<li class="hero-card" style="--c: #8a5cc4"><img src="/assets/wiki/portrait-banshee.png" width="160" height="160" alt="" loading="lazy" decoding="async"><h3>Banshee</h3><p class="skill-name">Phantom Form</p><p>Banshee floats over the map, bombs anywhere and cannot be hit for a while.</p></li>
+</ul>
+<p class="more-link"><a href="/wiki/heroes/">Every hero, skill and star in the wiki</a></p>
+</div>
+</section>
+
+<section class="section section--dark boss" aria-labelledby="boss-title">
+<div class="wrap boss-grid">
+<div class="boss-art" data-reveal><picture><source type="image/avif" srcset="/assets/img/boss-360.avif 360w, /assets/img/boss-570.avif 570w" sizes="(min-width: 900px) 380px, 70vw"><img class="shot" src="/assets/img/boss-360.jpg" srcset="/assets/img/boss-360.jpg 360w, /assets/img/boss-570.jpg 570w" sizes="(min-width: 900px) 380px, 70vw" width="360" height="480" alt="Grimdorn as he is in the game: a wooden forest giant raising his spiked fists on his arena" loading="lazy" decoding="async"></picture></div>
+<div class="boss-text">
+<p class="eyebrow">The story</p>
+<h2 class="section-title" id="boss-title">Stop Grimdorn</h2>
+<p class="lede">Your goal: defeat Grimdorn and free Boombaland from his thorns.</p>
+<ul class="ticks">
+<li>Grimdorn hides behind a thorn shield, rains bomb barrages and gets faster when he is enraged</li>
+<li>Arko, the tower, shoots arrow-bombs across the board</li>
+<li>Nimbo, Grimdorn's flying warship, fires cannonballs that explode the moment they land</li>
+<li>On Castle Road, Turto blocks every blast with its shell until it walks</li>
+</ul>
+<p class="more-link"><a href="/wiki/enemies/">Enemies and bosses in the wiki</a></p>
+</div>
+</div>
+</section>
+
+<section class="section" aria-labelledby="gallery-title">
+<div class="wrap">
+<div class="section-head">
+<p class="eyebrow">Screenshots</p>
+<h2 class="section-title" id="gallery-title">A look inside</h2>
+</div>
+</div>
+<ul class="strip" tabindex="0" aria-label="Screenshots (scroll sideways)">
+<li><figure><a href="/assets/img/shot1-1280.jpg" data-lightbox data-caption="The six heroes"><picture><source type="image/avif" srcset="/assets/img/shot1-640.avif 640w, /assets/img/shot1-1280.avif 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw"><img src="/assets/img/shot1-640.jpg" srcset="/assets/img/shot1-640.jpg 640w, /assets/img/shot1-1280.jpg 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw" width="640" height="360" alt="Blom, Gusto, Frosta, Zappy, Ember and Banshee together under the Boombaland logo" loading="lazy" decoding="async"></picture></a><figcaption>The six heroes</figcaption></figure></li>
+<li><figure><a href="/assets/img/shot2-1280.jpg" data-lightbox data-caption="Drop. Run. BOOM! Outsmart every enemy"><picture><source type="image/avif" srcset="/assets/img/shot2-640.avif 640w, /assets/img/shot2-1280.avif 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw"><img src="/assets/img/shot2-640.jpg" srcset="/assets/img/shot2-640.jpg 640w, /assets/img/shot2-1280.jpg 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw" width="640" height="360" alt="Blom holds up a lit bomb next to a board full of crates" loading="lazy" decoding="async"></picture></a><figcaption>Drop. Run. BOOM! Outsmart every enemy</figcaption></figure></li>
+<li><figure><a href="/assets/img/shot4-1280.jpg" data-lightbox data-caption="Unlock unique heroes, each with their own power"><picture><source type="image/avif" srcset="/assets/img/shot4-640.avif 640w, /assets/img/shot4-1280.avif 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw"><img src="/assets/img/shot4-640.jpg" srcset="/assets/img/shot4-640.jpg 640w, /assets/img/shot4-1280.jpg 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw" width="640" height="360" alt="Zappy next to a board with conveyor belts" loading="lazy" decoding="async"></picture></a><figcaption>Unlock unique heroes, each with their own power</figcaption></figure></li>
+<li><figure><a href="/assets/img/shot5-1280.jpg" data-lightbox data-caption="Use powerful skills: Frosta&#x27;s Frost Ring freezes the enemies around her"><picture><source type="image/avif" srcset="/assets/img/shot5-640.avif 640w, /assets/img/shot5-1280.avif 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw"><img src="/assets/img/shot5-640.jpg" srcset="/assets/img/shot5-640.jpg 640w, /assets/img/shot5-1280.jpg 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw" width="640" height="360" alt="Frosta next to a board where her Frost Ring has frozen the enemies" loading="lazy" decoding="async"></picture></a><figcaption>Use powerful skills: Frosta&#x27;s Frost Ring freezes the enemies around her</figcaption></figure></li>
+<li><figure><a href="/assets/img/shot6-1280.jpg" data-lightbox data-caption="Explore evolving levels: conveyor belts carry you, your bombs and crates"><picture><source type="image/avif" srcset="/assets/img/shot6-640.avif 640w, /assets/img/shot6-1280.avif 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw"><img src="/assets/img/shot6-640.jpg" srcset="/assets/img/shot6-640.jpg 640w, /assets/img/shot6-1280.jpg 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw" width="640" height="360" alt="Gusto next to a level full of conveyor belts and crates" loading="lazy" decoding="async"></picture></a><figcaption>Explore evolving levels: conveyor belts carry you, your bombs and crates</figcaption></figure></li>
+<li><figure><a href="/assets/img/shot7-1280.jpg" data-lightbox data-caption="Solve complex puzzles: push the block into the gap to cross"><picture><source type="image/avif" srcset="/assets/img/shot7-640.avif 640w, /assets/img/shot7-1280.avif 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw"><img src="/assets/img/shot7-640.jpg" srcset="/assets/img/shot7-640.jpg 640w, /assets/img/shot7-1280.jpg 1280w" sizes="(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw" width="640" height="360" alt="Banshee next to a castle puzzle with push blocks and a gap" loading="lazy" decoding="async"></picture></a><figcaption>Solve complex puzzles: push the block into the gap to cross</figcaption></figure></li>
+</ul>
+</section>
+
+<section class="section cta" id="get" aria-labelledby="cta-title">
+<div class="wrap">
+<div class="cta-card">
+<div class="cta-blom"><picture><source type="image/avif" srcset="/assets/img/blom-360.avif 360w, /assets/img/blom-720.avif 720w" sizes="(min-width: 900px) 300px, 180px"><img src="/assets/img/blom-360.png" srcset="/assets/img/blom-360.png 360w" sizes="(min-width: 900px) 300px, 180px" width="360" height="540" alt="Blom, a cheerful sprout hero, holds up a lit bomb" loading="lazy" decoding="async"></picture></div>
+<div class="cta-copy">
+<h2 class="section-title" id="cta-title">Play Boombaland free</h2>
+<p>For iPhone, iPad and Android phones and tablets.</p>
+
+<div class="stores">
+<a class="store-btn" data-store="ios" href="https://apps.apple.com/app/id6821619320" rel="noopener"><span class="store-small">Download on the</span><span class="store-big">App Store</span></a>
+<a class="store-btn" data-store="android" href="https://play.google.com/store/apps/details?id=com.datasight.boomworld" rel="noopener"><span class="store-small">Get it on</span><span class="store-big">Google Play</span></a>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="section section--cream" aria-labelledby="more-title">
+<div class="wrap more-grid">
+<div>
+<h2 class="section-title" id="more-title">More Boombaland</h2>
+<ul class="link-cards">
+<li><a href="/wiki/"><strong>Wiki</strong><span>Heroes, enemies, power-ups, levels and gear, read from the game's own data.</span></a></li>
+<li><a href="/redeem/"><strong>Redeem a code</strong><span>Got a code from our socials? Collect the reward in your save.</span></a></li>
+<li><a href="/support/"><strong>Support</strong><span>Help with purchases, refunds, privacy choices, bugs and your data.</span></a></li>
+<li><a href="/press/"><strong>Press kit</strong><span>Fact sheet, trailer, screenshots, logo, icon and key art.</span></a></li>
+<li><a href="/development/"><strong>How it's made</strong><span>A one-person studio, AI tools and every change reviewed. Send us your idea.</span></a></li>
+</ul>
+</div>
+<div>
+<h2 class="section-title">Good to know</h2>
+<div class="faq prose" id="about">
+<h3>What's in the game?</h3>
 <p>It has 25 levels in Green Lands and on Castle Road, six heroes (Blom, Gusto, Frosta, Zappy, Ember and
 Banshee), each with their own skill, and four difficulties from Easy to Impossible. Besides the
 Campaign there is the Training Ground: quick battles against CPU opponents. You play on
 your own, against computer-controlled enemies.</p>
+<h3>Is it free?</h3>
 <p>Boombaland is free to play. It offers optional in-app purchases. Ads only play when you choose to watch one for a
 reward. There are no loot boxes.</p>
 <h3>Is Boombaland out yet?</h3>
@@ -176,78 +301,6 @@ reward. There are no loot boxes.</p>
 <h3>Who makes Boombaland?</h3>
 <p>DataSight, the one-person studio of Tom de Bruijn in the Netherlands.</p>
 </div>
-</section>
-
-<section class="section" aria-labelledby="features-title">
-<div class="wrap">
-<h2 class="section-title" id="features-title">Drop. Run. Boom!</h2>
-<p class="lede">Simple touch controls: move, drop a bomb, use your skill. Kick bombs, grab power-ups and plan every blast.</p>
-<div class="features">
-
-<article class="panel feature" aria-labelledby="f-heroes">
-<h3 class="panel-header" id="f-heroes">Unlock epic heroes</h3>
-<picture><source type="image/avif" srcset="/assets/img/heroes-480.avif 480w, /assets/img/heroes-800.avif 800w, /assets/img/heroes-1440.avif 1440w" sizes="(min-width: 720px) 36rem, 92vw"><img class="art" src="/assets/img/heroes-480.png" srcset="/assets/img/heroes-480.png 480w" sizes="(min-width: 720px) 36rem, 92vw" width="800" height="367" alt="The six heroes side by side: Blom, Gusto, Frosta, Zappy, Ember and Banshee" loading="lazy" decoding="async"></picture>
-<ul>
-<li><strong>Bomb Dash</strong>: Blom dashes ahead and cannot be hit during the dash.</li>
-<li><strong>Gust</strong>: A blast of wind in front of Gusto pushes enemies and their bombs away.</li>
-<li><strong>Frost Ring</strong>: A ring of frost freezes every enemy near Frosta.</li>
-<li><strong>Storm Call</strong>: Lightning strikes the enemies nearest to Zappy.</li>
-<li><strong>Ember Trail</strong>: For a while every tile Ember walks over catches fire.</li>
-<li><strong>Phantom Form</strong>: Banshee floats over the map, bombs anywhere and cannot be hit for a while.</li>
-</ul>
-<p>Star up every hero and make each skill stronger.</p>
-</article>
-
-<article class="panel feature" aria-labelledby="f-bosses">
-<h3 class="panel-header" id="f-bosses">Battle big bosses</h3>
-<picture><source type="image/avif" srcset="/assets/img/boss-360.avif 360w, /assets/img/boss-570.avif 570w" sizes="220px"><img class="art art--tall art--shot" src="/assets/img/boss-360.jpg" srcset="/assets/img/boss-360.jpg 360w, /assets/img/boss-570.jpg 570w" sizes="220px" width="360" height="480" alt="Grimdorn as he is in the game: a wooden forest giant raising his spiked fists on his arena" loading="lazy" decoding="async"></picture>
-<ul>
-<li>Grimdorn hides behind a thorn shield, rains bomb barrages and gets faster when he is enraged</li>
-<li>Arko, the tower, shoots arrow-bombs across the board</li>
-<li>Nimbo, Grimdorn's flying warship, fires cannonballs that explode the moment they land</li>
-<li>On Castle Road, Turto blocks every blast with its shell until it walks</li>
-<li>Your goal: defeat Grimdorn and free Boombaland from his thorns</li>
-</ul>
-</article>
-
-<article class="panel feature" aria-labelledby="f-castle">
-<h3 class="panel-header" id="f-castle">Castle puzzles</h3>
-<picture><source type="image/avif" srcset="/assets/img/shot7-640.avif 640w, /assets/img/shot7-1280.avif 1280w" sizes="(min-width: 720px) 34rem, 90vw"><img class="art art--shot" src="/assets/img/shot7-640.jpg" srcset="/assets/img/shot7-640.jpg 640w, /assets/img/shot7-1280.jpg 1280w" sizes="(min-width: 720px) 34rem, 90vw" width="640" height="360" alt="Banshee pushes a block into the gap in a castle puzzle" loading="lazy" decoding="async"></picture>
-<p>25 levels across Green Lands and Castle Road, each with its own twist: bridges, switches, towers, timed gates and push-block puzzles. Story comics between chapters, and 4 difficulties, from Easy to Impossible, each with its own three stars on every level.</p>
-</article>
-
-<article class="panel feature" aria-labelledby="f-chests">
-<h3 class="panel-header" id="f-chests">No loot boxes</h3>
-<picture><source type="image/avif" srcset="/assets/img/chest-badge-256.avif 256w" sizes="140px"><img class="art art--badge" src="/assets/img/chest-badge-256.png" srcset="/assets/img/chest-badge-256.png 256w" sizes="140px" width="256" height="256" alt="A treasure chest with a green gem" loading="lazy" decoding="async"></picture>
-<p>Every chest shows the item it guarantees, and the chance of everything else, before you open it. No mystery, no surprises.</p>
-<p>Earn new heroes, gear, power-ups and Codex entries as you play. Equip boots, gloves and helmets, level them up and merge them at the Blacksmith.</p>
-</article>
-
-</div>
-</div>
-</section>
-
-<section class="section section--wood" aria-labelledby="gallery-title">
-<div class="wrap">
-<h2 class="section-title" id="gallery-title">Screenshots</h2>
-<ul class="gallery">
-<li><figure><a href="/assets/img/shot1-1280.jpg" data-lightbox data-caption="The six heroes"><picture><source type="image/avif" srcset="/assets/img/shot1-640.avif 640w, /assets/img/shot1-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot1-640.jpg" srcset="/assets/img/shot1-640.jpg 640w, /assets/img/shot1-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Blom, Gusto, Frosta, Zappy, Ember and Banshee together under the Boombaland logo" loading="lazy" decoding="async"></picture></a><figcaption>The six heroes</figcaption></figure></li>
-<li><figure><a href="/assets/img/shot2-1280.jpg" data-lightbox data-caption="Drop. Run. BOOM! Outsmart every enemy"><picture><source type="image/avif" srcset="/assets/img/shot2-640.avif 640w, /assets/img/shot2-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot2-640.jpg" srcset="/assets/img/shot2-640.jpg 640w, /assets/img/shot2-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Blom holds up a lit bomb next to a board full of crates" loading="lazy" decoding="async"></picture></a><figcaption>Drop. Run. BOOM! Outsmart every enemy</figcaption></figure></li>
-<li><figure><a href="/assets/img/shot4-1280.jpg" data-lightbox data-caption="Unlock unique heroes, each with their own power"><picture><source type="image/avif" srcset="/assets/img/shot4-640.avif 640w, /assets/img/shot4-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot4-640.jpg" srcset="/assets/img/shot4-640.jpg 640w, /assets/img/shot4-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Zappy next to a board with conveyor belts" loading="lazy" decoding="async"></picture></a><figcaption>Unlock unique heroes, each with their own power</figcaption></figure></li>
-<li><figure><a href="/assets/img/shot5-1280.jpg" data-lightbox data-caption="Use powerful skills: Frosta&#x27;s Frost Ring freezes the enemies around her"><picture><source type="image/avif" srcset="/assets/img/shot5-640.avif 640w, /assets/img/shot5-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot5-640.jpg" srcset="/assets/img/shot5-640.jpg 640w, /assets/img/shot5-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Frosta next to a board where her Frost Ring has frozen the enemies" loading="lazy" decoding="async"></picture></a><figcaption>Use powerful skills: Frosta&#x27;s Frost Ring freezes the enemies around her</figcaption></figure></li>
-<li><figure><a href="/assets/img/shot6-1280.jpg" data-lightbox data-caption="Explore evolving levels: conveyor belts carry you, your bombs and crates"><picture><source type="image/avif" srcset="/assets/img/shot6-640.avif 640w, /assets/img/shot6-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot6-640.jpg" srcset="/assets/img/shot6-640.jpg 640w, /assets/img/shot6-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Gusto next to a level full of conveyor belts and crates" loading="lazy" decoding="async"></picture></a><figcaption>Explore evolving levels: conveyor belts carry you, your bombs and crates</figcaption></figure></li>
-<li><figure><a href="/assets/img/shot7-1280.jpg" data-lightbox data-caption="Solve complex puzzles: push the block into the gap to cross"><picture><source type="image/avif" srcset="/assets/img/shot7-640.avif 640w, /assets/img/shot7-1280.avif 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw"><img src="/assets/img/shot7-640.jpg" srcset="/assets/img/shot7-640.jpg 640w, /assets/img/shot7-1280.jpg 1280w" sizes="(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw" width="640" height="360" alt="Banshee next to a castle puzzle with push blocks and a gap" loading="lazy" decoding="async"></picture></a><figcaption>Solve complex puzzles: push the block into the gap to cross</figcaption></figure></li>
-</ul>
-</div>
-</section>
-
-<section class="section cta" aria-labelledby="cta-title">
-<div class="wrap">
-<h2 class="section-title" id="cta-title">Play Boombaland</h2>
-<picture><source type="image/avif" srcset="/assets/img/key-art-1024.avif 1024w, /assets/img/key-art-2048.avif 2048w" sizes="(min-width: 700px) 640px, 92vw"><img class="art" src="/assets/img/key-art-1024.jpg" srcset="/assets/img/key-art-1024.jpg 1024w, /assets/img/key-art-2048.jpg 2048w" sizes="(min-width: 700px) 640px, 92vw" width="1024" height="500" alt="The six heroes together under the Boombaland logo" loading="lazy" decoding="async"></picture>
-<div class="stores">
-<a class="btn" data-store="ios" href="https://apps.apple.com/app/id6821619320" rel="noopener"><span class="stack"><span>App Store</span><small data-store-note>Free download</small></span></a>
-<a class="btn" data-store="android" href="https://play.google.com/store/apps/details?id=com.datasight.boomworld" rel="noopener"><span class="stack"><span>Google Play</span><small data-store-note>Free download</small></span></a>
 </div>
 </div>
 </section>
@@ -259,11 +312,16 @@ reward. There are no loot boxes.</p>
 <p></p>
 </dialog>
 <footer class="footer">
-<div class="wrap">
-<nav aria-label="Footer"><ul class="nav"><li><a href="/">Home</a></li><li><a href="/wiki/">Wiki</a></li><li><a href="/development/">Development</a></li><li><a href="/press/">Press</a></li><li><a href="/redeem/">Redeem</a></li><li><a href="/support/">Support</a></li><li><a href="/privacy/">Privacy</a></li><li><a href="/terms/">Terms</a></li></ul></nav>
+<div class="wrap footer-grid">
+<div class="footer-about">
+<a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-192.png 4x" width="40" height="40" alt="" loading="lazy" decoding="async"><span>Boombaland</span></a>
 <p>Boombaland is free to play. It offers optional in-app purchases. Ads only play when you choose to watch one for a reward.</p>
-<p><a href="/development/">How Boombaland is made</a>: by a one-person studio working with AI tools, with every change reviewed and approved.</p>
 <p>Follow Boombaland on <a href="https://www.youtube.com/@BoombalandGame" rel="noopener">YouTube</a>, <a href="https://www.instagram.com/boombaland.game/" rel="noopener">Instagram</a> and <a href="https://www.tiktok.com/@boombaland" rel="noopener">TikTok</a>.</p>
+</div>
+<nav class="footer-nav" aria-label="Footer"><div><p class="footer-h">Game</p><ul class="nav"><li><a href="/">Home</a></li><li><a href="/wiki/">Wiki</a></li><li><a href="/press/">Press kit</a></li><li><a href="/development/">How it's made</a></li></ul></div><div><p class="footer-h">Help</p><ul class="nav"><li><a href="/support/">Support</a></li><li><a href="/redeem/">Redeem a code</a></li><li><a href="/privacy/">Privacy Policy</a></li><li><a href="/terms/">Terms of Service</a></li></ul></div></nav>
+</div>
+<div class="wrap footer-base">
+<p><a href="/development/">How Boombaland is made</a>: by a one-person studio working with AI tools, with every change reviewed and approved.</p>
 <p class="legal-id">Boombaland is made by DataSight (Tom de Bruijn), Tulameenpad 10, 1461 HN Zuidoostbeemster, the Netherlands.
 KvK 93353413. Contact: <a href="mailto:support@boombaland.com">support@boombaland.com</a></p>
 </div>

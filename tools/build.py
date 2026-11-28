@@ -68,16 +68,18 @@ MAIL = "support@boombaland.com"
 OLD_BASE = "https://tdbruijndatasight.github.io/boomworld-legal/"
 LEGAL_SRC = os.environ.get("LEGAL_SRC", "")
 
-NAV = [("/", "Home"), ("/wiki/", "Wiki"), ("/development/", "Development"), ("/press/", "Press"), ("/redeem/", "Redeem"), ("/support/", "Support"),
-       ("/privacy/", "Privacy"), ("/terms/", "Terms")]
+# The top bar carries the pages people look for; the footer carries every page (legal ones included).
+NAV = [("/wiki/", "Wiki"), ("/press/", "Press"), ("/development/", "How it's made"), ("/redeem/", "Redeem"), ("/support/", "Support")]
+FOOT_NAV = [("Game", [("/", "Home"), ("/wiki/", "Wiki"), ("/press/", "Press kit"), ("/development/", "How it's made")]),
+            ("Help", [("/support/", "Support"), ("/redeem/", "Redeem a code"), ("/privacy/", "Privacy Policy"), ("/terms/", "Terms of Service")])]
 
 
-def nav(current, cls="nav"):
-    items = []
-    for href, label in NAV:
+def nav(current, cls="nav", items=NAV):
+    out = []
+    for href, label in items:
         cur = ' aria-current="page"' if href == current else ""
-        items.append(f'<li><a href="{href}"{cur}>{label}</a></li>')
-    return f'<ul class="{cls}">' + "".join(items) + "</ul>"
+        out.append(f'<li><a href="{href}"{cur}>{label}</a></li>')
+    return f'<ul class="{cls}">' + "".join(out) + "</ul>"
 
 
 def ld_script(items):
@@ -89,6 +91,20 @@ def ld_script(items):
         j = json.dumps(it, ensure_ascii=False, indent=1).replace("</", "<\\/")
         out.append(f'\n<script type="application/ld+json">\n{j}\n</script>')
     return "".join(out)
+
+
+def css_version():
+    """A short hash of site.css: the stylesheet URL changes whenever the CSS does, so no page meets a stale cached sheet."""
+    import hashlib
+    return hashlib.sha1(open(os.path.join(ROOT, "assets", "site.css"), "rb").read()).hexdigest()[:8]
+
+
+def head_assets():
+    return f"""<link rel="preload" href="/assets/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="/assets/fonts/Fredoka-SemiBold.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="/assets/site.css?v={css_version()}">
+<script>document.documentElement.classList.add("js")</script>
+"""
 
 
 def head(title, description, path, og_image="/assets/img/og-image-1200x630.jpg", noindex=False, jsonld=None):
@@ -109,11 +125,7 @@ def head(title, description, path, og_image="/assets/img/og-image-1200x630.jpg",
 <link rel="icon" href="/assets/img/icon-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/assets/img/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preload" href="/assets/fonts/LilitaOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="preload" href="/assets/fonts/Fredoka-SemiBold.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="/assets/site.css">
-<script>document.documentElement.classList.add("js")</script>
-<meta property="og:type" content="website">
+{head_assets()}<meta property="og:type" content="website">
 <meta property="og:site_name" content="Boombaland">
 <meta property="og:title" content="{t}">
 <meta property="og:description" content="{d}">
@@ -131,24 +143,32 @@ def head(title, description, path, og_image="/assets/img/og-image-1200x630.jpg",
 
 
 def topbar(current):
-    return f"""<body>
-<a class="skip" href="#main">Skip to content</a>
-<header class="topbar">
+    return '<body>\n<a class="skip" href="#main">Skip to content</a>\n' + header_bar(current)
+
+
+def header_bar(current):
+    return f"""<header class="topbar">
 <div class="wrap">
 <a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-192.png 4x" width="40" height="40" alt=""><span>Boombaland</span></a>
 <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav"><img src="/assets/img/menu-96.png" width="48" height="48" alt=""><span class="sr-only">Menu</span></button>
-<nav class="site-nav" id="site-nav" aria-label="Main">{nav(current)}</nav>
+<nav class="site-nav" id="site-nav" aria-label="Main">{nav(current)}<a class="btn-get" href="/#get">Get the game</a></nav>
 </div>
 </header>
 """
 
 
+FOOT_COLS = "".join(f'<div><p class="footer-h">{h}</p>{nav(None, "nav", items)}</div>' for h, items in FOOT_NAV)
 FOOTER = f"""<footer class="footer">
-<div class="wrap">
-<nav aria-label="Footer">{nav(None)}</nav>
+<div class="wrap footer-grid">
+<div class="footer-about">
+<a class="brand" href="/"><img src="/assets/img/icon-48.png" srcset="/assets/img/icon-48.png 1x, /assets/img/icon-192.png 4x" width="40" height="40" alt="" loading="lazy" decoding="async"><span>Boombaland</span></a>
 <p>Boombaland is free to play. It offers optional in-app purchases. Ads only play when you choose to watch one for a reward.</p>
-<p><a href="/development/">How Boombaland is made</a>: by a one-person studio working with AI tools, with every change reviewed and approved.</p>
 <p>Follow Boombaland on <a href="https://www.youtube.com/@BoombalandGame" rel="noopener">YouTube</a>, <a href="https://www.instagram.com/boombaland.game/" rel="noopener">Instagram</a> and <a href="https://www.tiktok.com/@boombaland" rel="noopener">TikTok</a>.</p>
+</div>
+<nav class="footer-nav" aria-label="Footer">{FOOT_COLS}</nav>
+</div>
+<div class="wrap footer-base">
+<p><a href="/development/">How Boombaland is made</a>: by a one-person studio working with AI tools, with every change reviewed and approved.</p>
 <p class="legal-id">Boombaland is made by DataSight (Tom de Bruijn), Tulameenpad 10, 1461 HN Zuidoostbeemster, the Netherlands.
 KvK 93353413. Contact: <a href="mailto:{MAIL}">{MAIL}</a></p>
 </div>
@@ -273,9 +293,12 @@ BADGES = {  # official artwork, downloaded unchanged from Apple / Google on laun
 }
 
 
-def store_buttons():
-    """Not live: a status plank per store that is NOT a link (nothing to tap). Live: the official badge (or, if the badge
-    file is missing, the green kit button) linking to the verified store page."""
+STORE_BTN = {"ios": ("Download on the", "App Store"), "android": ("Get it on", "Google Play")}
+
+
+def store_buttons(cls=""):
+    """Not live: a status plank per store that is NOT a link (nothing to tap). Live: the official badge (once its artwork
+    is in assets/badges/) or a dark two-line store button, linking to the verified store page."""
     links = store_links()
     out = []
     for key, label in (("ios", "App Store"), ("android", "Google Play")):
@@ -289,9 +312,11 @@ def store_buttons():
             out.append(f'<a class="store-badge" data-store="{key}" href="{html.escape(url)}" rel="noopener">'
                        f'<img src="{src}" alt="{alt}" width="{w * 4}" height="{h * 4}"></a>')
         else:
-            out.append(f'<a class="btn" data-store="{key}" href="{html.escape(url)}" rel="noopener"><span class="stack">'
-                       f'<span>{label}</span><small data-store-note>Free download</small></span></a>')
-    return '<div class="stores">\n' + "\n".join(out) + "\n</div>"
+            small, big = STORE_BTN[key]
+            out.append(f'<a class="store-btn" data-store="{key}" href="{html.escape(url)}" rel="noopener">'
+                       f'<span class="store-small">{small}</span><span class="store-big">{big}</span></a>')
+    c = f"stores {cls}".strip()
+    return f'<div class="{c}">\n' + "\n".join(out) + "\n</div>"
 
 
 SHOTS = [  # the store images v8 (PO approved 20 Nov 2026): captions are the frames' own banners, alt says what is on screen.
@@ -326,20 +351,28 @@ def trailer_poster():
     return TRAILER_POSTER_LIVE if (TRAILER_POSTER_LIVE and stores_live()) else TRAILER_POSTER
 
 
+SOCIALS = [("YouTube", CHANNEL, "@BoombalandGame"), ("Instagram", INSTAGRAM, "@boombaland.game"), ("TikTok", TIKTOK, "@boombaland")]
+
+
+def trailer_box(sizes):
+    """Click-to-play: only the poster loads with the page; YouTube (privacy-enhanced mode) loads on the click (site.js)."""
+    return (f'<div class="trailer" data-trailer="{TRAILER_ID}">\n'
+            f'<a class="trailer-play" href="https://youtu.be/{TRAILER_ID}" aria-label="Play the Boombaland trailer">'
+            f'{pic(trailer_poster()[0], [640, 1280], sizes, trailer_poster()[1], 1280, 1280, 720)}'
+            f'<span class="trailer-btn" aria-hidden="true"></span></a>\n</div>\n'
+            f'<p class="trailer-note">The trailer plays from YouTube, which loads only when you press play.</p>')
+
+
 def trailer():
-    """The trailer, click-to-play: only the poster loads with the page; YouTube (privacy-enhanced mode) loads on the click."""
-    return f"""<section class="section" aria-labelledby="trailer-title">
+    socials = "".join(f'<li><a href="{u}" rel="noopener"><strong>{n}</strong> <span>{h}</span></a></li>' for n, u, h in SOCIALS)
+    return f"""<section class="section section--dark" id="trailer" aria-labelledby="trailer-title">
 <div class="wrap">
+<div class="section-head">
+<p class="eyebrow">Trailer</p>
 <h2 class="section-title" id="trailer-title">Watch the trailer</h2>
-<div class="trailer" data-trailer="{TRAILER_ID}">
-<a class="trailer-play" href="https://youtu.be/{TRAILER_ID}" aria-label="Play the Boombaland trailer">{pic(trailer_poster()[0], [640, 1280], "(min-width: 900px) 860px, 92vw", trailer_poster()[1], 1280, 1280, 720)}<span class="trailer-btn" aria-hidden="true"></span></a>
 </div>
-<p class="trailer-note">The trailer plays from YouTube, which loads only when you press play.</p>
-<div class="stores">
-<a class="btn" href="{CHANNEL}" rel="noopener"><span class="stack"><span>YouTube</span><small>@BoombalandGame</small></span></a>
-<a class="btn" href="{INSTAGRAM}" rel="noopener"><span class="stack"><span>Instagram</span><small>@boombaland.game</small></span></a>
-<a class="btn" href="{TIKTOK}" rel="noopener"><span class="stack"><span>TikTok</span><small>@boombaland</small></span></a>
-</div>
+{trailer_box("(min-width: 1040px) 960px, 92vw")}
+<ul class="socials" aria-label="Boombaland on social media">{socials}</ul>
 </div>
 </section>
 """
@@ -360,33 +393,31 @@ def hero_names():
     return [text("menu.heroes.name_" + h) for h in HEROES]
 
 
-def about():
+def status_answer():
+    if stores_live():
+        return "<p>Yes. Boombaland is out now on the App Store and Google Play.</p>"
+    if partial_live():
+        return f"<p>Yes, on {STORE_PLATFORMS[partial_live()[0]]}. Boombaland is {partial_status()}.</p>"
+    return "<p>Not yet. Boombaland is coming soon to the App Store and Google Play.</p>"
+
+
+def faq():
     """Plain, quotable facts (answer engines quote these). No AI here: that story lives on /development/."""
     heroes = hero_names()
-    if stores_live():
-        status = "<p>Yes. Boombaland is out now on the App Store and Google Play.</p>"
-    elif partial_live():
-        status = f"<p>Yes, on {STORE_PLATFORMS[partial_live()[0]]}. Boombaland is {partial_status()}.</p>"
-    else:
-        status = "<p>Not yet. Boombaland is coming soon to the App Store and Google Play.</p>"
-    return f"""<section class="section" aria-labelledby="about-title">
-<div class="wrap prose about">
-<h2 class="section-title" id="about-title">What is Boombaland?</h2>
-<p>Boombaland is {GENRE_LINE} for iPhone, iPad and Android phones and tablets. You drop bombs, run from the blasts, break
-crates, grab power-ups and outsmart enemies on grid boards, with bosses and push-block puzzles along the way.</p>
+    return f"""<div class="faq prose" id="about">
+<h3>What's in the game?</h3>
 <p>It has 25 levels in {text('menu.worlds.green_lands')} and on Castle Road, six heroes ({", ".join(heroes[:-1])} and
 {heroes[-1]}), each with their own skill, and four difficulties from Easy to Impossible. Besides the
 {text('menu.main.play')} there is the {text('menu.main.quickmatch')}: quick battles against CPU opponents. You play on
 your own, against computer-controlled enemies.</p>
+<h3>Is it free?</h3>
 <p>Boombaland is free to play. It offers optional in-app purchases. Ads only play when you choose to watch one for a
 reward. There are no loot boxes.</p>
 <h3>Is Boombaland out yet?</h3>
-{status}
+{status_answer()}
 <h3>Who makes Boombaland?</h3>
 <p>DataSight, the one-person studio of Tom de Bruijn in the Netherlands.</p>
-</div>
-</section>
-"""
+</div>"""
 
 
 def home_jsonld():
@@ -412,99 +443,207 @@ def home_jsonld():
     return [{"@context": "https://schema.org", "@graph": [ORG, site, game]}]
 
 
+# Hero colours on the home page's hero cards: each hero's own colour in the game's art (CSS custom property --c).
+HERO_COLOURS = {"blom": "#4f9a2a", "gusto": "#6f9a2c", "frosta": "#3f86c9", "zappy": "#c28a00", "ember": "#d0571b", "banshee": "#8a5cc4"}
+HERO_CLIP = "basics"  # the hero's muted loop (FOOTAGE_NEEDS.md shot 1); left out until the clip is committed
+
+
+def hero_art():
+    """The first screen's art: a square crop around the six heroes on phones, the full castle scene from 600px up."""
+    def ss(name, widths, ext):
+        return ", ".join(f"/assets/img/{name}-{w}.{ext} {w}w" for w in widths)
+    heroes = hero_names()
+    alt = f"{', '.join(heroes[:-1])} and {heroes[-1]} cheer on a castle terrace above the clouds"
+    sq, wd = [720, 1080], [1280, 1920, 2560]
+    art = (f'<picture>'
+           f'<source media="(max-width: 599px)" type="image/avif" srcset="{ss("hero-square", sq, "avif")}" sizes="100vw" width="1080" height="1080">'
+           f'<source media="(max-width: 599px)" srcset="{ss("hero-square", sq, "jpg")}" sizes="100vw" width="1080" height="1080">'
+           f'<source type="image/avif" srcset="{ss("hero-wide", wd, "avif")}" sizes="100vw" width="2560" height="1097">'
+           f'<img src="/assets/img/hero-wide-1280.jpg" srcset="{ss("hero-wide", wd, "jpg")}" sizes="100vw" width="2560" height="1097" '
+           f'alt="{html.escape(alt)}" fetchpriority="high"></picture>')
+    base = os.path.join(ROOT, "assets", "clips", HERO_CLIP)
+    if all(os.path.exists(base + e) and tracked(base + e) for e in (".mp4", ".webm", "-poster.jpg")):
+        u = f"/assets/clips/{HERO_CLIP}"
+        art += (f'<video class="hero-video" muted loop playsinline preload="none" width="1280" height="720" aria-hidden="true" '
+                f'data-clip data-hero-clip><source src="{u}.webm" type="video/webm"><source src="{u}.mp4" type="video/mp4"></video>')
+    return f'<div class="hero-art">{art}</div>'
+
+
+FEATURES = [  # (image, title, text): the game in four blocks, each with a real in-game picture
+    ("shot2", "Drop. Run. BOOM!", "Blom holds up a lit bomb next to a board full of crates",
+     "<p>Simple touch controls: move, drop a bomb, use your skill. Kick bombs, grab power-ups and plan every blast, "
+     "then get out before it goes off.</p>"),
+    ("shot6", "Levels that move", "Gusto next to a level full of conveyor belts and crates",
+     f"<p>25 levels across {{GL}} and Castle Road, each with its own twist: bridges, switches, towers, conveyor belts "
+     "and timed gates. Story comics play between the chapters.</p>"),
+    ("shot7", "Castle puzzles", "Banshee pushes a block into the gap in a castle puzzle",
+     "<p>On Castle Road, push blocks into the gaps to cross. Four difficulties, from Easy to Impossible, each with its "
+     "own three stars on every level.</p>"),
+    ("chest-badge", "No loot boxes", "A treasure chest with a green gem",
+     "<p>Every chest shows the item it guarantees, and the chance of everything else, before you open it. No mystery, "
+     "no surprises.</p><p>Earn new heroes, gear, power-ups and Codex entries as you play. Equip boots, gloves and "
+     "helmets, level them up and merge them at the Blacksmith.</p>"),
+]
+
+
+def features():
+    out = []
+    for i, (img, title, alt, body) in enumerate(FEATURES):
+        if img == "chest-badge":
+            media = pic(img, [256], "(min-width: 900px) 200px, 160px", alt, 256, 256, 256, ext="png", cls="badge-art")
+            cls = "feature feature--badge"
+        else:
+            media = pic(img, [640, 1280], "(min-width: 900px) 36rem, 92vw", alt, 640, 640, 360, cls="shot")
+            cls = "feature"
+        out.append(f'<article class="{cls}" data-reveal aria-labelledby="f-{i}">\n<div class="feature-media">{media}</div>\n'
+                   f'<div class="feature-text">\n<h3 id="f-{i}">{title}</h3>\n{body.replace("{GL}", text("menu.worlds.green_lands"))}\n</div>\n</article>')
+    return "\n".join(out)
+
+
+def hero_cards():
+    out = []
+    for h, n in zip(HEROES, hero_names()):
+        out.append(f'<li class="hero-card" style="--c: {HERO_COLOURS[h]}">'
+                   f'<img src="/assets/wiki/portrait-{h}.png" width="160" height="160" alt="" loading="lazy" decoding="async">'
+                   f'<h3>{html.escape(n)}</h3>'
+                   f'<p class="skill-name">{html.escape(text("menu.heroes.skill_" + h))}</p>'
+                   f'<p>{html.escape(text("menu.heroes.skill_" + h + "_text"))}</p></li>')
+    return "\n".join(out)
+
+
+MORE = [  # the home page's way on to the rest of the site
+    ("/wiki/", "Wiki", "Heroes, enemies, power-ups, levels and gear, read from the game's own data."),
+    ("/redeem/", "Redeem a code", "Got a code from our socials? Collect the reward in your save."),
+    ("/support/", "Support", "Help with purchases, refunds, privacy choices, bugs and your data."),
+    ("/press/", "Press kit", "Fact sheet, trailer, screenshots, logo, icon and key art."),
+    ("/development/", "How it's made", "A one-person studio, AI tools and every change reviewed. Send us your idea."),
+]
+
+
 def home():
     gallery = "\n".join(
         f'<li><figure><a href="/assets/img/{n}-1280.jpg" data-lightbox data-caption="{html.escape(c)}">'
-        + pic(n, [640, 1280], "(min-width: 1000px) 25vw, (min-width: 600px) 50vw, 100vw", alt, 640, 640, 360)
+        + pic(n, [640, 1280], "(min-width: 1040px) 320px, (min-width: 600px) 45vw, 80vw", alt, 640, 640, 360)
         + f"</a><figcaption>{html.escape(c)}</figcaption></figure></li>"
         for n, c, alt in SHOTS if n not in SHOTS_HIDDEN)
     clips = "\n".join(c for c in (clip_html(n) for n in HOME_CLIPS) if c)
     clips_section = (f"""<section class="section" aria-labelledby="clips-title">
 <div class="wrap">
-<h2 class="section-title" id="clips-title">See it in action</h2>
+<div class="section-head"><p class="eyebrow">Gameplay</p><h2 class="section-title" id="clips-title">See it in action</h2></div>
 <div class="clips">
 {clips}
 </div>
 </div>
 </section>
 """ if clips else "")
+    status = ("" if stores_live() else f'<p class="date-plank">Out now on {STORE_NAMES[partial_live()[0]]}</p>'
+              if partial_live() else '<p class="date-plank">Coming soon</p>')
+    more = "\n".join(f'<li><a href="{u}"><strong>{t}</strong><span>{d}</span></a></li>' for u, t, d in MORE)
+    tg = name('thorn_guard')
     body = f"""<main id="main">
 <section class="hero" aria-labelledby="hero-title">
-{pic("hero-castle", [800, 1280, 1920], "100vw", "", 1280, 1280, 720, cls="", lazy=False).replace('<picture>', '<picture class="bg">')}
-<div class="wrap">
+{hero_art()}
+<div class="wrap hero-inner">
 <div class="hero-copy">
-<h1 id="hero-title" class="hero-h1">{pic("logo", [480, 960], "(min-width: 600px) 520px, 90vw", "Boombaland", 480, 480, 110, ext="png", cls="hero-logo", lazy=False)}</h1>
-<p class="hero-tag">Ready, Set, BOOM!</p>
-<p class="hero-pitch">Drop a bomb, run, and watch the board explode. Battle brutal bosses and unlock epic heroes in bright 3D adventures.</p>
-<p class="hero-classic">Classic bomb battles with a fresh new twist.</p>
-{"" if stores_live() else f'<p class="date-plank">Out now on {STORE_NAMES[partial_live()[0]]}</p>' if partial_live() else '<p class="date-plank">Coming soon</p>'}
-{store_buttons()}
-<p class="hero-note">For iPhone, iPad and Android phones and tablets. Free to play.</p>
+<h1 id="hero-title" class="hero-h1">{pic("logo", [480, 960], "(min-width: 900px) 440px, min(84vw, 400px)", "Boombaland", 480, 480, 137, ext="png", cls="hero-logo", lazy=False)}</h1>
+<p class="hero-tag">Drop a bomb, run, BOOM!</p>
+<p class="hero-pitch">{cap(GENRE_LINE[2:])} with six heroes, brutal bosses and castle puzzles.</p>
+{status}
+{store_buttons("stores--hero")}
+<p class="hero-note">Free to play · iPhone, iPad and Android</p>
 </div>
-{pic("blom", [360, 720], "360px", "Blom, a cheerful sprout hero, holds up a lit bomb", 360, 360, 540, ext="png", cls="hero-blom", lazy=False)}
 </div>
 </section>
 
 {trailer()}
-{about()}
-<section class="section" aria-labelledby="features-title">
+<section class="section" aria-labelledby="about-title">
 <div class="wrap">
-<h2 class="section-title" id="features-title">Drop. Run. Boom!</h2>
-<p class="lede">Simple touch controls: move, drop a bomb, use your skill. Kick bombs, grab power-ups and plan every blast.</p>
+<div class="section-head">
+<p class="eyebrow">The game</p>
+<h2 class="section-title" id="about-title">What is Boombaland?</h2>
+<p class="lede">Boombaland is {GENRE_LINE} for iPhone, iPad and Android phones and tablets. You drop bombs, run from the
+blasts, break crates, grab power-ups and outsmart enemies on grid boards, with bosses and push-block puzzles along the way.</p>
+</div>
+<ul class="stats" aria-label="Boombaland in numbers">
+<li><strong>25</strong> levels</li><li><strong>6</strong> heroes</li><li><strong>4</strong> difficulties</li><li><strong>0</strong> loot boxes</li>
+</ul>
 <div class="features">
-
-<article class="panel feature" aria-labelledby="f-heroes">
-<h3 class="panel-header" id="f-heroes">Unlock epic heroes</h3>
-{pic("heroes", [480, 800, 1440], "(min-width: 720px) 36rem, 92vw", "The six heroes side by side: Blom, Gusto, Frosta, Zappy, Ember and Banshee", 480, 800, 367, ext="png", cls="art")}
-<ul>
-{skill_bullets()}
-</ul>
-<p>Star up every hero and make each skill stronger.</p>
-</article>
-
-<article class="panel feature" aria-labelledby="f-bosses">
-<h3 class="panel-header" id="f-bosses">Battle big bosses</h3>
-{pic("boss", [360, 570], "220px", f"{name('thorn_guard')} as he is in the game: a wooden forest giant raising his spiked fists on his arena", 360, 360, 480, cls="art art--tall art--shot")}
-<ul>
-<li>{name('thorn_guard')} hides behind a thorn shield, rains bomb barrages and gets faster when he is enraged</li>
-<li>{name('archer')}, the tower, shoots arrow-bombs across the board</li>
-<li>{name('airship')}, {name('thorn_guard')}'s flying warship, fires cannonballs that explode the moment they land</li>
-<li>On Castle Road, {name('shellback')} blocks every blast with its shell until it walks</li>
-<li>{GOAL[:-1]}</li>
-</ul>
-</article>
-
-<article class="panel feature" aria-labelledby="f-castle">
-<h3 class="panel-header" id="f-castle">Castle puzzles</h3>
-{pic("shot7", [640, 1280], "(min-width: 720px) 34rem, 90vw", "Banshee pushes a block into the gap in a castle puzzle", 640, 640, 360, cls="art art--shot")}
-<p>25 levels across {text('menu.worlds.green_lands')} and Castle Road, each with its own twist: bridges, switches, towers, timed gates and push-block puzzles. Story comics between chapters, and 4 difficulties, from Easy to Impossible, each with its own three stars on every level.</p>
-</article>
-
-<article class="panel feature" aria-labelledby="f-chests">
-<h3 class="panel-header" id="f-chests">No loot boxes</h3>
-{pic("chest-badge", [256], "140px", "A treasure chest with a green gem", 256, 256, 256, ext="png", cls="art art--badge")}
-<p>Every chest shows the item it guarantees, and the chance of everything else, before you open it. No mystery, no surprises.</p>
-<p>Earn new heroes, gear, power-ups and Codex entries as you play. Equip boots, gloves and helmets, level them up and merge them at the Blacksmith.</p>
-</article>
-
+{features()}
 </div>
 </div>
 </section>
 
-{clips_section}<section class="section section--wood" aria-labelledby="gallery-title">
+{clips_section}<section class="section section--sky" id="heroes" aria-labelledby="heroes-title">
 <div class="wrap">
-<h2 class="section-title" id="gallery-title">Screenshots</h2>
-<ul class="gallery">
+<div class="section-head">
+<p class="eyebrow">Heroes</p>
+<h2 class="section-title" id="heroes-title">Six heroes, six skills</h2>
+<p class="lede">Every hero drops bombs. Each one has a skill of their own. Star up every hero and make each skill stronger.</p>
+</div>
+{pic("heroes", [480, 800, 1440], "(min-width: 900px) 52rem, 92vw", "The six heroes side by side: " + ", ".join(hero_names()[:-1]) + " and " + hero_names()[-1], 480, 800, 367, ext="png", cls="lineup")}
+<ul class="hero-grid">
+{hero_cards()}
+</ul>
+<p class="more-link"><a href="/wiki/heroes/">Every hero, skill and star in the wiki</a></p>
+</div>
+</section>
+
+<section class="section section--dark boss" aria-labelledby="boss-title">
+<div class="wrap boss-grid">
+<div class="boss-art" data-reveal>{pic("boss", [360, 570], "(min-width: 900px) 380px, 70vw", f"{tg} as he is in the game: a wooden forest giant raising his spiked fists on his arena", 360, 360, 480, cls="shot")}</div>
+<div class="boss-text">
+<p class="eyebrow">The story</p>
+<h2 class="section-title" id="boss-title">Stop {tg}</h2>
+<p class="lede">{GOAL}</p>
+<ul class="ticks">
+<li>{tg} hides behind a thorn shield, rains bomb barrages and gets faster when he is enraged</li>
+<li>{name('archer')}, the tower, shoots arrow-bombs across the board</li>
+<li>{name('airship')}, {tg}'s flying warship, fires cannonballs that explode the moment they land</li>
+<li>On Castle Road, {name('shellback')} blocks every blast with its shell until it walks</li>
+</ul>
+<p class="more-link"><a href="/wiki/enemies/">Enemies and bosses in the wiki</a></p>
+</div>
+</div>
+</section>
+
+<section class="section" aria-labelledby="gallery-title">
+<div class="wrap">
+<div class="section-head">
+<p class="eyebrow">Screenshots</p>
+<h2 class="section-title" id="gallery-title">A look inside</h2>
+</div>
+</div>
+<ul class="strip" tabindex="0" aria-label="Screenshots (scroll sideways)">
 {gallery}
 </ul>
+</section>
+
+<section class="section cta" id="get" aria-labelledby="cta-title">
+<div class="wrap">
+<div class="cta-card">
+<div class="cta-blom">{pic("blom", [360, 720], "(min-width: 900px) 300px, 180px", "Blom, a cheerful sprout hero, holds up a lit bomb", 360, 360, 540, ext="png", cls="")}</div>
+<div class="cta-copy">
+<h2 class="section-title" id="cta-title">{"Play Boombaland free" if live_stores() else "Coming soon"}</h2>
+<p>{"For iPhone, iPad and Android phones and tablets." if live_stores() else "For iPhone, iPad and Android phones and tablets. Free to play."}</p>
+{status}
+{store_buttons()}
+</div>
+</div>
 </div>
 </section>
 
-<section class="section cta" aria-labelledby="cta-title">
-<div class="wrap">
-<h2 class="section-title" id="cta-title">{"Play Boombaland" if live_stores() else "Coming soon"}</h2>
-{pic("key-art", [1024, 2048], "(min-width: 700px) 640px, 92vw", "The six heroes together under the Boombaland logo", 1024, 1024, 500, cls="art")}
-{store_buttons()}
+<section class="section section--cream" aria-labelledby="more-title">
+<div class="wrap more-grid">
+<div>
+<h2 class="section-title" id="more-title">More Boombaland</h2>
+<ul class="link-cards">
+{more}
+</ul>
+</div>
+<div>
+<h2 class="section-title">Good to know</h2>
+{faq()}
+</div>
 </div>
 </section>
 </main>
@@ -611,10 +750,7 @@ solve push-block puzzles along the way. {press_status()}.</p>
 <p><button class="btn" type="button" data-copy="blurb">Copy the text</button> <span class="copy-done" role="status" aria-live="polite"></span></p>
 
 <h2 id="trailer-title">Trailer</h2>
-<div class="trailer" data-trailer="{TRAILER_ID}">
-<a class="trailer-play" href="https://youtu.be/{TRAILER_ID}" aria-label="Play the Boombaland trailer">{pic(trailer_poster()[0], [640, 1280], "(min-width: 900px) 47rem, 92vw", trailer_poster()[1], 1280, 1280, 720)}<span class="trailer-btn" aria-hidden="true"></span></a>
-</div>
-<p class="trailer-note">The trailer plays from YouTube, which loads only when you press play.</p>
+{trailer_box("(min-width: 900px) 47rem, 88vw")}
 
 <h2 id="screenshots">Screenshots</h2>
 <ul class="gallery">
@@ -819,13 +955,20 @@ def llms_txt():
     print("wrote llms.txt")
 
 
+HEAD_ASSETS_RE = re.compile(r'(?:<link rel="preload" href="/assets/fonts/[^\n]*\n)*<link rel="stylesheet" href="/assets/site\.css[^"]*">\n'
+                            r'<script>document\.documentElement\.classList\.add\("js"\)</script>\n')
+
+
 def sync_footer():
-    """Pages this script does not write every time (the ported legal pages, the redeem page) get the current shared footer.
-    Only the <footer> block is replaced; the legal wording above it is never touched."""
+    """Pages this script does not write every time (the ported legal pages, the redeem page) get the current shared
+    <head> assets, top bar and footer. Only those blocks are replaced; the legal wording between them is never touched."""
     for rel in ("privacy/index.html", "terms/index.html", "support/index.html", "redeem/index.html"):
         f = os.path.join(ROOT, rel)
         src = open(f, encoding="utf-8").read()
+        path = "/" + rel[:-len("index.html")]
         new = re.sub(r'<footer class="footer">.*?</footer>\n', lambda _m: FOOTER, src, count=1, flags=re.S)
+        new = HEAD_ASSETS_RE.sub(lambda _m: head_assets(), new, count=1)
+        new = re.sub(r'<header class="topbar">.*?</header>\n', lambda _m: header_bar(path), new, count=1, flags=re.S)
         if new != src:
             open(f, "w", encoding="utf-8").write(new)
             print("footer", rel)

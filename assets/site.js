@@ -47,13 +47,18 @@
   dialog.addEventListener("close", function () { img.removeAttribute("src"); if (lastFocus) lastFocus.focus(); });
 })();
 
-/* Gameplay clips: muted, looping, played only while on screen; under prefers-reduced-motion the poster stays. */
+/* Gameplay clips: muted, looping, played only while on screen; under prefers-reduced-motion or Data Saver the poster
+   (or, in the hero, the key art) stays and no video byte is fetched. */
 (function () {
   "use strict";
   var vids = document.querySelectorAll("video[data-clip]");
   if (!vids.length) return;
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduce || !("IntersectionObserver" in window)) return;
+  var save = navigator.connection && navigator.connection.saveData;
+  if (reduce || save || !("IntersectionObserver" in window)) return;
+  vids.forEach(function (v) {
+    if (v.hasAttribute("data-hero-clip")) v.addEventListener("playing", function () { v.classList.add("is-playing"); });
+  });
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) {
       var v = e.target;
@@ -102,4 +107,18 @@
       } else { fallback(); }
     });
   });
+})();
+
+/* Scroll reveals: blocks marked data-reveal fade up once as they come into view. CSS only hides them when JS runs and
+   motion is welcome, so without either they are simply there. */
+(function () {
+  "use strict";
+  var els = document.querySelectorAll("[data-reveal]");
+  if (!els.length) return;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("in"); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px -8% 0px" });
+  els.forEach(function (e) { io.observe(e); });
 })();
