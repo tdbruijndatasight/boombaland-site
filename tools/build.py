@@ -460,8 +460,8 @@ def hero_art():
     art = (f'<picture>'
            f'<source media="(max-width: 599px)" type="image/avif" srcset="{ss("hero-square", sq, "avif")}" sizes="100vw" width="1080" height="1080">'
            f'<source media="(max-width: 599px)" srcset="{ss("hero-square", sq, "jpg")}" sizes="100vw" width="1080" height="1080">'
-           f'<source type="image/avif" srcset="{ss("hero-wide", wd, "avif")}" sizes="100vw" width="2560" height="1097">'
-           f'<img src="/assets/img/hero-wide-1280.jpg" srcset="{ss("hero-wide", wd, "jpg")}" sizes="100vw" width="2560" height="1097" '
+           f'<source type="image/avif" srcset="{ss("hero-wide", wd, "avif")}" sizes="100vw" width="2560" height="1096">'
+           f'<img src="/assets/img/hero-wide-1280.jpg" srcset="{ss("hero-wide", wd, "jpg")}" sizes="100vw" width="2560" height="1096" '
            f'alt="{html.escape(alt)}" fetchpriority="high"></picture>')
     base = os.path.join(ROOT, "assets", "clips", HERO_CLIP)
     if all(os.path.exists(base + e) and tracked(base + e) for e in (".mp4", ".webm", "-poster.jpg")):

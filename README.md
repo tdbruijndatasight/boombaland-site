@@ -6,8 +6,11 @@ behind Cloudflare. No trackers, no cookies, no third-party requests before a cli
 
 ## Build
 
+Design system and the reasoning behind the 28 Nov 2026 rehaul: `docs/REHAUL_1128.md`. All styling is in
+`assets/site.css` (its URL carries a content hash, written by `build.py`, so rebuild after any CSS change).
+
 ```
-python3 -I tools/build.py        # home, press, development, 404, llms.txt; syncs the footer onto legal + redeem pages
+python3 -I tools/build.py        # home, press, development, 404, llms.txt; syncs <head> assets, top bar and footer onto legal + redeem pages
 python3 -I tools/build_wiki.py   # wiki/** + wiki/search.json + assets/wiki/*, all from the game's own data
 python3 -I tools/sitemap.py      # sitemap.xml: every indexable page, lastmod = last commit of the page
 tools/qa.sh                      # the checks below; must say QA PASSED before the PO publishes

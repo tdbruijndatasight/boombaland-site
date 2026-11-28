@@ -16,7 +16,10 @@ for x in 800 1280 1920; do op $RA/endcard_redo_2026-10-29/C7_R8_background_1920x
 # Home hero (site rehaul 28 Nov 2026): the approved heroes-at-the-castle art (the press download, store v8), full width for
 # wide screens and a square crop around the six heroes for phones. Crops only; nothing is drawn.
 CH="$P/boombaland-castle-heroes-3840x1646.jpg"
-for x in 1280 1920 2560; do op "$CH" hero-wide $x; done
+# exact even sizes: sips writes an AVIF with an odd height (1920 x 823) that Chrome decodes as a blank image
+for wh in 1280:548 1920:822 2560:1096; do w=${wh%:*}; h=${wh#*:}
+  sips -z $h $w -s format avif -s formatOptions 55 "$CH" --out "$I/hero-wide-$w.avif" >/dev/null
+  sips -z $h $w -s format jpeg -s formatOptions 62 "$CH" --out "$I/hero-wide-$w.jpg" >/dev/null; done
 SQ=$(mktemp -t herosq).png
 sips --cropToHeightWidth 1320 1320 --cropOffset 180 1230 "$CH" --out "$SQ" >/dev/null
 for x in 720 840 1080; do op "$SQ" hero-square $x; done; rm -f "$SQ"

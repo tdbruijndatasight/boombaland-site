@@ -167,14 +167,13 @@ button.btn { background: none; cursor: pointer; }
 @media (min-width: 900px) {
   .hero { min-height: min(calc(100svh - 67px), 820px); display: grid; align-items: center; }
   .hero-art { position: absolute; inset: 0; aspect-ratio: auto; max-height: none; }
-  .hero-art img, .hero-art video { object-position: 12% 50%; }
-  .hero-inner { padding-top: var(--s-7); padding-bottom: var(--s-7); }
+  .hero-art img, .hero-art video { object-position: 0 50%; }  /* the castle wall behind the card, the heroes right of it */
+  .hero-inner { max-width: 120rem; padding: var(--s-7) clamp(16px, 5vw, 112px); }
   .hero-copy { margin: 0; max-width: 27rem; padding: var(--s-6) var(--s-6) var(--s-5); background: rgba(255, 252, 244, .94);
     border: 3px solid var(--wood); border-radius: var(--radius-lg); box-shadow: 0 5px 0 var(--wood-dark), 0 24px 48px -20px rgba(24, 14, 6, .6); }
   .hero-logo { width: 100%; max-width: 380px; }
   .hero-pitch { font-size: var(--t-lg); }
 }
-@media (min-width: 1500px) { .hero-art img, .hero-art video { object-position: 30% 50%; } }
 
 /* ---- Sections --------------------------------------------------------------------------------------------------- */
 .section { padding: var(--s-7) 0; }
