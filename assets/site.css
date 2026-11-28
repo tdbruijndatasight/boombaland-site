@@ -234,9 +234,11 @@ button.btn { background: none; cursor: pointer; }
 .feature--badge .feature-media { display: grid; place-items: center; background: var(--sky-soft); border-radius: var(--radius-lg);
   padding: var(--s-4); border: 2px solid rgb(190, 220, 240); }
 .badge-art { width: 120px; }
-@media (min-width: 900px) {
-  .feature { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--s-7); }
+@media (min-width: 700px) {
+  .feature { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(1.5rem, 4vw, 3rem); }
+  .feature:nth-child(even) { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
   .feature:nth-child(even) .feature-media { order: 2; }
+  .feature:nth-child(even) .feature-text { justify-self: end; }
   .feature-text { max-width: 28rem; }
   .feature--badge .feature-media { min-height: 18rem; }
   .badge-art { width: 200px; }
@@ -268,8 +270,8 @@ button.btn { background: none; cursor: pointer; }
 .ticks li { position: relative; padding-left: 2rem; line-height: 1.45; }
 .ticks li::before { content: ""; position: absolute; left: .2rem; top: .45em; width: .7rem; height: .7rem; border-radius: 2px;
   background: var(--gold); transform: rotate(45deg); box-shadow: 0 2px 0 var(--outline); }
-@media (min-width: 900px) {
-  .boss-grid { grid-template-columns: 5fr 7fr; gap: var(--s-8); }
+@media (min-width: 700px) {
+  .boss-grid { grid-template-columns: 5fr 7fr; gap: clamp(2rem, 6vw, 4.5rem); }
   .boss-art { width: 100%; }
 }
 
